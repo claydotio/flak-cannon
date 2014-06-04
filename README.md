@@ -1,3 +1,66 @@
+### API
+##### new user
+post `/users`
+```js
+{
+  info: {
+    ip: '1.2.3.4',
+    platform: 'android',
+    device: 'mobile'
+  }
+}
+```
+
+get `/users/:uuid`
+```js
+{
+  uuid: 'abc-def-hij-klm',
+  info: {
+    ip: '1.2.3.4',
+    platform: 'android',
+    device: 'mobile'
+    ...
+  },
+  experiments: {
+    'button_color': 'red'
+  },
+  conversions: {
+    'button_color_click': 2,
+    'shop_buy': 5
+  }
+}
+```
+
+put, del `/users/:uuid/experiment/:name/(:value)`
+put `/users/:uuid/conversions/:name` // +1
+
+##### new experiement
+post `/experiments`
+```js
+{
+  name: 'exp_name',
+  values: ['red', 'green', 'blue'],
+  weights: [0.5, 0.1, 0.4], // optional custom weights
+  where: { // optional filter
+    device: 'android'
+  }
+}
+```
+del `/experiments/:name`
+
+##### results
+
+get `/experiments/:name/results`
+```js
+{
+  'red': [<user>],
+  'green': [<user>],
+  'blue': [<user>]
+}
+```
+
+
+
 Purpose:
 Identify our needs from a testing tool to determine best framework/in-house/hybrid system to meet our needs
 
