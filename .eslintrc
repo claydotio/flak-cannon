@@ -1,0 +1,35 @@
+{
+  "env": {
+    "node": true
+  },
+
+  "rules": {
+    "no-else-return": true,
+    "no-floating-decimal": true,
+    "no-self-compare": true,
+    "radix": true,
+    "wrwap-iife": true,
+
+    "no-global-strict": false,
+
+    "no-use-before-define": false,
+
+    "handle-callback-err": true,
+    "no-mixed-requires": true,
+    "no-new-require": true,
+
+    "brace-style": true,
+    "consistent-this": [2, "self"],
+    "func-names": true,
+    "func-style": [2, "declaration"],
+    "no-nested-ternary": true,
+    "no-array-constructor": true,
+    "no-lonely-if": true,
+    "space-after-keywords": true,
+    "space-unary-word-ops": true,
+
+    "semi": [2, "never"],
+    "quotes": "single",
+    "no-underscore-dangle": false
+  }
+}

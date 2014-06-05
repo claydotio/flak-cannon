@@ -46,12 +46,14 @@ post `/experiments`
   }
 }
 ```
-del `/experiments/:name`
+patch, del `/experiments/:name`
+
 
 ##### results
 
 get `/experiments/:name/results`
 ```js
+// A bit jank, and slow. This should probably have some query options
 {
   'red': [<user>],
   'green': [<user>],
