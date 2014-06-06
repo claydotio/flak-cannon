@@ -64,6 +64,12 @@ function api(opts) {
   // routing
   app.use(router(app))
 
+  app.get('/users/', function *() {
+    this.body = {
+      hello: 'world'
+    }
+  })
+
   app.post('/users', function *() {
     var user = yield parse(this)
 
