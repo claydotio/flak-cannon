@@ -13,11 +13,25 @@ describe('Flak Cannon', function(){
       request(app)
         .post('/users')
         .send({})
-        .expect(200, {
-          uuid: uuidRegExp,
-          info: {},
-          experiments: {},
-          conversions: {}
+        .expect(function (res) {
+          if (!uuidRegExp.test(res.body.uuid)) {
+            return 'missing uuid'
+          }
+
+          var user = {
+            uuid: uuidRegExp,
+            info: {
+              abc: 'def'
+            },
+            experiments: {},
+            conversions: {}
+          }
+
+          for(var key in user) {
+            if (!res.body[key]) {
+              return 'missing: ' + key
+            }
+          }
         })
         .end(done)
     })
