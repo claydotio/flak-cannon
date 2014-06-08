@@ -1,16 +1,21 @@
 {
   "name": "flak-cannon",
   "version": "0.0.0",
+  "scripts": {
+    "test": "NODE_ENV=test mocha --harmony test"
+  },
   "dependencies": {
-    "koa-response-time": "~1.0.2",
-    "koa-ratelimit": "~1.0.3",
-    "koa-compress": "1.0.7",
-    "koa-logger": "~1.2.1",
-    "koa": "~0.6.1",
+    "asciimo": "0.3.1",
+    "co-body": "0.0.1",
     "commander": "~2.2.0",
     "debug": "*",
+    "koa": "~0.6.1",
+    "koa-compress": "1.0.7",
+    "koa-logger": "~1.2.1",
+    "koa-ratelimit": "~1.0.3",
+    "koa-response-time": "~1.0.2",
     "koa-router": "~3.1.4",
-    "co-body": "0.0.1",
+    "node-uuid": "1.4.1",
     "redis": "~0.10.3"
   },
   "devDependencies": {

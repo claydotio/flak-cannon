@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /*eslint no-console: 0*/
+'use strict'
 
 /**
  * Module dependencies.
@@ -7,6 +8,8 @@
 
 var program = require('commander')
 var api = require('..')
+var asciimo = require('asciimo').Figlet
+var clc = require('cli-color')
 
 // options
 
@@ -25,7 +28,11 @@ var app = api({
   duration: ~~program.ratelimitDuration
 })
 
-// listen
+asciimo.write('Flak Cannon', 'Cybermedium', function (art) {
+  console.log(clc.xterm(172)(art))
+})
 
+
+// listen
 app.listen(program.port, program.host, ~~program.backlog)
 console.log('Listening on %s:%s', program.host, program.port)

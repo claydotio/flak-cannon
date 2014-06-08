@@ -4,6 +4,9 @@ post `/users`
 ```js
 {
   info: {
+    // optional, subsequent posts with the
+    // [NOT IMPLEMENTED] same `id` will be placed in the same test groups
+    id: '123',
     ip: '1.2.3.4',
     platform: 'android',
     device: 'mobile'
@@ -31,7 +34,7 @@ get `/users/:uuid`
 }
 ```
 
-put, del `/users/:uuid/experiment/:name/(:value)`
+put, del `/users/:uuid/experiments/:name/(:value)`
 put `/users/:uuid/conversions/:name` // +1
 
 ##### new experiement
@@ -40,13 +43,13 @@ post `/experiments`
 {
   name: 'exp_name',
   values: ['red', 'green', 'blue'],
-  weights: [0.5, 0.1, 0.4], // optional custom weights
-  where: { // optional filter
+  weights: [0.5, 0.1, 0.4], // [NOT IMPLEMENTED] optional custom weights
+  where: { // [NOT IMPLEMENTED] optional filter
     device: 'android'
   }
 }
 ```
-patch, del `/experiments/:name`
+patch, del `/experiments/:name` // [NOT IMPLEMENTED]
 
 
 ##### results
