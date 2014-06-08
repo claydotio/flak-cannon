@@ -3,28 +3,30 @@
 
 var api = require('./')
 var request = require('supertest')
-var app = api().callback()
+var app = 'http://localhost:1337' //api().callback()
+var chai = require('chai')
+var expect = chai.expect
 
 var uuidRegExp = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
+
+var user = {
+  id: uuidRegExp,
+  info: {
+    abc: 'def'
+  },
+  experiments: {},
+  conversions: {}
+}
 
 describe('Flak Cannon', function(){
   describe('User', function () {
     it('Creates', function(done){
       request(app)
-        .post('/users')
+        .post('/user')
         .send({})
         .expect(function (res) {
-          if (!uuidRegExp.test(res.body.uuid)) {
+          if (!uuidRegExp.test(res.body.id)) {
             return 'missing uuid'
-          }
-
-          var user = {
-            uuid: uuidRegExp,
-            info: {
-              abc: 'def'
-            },
-            experiments: {},
-            conversions: {}
           }
 
           for(var key in user) {
@@ -38,49 +40,28 @@ describe('Flak Cannon', function(){
 
     it('Creates with info', function (done) {
       request(app)
-        .post('/users')
+        .post('/user')
         .send({
           info: {
             abc: 'def'
           }
         })
-        .expect(200, {
-          uuid: uuidRegExp,
-          info: {
-            abc: 'def'
-          },
-          experiments: {},
-          conversions: {}
-        })
-        .end(done)
-    })
+        .expect(function (res) {
+          expect(res.body.info.abc).to.equal('def')
 
-    it('Creates with id', function (done) {
-      request(app)
-        .post('/users')
-        .send({
-          info: {
-            id: '123',
-            abc: 'def'
+          for(var key in user) {
+            if (!res.body[key]) {
+              return 'missing: ' + key
+            }
           }
         })
-        .expect(200, {
-          uuid: uuidRegExp,
-          info: {
-            id: '123',
-            abc: 'def'
-          },
-          experiments: {},
-          conversions: {}
-        })
         .end(done)
     })
 
-
-    it('Gets users', function (done) {
-      var uuid = null
+    it.only('Gets users', function (done) {
+      var id = null
       request(app)
-        .post('/users')
+        .post('/user')
         .send({
           info: {
             id: '123',
@@ -88,26 +69,31 @@ describe('Flak Cannon', function(){
           }
         })
         .end(function (err, res) {
-          uuid = res.body.uuid
+          id = res.body.id
+
+          request(app)
+            .get('/user/' + id)
+            .expect(function (res) {
+              expect(res.body.info.abc).to.equal('def')
+              expect(res.body.info.id).to.equal('123')
+
+              for(var key in user) {
+                if (!res.body[key]) {
+                  return 'missing: ' + key
+                }
+              }
+            })
+            .end(done)
         })
-        .get('/users/' + uuid)
-        .expect(200, {
-          uuid: uuidRegExp,
-          info: {
-            id: '123',
-            abc: 'def'
-          },
-          experiments: {},
-          conversions: {}
-        })
-        .end(done)
+
+
     })
 
 
-    it('Converts actions', function (done) {
+    it.only('Converts actions', function (done) {
       var uuid = null
       request(app)
-        .post('/users')
+        .post('/user')
         .send({
           info: {
             id: '123',
@@ -115,21 +101,15 @@ describe('Flak Cannon', function(){
           }
         })
         .end(function (err, res) {
-          uuid = res.body.uuid
+          uuid = res.body.id
+          request(app)
+            .put('/user/' + uuid + '/conversions/testing')
+            .expect(function (res) {
+              expect(res.body.conversions.testing).to.equal(1)
+            })
+            .end(done)
         })
-        .put('/users/' + uuid + '/conversions/testing')
-        .expect(200, {
-          uuid: uuidRegExp,
-          info: {
-            id: '123',
-            abc: 'def'
-          },
-          experiments: {},
-          conversions: {
-            'testing': 1
-          }
-        })
-        .end(done)
+
     })
   })
 
@@ -138,7 +118,7 @@ describe('Flak Cannon', function(){
 
     it('Creates', function (done) {
       request(app)
-        .post('/experiments')
+        .post('/experiment')
         .send({
           name: 'expTest',
           values: ['red', 'green', 'blue']
@@ -152,7 +132,7 @@ describe('Flak Cannon', function(){
 
     it('Gets new users', function (done) {
       request(app)
-        .post('/users')
+        .post('/user')
         .send({})
         .expect(200, {
           experiments: {
@@ -167,7 +147,7 @@ describe('Flak Cannon', function(){
 
     it('has results', function (done) {
       request(app)
-        .get('/experiments/expTest/results')
+        .get('/experiment/expTest/results')
         .expect(200, function (err, res) {
           var red = res.body.red
           var green = res.body.green
@@ -193,7 +173,7 @@ describe('Flak Cannon', function(){
 
     it('Removes from experiment', function (done) {
       request(app)
-        .del('/users/' + uuid + '/experiments/expTest')
+        .del('/user/' + uuid + '/experiment/expTest')
         .expect(200, {
           experiments: {}
         })
@@ -202,7 +182,7 @@ describe('Flak Cannon', function(){
 
     it('Adds to experiment', function (done) {
       request(app)
-        .put('/users/' + uuid + '/experiments/expTest')
+        .put('/user/' + uuid + '/experiment/expTest')
         .expect(200, {
           experiments: {
             expTest: /red|green|blue/
@@ -213,7 +193,7 @@ describe('Flak Cannon', function(){
 
     it('Adds to experiment with assignment', function (done) {
       request(app)
-        .put('/users/' + uuid + '/experiments/expTest/red')
+        .put('/user/' + uuid + '/experiment/expTest/red')
         .expect(200, {
           experiments: {
             expTest: 'red'

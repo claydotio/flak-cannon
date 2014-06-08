@@ -1,6 +1,6 @@
 ### API
 ##### new user
-post `/users`
+post `/user`
 ```js
 {
   info: {
@@ -14,10 +14,10 @@ post `/users`
 }
 ```
 
-get `/users/:uuid`
+get `/user/:id`
 ```js
 {
-  uuid: 'abc-def-hij-klm',
+  id: 'abc-def-hij-klm',
   info: {
     ip: '1.2.3.4',
     platform: 'android',
@@ -34,11 +34,11 @@ get `/users/:uuid`
 }
 ```
 
-put, del `/users/:uuid/experiments/:name/(:value)`
-put `/users/:uuid/conversions/:name` // +1
+put, del `/user/:id/experiments/:name/(:value)`
+put `/user/:id/convert/:name` // +1
 
 ##### new experiement
-post `/experiments`
+post `/experiment`
 ```js
 {
   name: 'exp_name',
@@ -57,11 +57,9 @@ patch, del `/experiments/:name` // [NOT IMPLEMENTED]
 get `/experiments/:name/results`
 ```js
 // A bit jank, and slow. This should probably have some query options
-{
-  'red': [<user>],
-  'green': [<user>],
-  'blue': [<user>]
-}
+[
+  <user>
+]
 ```
 
 
