@@ -7,7 +7,7 @@
  */
 
 var program = require('commander')
-var api = require('..')
+var app = require('..')
 var asciimo = require('asciimo').Figlet
 var clc = require('cli-color')
 
@@ -21,17 +21,9 @@ program
   .option('-d, --ratelimit-duration <ms>', 'ratelimit duration [1h]', '1h')
   .parse(process.argv)
 
-// create app
-
-var app = api({
-  ratelimit: ~~program.ratelimit,
-  duration: ~~program.ratelimitDuration
-})
-
 asciimo.write('Flak Cannon', 'Cybermedium', function (art) {
   console.log(clc.xterm(172)(art))
 })
-
 
 // listen
 app.listen(program.port, program.host, ~~program.backlog)

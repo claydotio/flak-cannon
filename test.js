@@ -1,118 +1,79 @@
 /*globals describe, it*/
 'use strict'
 
-var api = require('./')
-var request = require('supertest')
-var app = 'http://localhost:1337' //api().callback()
-var chai = require('chai')
-var expect = chai.expect
-
+var app = require('./')
+var flare = require('flare-gun').route('http://localhost:3001/api')
+var Joi = require('joi')
+var _ = require('lodash')
 var uuidRegExp = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
-var user = {
-  id: uuidRegExp,
-  info: {
-    abc: 'def'
-  },
-  experiments: {},
-  conversions: {}
+app.listen(3001)
+
+var userSchema = {
+  id: Joi.string().regex(uuidRegExp).required(),
+  info: Joi.object(),
+  experiments: Joi.object(),
+  convertions: Joi.object()
 }
 
 describe('Flak Cannon', function(){
   describe('User', function () {
-    it('Creates', function(done){
-      request(app)
-        .post('/user')
-        .send({})
-        .expect(function (res) {
-          if (!uuidRegExp.test(res.body.id)) {
-            return 'missing uuid'
-          }
-
-          for(var key in user) {
-            if (!res.body[key]) {
-              return 'missing: ' + key
-            }
-          }
-        })
-        .end(done)
+    it('Creates', function(){
+      return flare
+        .post('/user', {})
+        .expect(200, userSchema)
     })
 
-    it('Creates with info', function (done) {
-      request(app)
-        .post('/user')
-        .send({
+    it('Creates with info', function () {
+      return flare
+        .post('/user', {
           info: {
             abc: 'def'
           }
         })
-        .expect(function (res) {
-          expect(res.body.info.abc).to.equal('def')
-
-          for(var key in user) {
-            if (!res.body[key]) {
-              return 'missing: ' + key
-            }
+        .expect(200, _.defaults({
+          info: {
+            abc: 'def'
           }
-        })
-        .end(done)
+        }, userSchema))
     })
 
-    it.only('Gets users', function (done) {
-      var id = null
-      request(app)
-        .post('/user')
-        .send({
+    it('Gets users', function () {
+      return flare
+        .post('/user', {
           info: {
             id: '123',
             abc: 'def'
           }
         })
-        .end(function (err, res) {
-          id = res.body.id
-
-          request(app)
-            .get('/user/' + id)
-            .expect(function (res) {
-              expect(res.body.info.abc).to.equal('def')
-              expect(res.body.info.id).to.equal('123')
-
-              for(var key in user) {
-                if (!res.body[key]) {
-                  return 'missing: ' + key
-                }
-              }
-            })
-            .end(done)
-        })
-
-
+        .stash('joe')
+        .get('/user/:joe.id')
+        .expect(200, _.defaults({
+          info: {
+            id: '123',
+            abc: 'def'
+          }
+        }, userSchema))
     })
 
-
-    it.only('Converts actions', function (done) {
-      var uuid = null
-      request(app)
-        .post('/user')
-        .send({
+    it('Converts actions', function () {
+      return flare
+        .post('/user', {
           info: {
             id: '123',
             abc: 'def'
           }
         })
-        .end(function (err, res) {
-          uuid = res.body.id
-          request(app)
-            .put('/user/' + uuid + '/conversions/testing')
-            .expect(function (res) {
-              expect(res.body.conversions.testing).to.equal(1)
-            })
-            .end(done)
-        })
-
+        .stash('joe')
+        .put('/user/:joe.id/convert/testing')
+        .expect(200, _.defaults({
+          conversions: {
+            testing: 1
+          }
+        }, userSchema))
     })
   })
-
+/*
   describe('Experiment', function () {
     var uuid = null
 
@@ -170,7 +131,7 @@ describe('Flak Cannon', function(){
 
     })
 */
-
+/*
     it('Removes from experiment', function (done) {
       request(app)
         .del('/user/' + uuid + '/experiment/expTest')
@@ -207,7 +168,7 @@ describe('Flak Cannon', function(){
     /*it('Creates with same experiments of matching ids', function () {
 
     })*/
-
+/*
   })
-
+*/
 })

@@ -5,7 +5,7 @@ post `/user`
 {
   info: {
     // optional, subsequent posts with the
-    // [NOT IMPLEMENTED] same `id` will be placed in the same test groups
+    // same `id` will be placed in the same test groups
     id: '123',
     ip: '1.2.3.4',
     platform: 'android',
