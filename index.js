@@ -3,8 +3,9 @@
 var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
+var database = process.env === 'test' ? 'flak_cannon_test' : 'flak_cannon'
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/flak_cannon')
+mongoose.connect('mongodb://localhost:27017/' + database)
 var uuid = require('node-uuid')
 var _ = require('lodash')
 

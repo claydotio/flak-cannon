@@ -2,7 +2,7 @@
   "name": "flak-cannon",
   "version": "0.0.0",
   "scripts": {
-    "test": "./node_modules/mocha/bin/mocha test && ./node_modules/ze-goggles/index.js -i doc.json -o doc.md"
+    "test": "NODE_ENV=test && ./node_modules/mocha/bin/mocha test && ./node_modules/ze-goggles/index.js -i doc.json -o doc.md"
   },
   "dependencies": {
     "asciimo": "0.3.1",
