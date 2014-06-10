@@ -69,6 +69,26 @@ router.get('/users/:id', function (req, res) {
   })
 })
 
+router.delete('/users/:id/experiments/:name', function (req, res) {
+  var id = req.params.id
+  var name = req.params.name
+
+  User.findOne({id: id}, function (err, user) {
+    if (err) {
+      return res.send(err)
+    }
+
+    delete user.experiments[name]
+    user.save(function (err, user) {
+      if (err) {
+        return res.send(err)
+      }
+
+      res.json(user)
+    })
+  })
+})
+
 router.put('/users/:id/convert/:name', function (req, res) {
   var id = req.params.id
   var name = req.params.name

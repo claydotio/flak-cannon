@@ -97,6 +97,7 @@ describe('Flak Cannon', function(){
     it('Gets new users', function () {
       return flare
         .post('/users', {})
+        .stash('joe')
         .expect(200, _.defaults({
           experiments: {
             expTest: Joi.string().regex(/red|green|blue/)
@@ -109,17 +110,16 @@ describe('Flak Cannon', function(){
         .get('/experiments/expTest/results')
         .expect(200, Joi.array().includes(userSchema))
     })
-  })
-    /*
-    it('Removes from experiment', function (done) {
-      r
-        .del('/user/' + uuid + '/experiment/expTest')
-        .expect(200, {
-          experiments: {}
-        })
-        .end(done)
-    })
 
+    it('Removes from experiment', function () {
+      return flare
+        .del('/users/:joe.id/experiments/expTest')
+        .expect(200, _.defaults({
+          experiments: {}
+        }, userSchema))
+    })
+  })
+/*
     it('Adds to experiment', function (done) {
       request(app)
         .put('/user/' + uuid + '/experiment/expTest')
