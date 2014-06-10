@@ -483,6 +483,124 @@
     "id": "6229f149-7f1e-4089-8d2e-5ef89117fd36"
 }
 ```
+### create
+##### post /api/users
+```js
+// req
+{
+    "info": {
+        "abc": "def"
+    }
+}
+```
+```js
+// res
+{
+    "info": {
+        "abc": "def"
+    },
+    "id": "c86e3fbc-ff24-4bdf-af29-06c2ef69e0fd"
+}
+```
+### get
+##### get /api/users/d99ee5fb-7c9a-45a4-a47c-0888278e0ffa
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "d99ee5fb-7c9a-45a4-a47c-0888278e0ffa"
+}
+```
+### convert
+##### put /api/users/a79bab94-b3b9-48c8-80bd-446c8b6aa109/convert/testing
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "a79bab94-b3b9-48c8-80bd-446c8b6aa109"
+}
+```
+### set testing group
+##### put /api/users/a79bab94-b3b9-48c8-80bd-446c8b6aa109/group/same
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "same",
+    "id": "a79bab94-b3b9-48c8-80bd-446c8b6aa109",
+    "info": {
+        "abc": "def"
+    }
+}
+```
+### remove from experiment
+##### delete /api/users/38bc528e-0041-4576-9810-4f8c5e9c635a/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "tester",
+    "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
+}
+```
+### add to experiment
+##### put /api/users/38bc528e-0041-4576-9810-4f8c5e9c635a/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "red"
+    },
+    "group": "tester",
+    "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
+}
+```
+### add to experiment, with value
+##### put /api/users/38bc528e-0041-4576-9810-4f8c5e9c635a/experiments/expTest/red
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "red"
+    },
+    "group": "tester",
+    "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
+}
+```
 #Experiment
 ### create
 ##### post /api/experiments
@@ -697,6 +815,60 @@
         },
         "group": "tester",
         "id": "6229f149-7f1e-4089-8d2e-5ef89117fd36"
+    }
+]
+```
+### create
+##### post /api/experiments
+```js
+// req
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+```js
+// res
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+### results
+##### get /api/experiments/expTest/results
+```js
+// req
+
+```
+```js
+// res
+[
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
     }
 ]
 ```
