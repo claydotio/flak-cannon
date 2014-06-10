@@ -16,17 +16,24 @@ var userSchema = {
   convertions: Joi.object()
 }
 
+var experimentSchema = {
+  name: Joi.string(),
+  values: Joi.array().includes(Joi.string())
+}
+
+flare = flare.put('/_tests/reset')
+
 describe('Flak Cannon', function(){
   describe('User', function () {
     it('Creates', function(){
       return flare
-        .post('/user', {})
+        .post('/users', {})
         .expect(200, userSchema)
     })
 
     it('Creates with info', function () {
       return flare
-        .post('/user', {
+        .post('/users', {
           info: {
             abc: 'def'
           }
@@ -40,14 +47,14 @@ describe('Flak Cannon', function(){
 
     it('Gets users', function () {
       return flare
-        .post('/user', {
+        .post('/users', {
           info: {
             id: '123',
             abc: 'def'
           }
         })
         .stash('joe')
-        .get('/user/:joe.id')
+        .get('/users/:joe.id')
         .expect(200, _.defaults({
           info: {
             id: '123',
@@ -58,14 +65,14 @@ describe('Flak Cannon', function(){
 
     it('Converts actions', function () {
       return flare
-        .post('/user', {
+        .post('/users', {
           info: {
             id: '123',
             abc: 'def'
           }
         })
         .stash('joe')
-        .put('/user/:joe.id/convert/testing')
+        .put('/users/:joe.id/convert/testing')
         .expect(200, _.defaults({
           conversions: {
             testing: 1
@@ -73,39 +80,31 @@ describe('Flak Cannon', function(){
         }, userSchema))
     })
   })
-/*
+
   describe('Experiment', function () {
-    var uuid = null
-
-    it('Creates', function (done) {
-      request(app)
-        .post('/experiment')
-        .send({
+    it('Creates', function () {
+      return flare
+        .post('/experiments', {
           name: 'expTest',
           values: ['red', 'green', 'blue']
         })
-        .expect(200, {
+        .expect(200, _.defaults({
           name: 'expTest',
-          values: ['red', 'green', 'blue']
-        })
-        .end(done)
+          values: Joi.array().includes(Joi.string())
+        }, experimentSchema))
     })
 
-    it('Gets new users', function (done) {
-      request(app)
-        .post('/user')
-        .send({})
-        .expect(200, {
+    it('Gets new users', function () {
+      return flare
+        .post('/users', {})
+        .expect(200, _.defaults({
           experiments: {
-            expTest: /red|green|blue/
+            expTest: Joi.string().regex(/red|green|blue/)
           }
-        })
-        .end(function (err, res) {
-          uuid = res.body.uuid
-          done(err)
-        })
+        }, userSchema))
     })
-
+  })
+/*
     it('has results', function (done) {
       request(app)
         .get('/experiment/expTest/results')

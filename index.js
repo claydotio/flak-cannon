@@ -6,6 +6,7 @@ var bodyParser = require('body-parser')
 var mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost:27017/flak_cannon')
 var uuid = require('node-uuid')
+var _ = require('lodash')
 
 app.use(bodyParser())
 
@@ -13,21 +14,50 @@ var port = process.env.PORT || 3000
 var router = express.Router()
 
 var User = require('./models/user')
+var Experiment = require('./models/experiment')
 
-router.post('/user', function (req, res) {
-  req.body.id = uuid.v4()
-  var user = new User(req.body)
-
-  user.save(function (err, user) {
+router.put('/_tests/reset', function (req, res) {
+  User.remove(function (err) {
     if (err) {
       return res.send(err)
     }
+    Experiment.remove(function (err) {
+      if (err) {
+        return res.send(err)
+      }
 
-    res.json(user)
+      res.json({success: true})
+    })
   })
 })
 
-router.get('/user/:id', function (req, res) {
+router.post('/users', function (req, res) {
+  req.body.id = uuid.v4()
+  var user = new User(req.body)
+
+  Experiment.find(function (err, experiments) {
+    var experiment = _.sample(experiments)
+    if (experiment) {
+      var val = _.sample(experiment.values)
+
+      if (!user.experiments) {
+        user.experiments = {}
+      }
+
+      user.experiments[experiment.name] = val
+    }
+
+    user.save(function (err, user) {
+      if (err) {
+        return res.send(err)
+      }
+
+      res.json(user)
+    })
+  })
+})
+
+router.get('/users/:id', function (req, res) {
   var id = req.params.id
 
   User.findOne({id: id}, function (err, user) {
@@ -39,7 +69,7 @@ router.get('/user/:id', function (req, res) {
   })
 })
 
-router.put('/user/:id/convert/:name', function (req, res) {
+router.put('/users/:id/convert/:name', function (req, res) {
   var id = req.params.id
   var name = req.params.name
 
@@ -65,6 +95,18 @@ router.put('/user/:id/convert/:name', function (req, res) {
 
       res.json(user)
     })
+  })
+})
+
+router.post('/experiments', function (req, res) {
+  var experiment = new Experiment(req.body)
+
+  experiment.save(function (err, user) {
+    if (err) {
+      return res.send(err)
+    }
+
+    res.json(user)
   })
 })
 
