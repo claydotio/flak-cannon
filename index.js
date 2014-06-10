@@ -35,24 +35,41 @@ router.post('/users', function (req, res) {
   req.body.id = uuid.v4()
   var user = new User(req.body)
 
-  Experiment.find(function (err, experiments) {
-    var experiment = _.sample(experiments)
-    if (experiment) {
-      var val = _.sample(experiment.values)
-
-      if (!user.experiments) {
-        user.experiments = {}
-      }
-
-      user.experiments[experiment.name] = val
+  User.findOne({group: user.group}, function (err, member) {
+    if (err) {
+      return res.send(err)
     }
 
-    user.save(function (err, user) {
-      if (err) {
-        return res.send(err)
+    if (member) {
+      user.experiments = member.experiments
+      return user.save(function (err, user) {
+        if (err) {
+          return res.send(err)
+        }
+
+        res.json(user)
+      })
+    }
+
+    Experiment.find(function (err, experiments) {
+      var experiment = _.sample(experiments)
+      if (experiment) {
+        var val = _.sample(experiment.values)
+
+        if (!user.experiments) {
+          user.experiments = {}
+        }
+
+        user.experiments[experiment.name] = val
       }
 
-      res.json(user)
+      user.save(function (err, user) {
+        if (err) {
+          return res.send(err)
+        }
+
+        res.json(user)
+      })
     })
   })
 })
@@ -89,7 +106,27 @@ router.delete('/users/:id/experiments/:name', function (req, res) {
   })
 })
 
-router.put('/user/:id/experiments/:name/:val?', function (req, res) {
+router.put('/users/:id/group/:group', function (req, res) {
+  var id = req.params.id
+  var group = req.params.group
+
+  User.findOne({id: id}, function (err, user) {
+    if (err) {
+      return res.send(err)
+    }
+
+    user.group = group
+    user.save(function (err, user) {
+      if (err) {
+        return res.send(err)
+      }
+
+      res.json(user)
+    })
+  })
+})
+
+router.put('/users/:id/experiments/:name/:val?', function (req, res) {
   var id = req.params.id
   var expName = req.params.name
   var val = req.params.val

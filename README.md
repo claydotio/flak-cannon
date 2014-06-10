@@ -3,10 +3,10 @@
 post `/user`
 ```js
 {
+  // optional, subsequent posts with the
+  // same `group` will be placed in the same test groups
+  group: '123',
   info: {
-    // optional, subsequent posts with the
-    // same `id` will be placed in the same test groups
-    id: '123',
     ip: '1.2.3.4',
     platform: 'android',
     device: 'mobile'
@@ -18,6 +18,7 @@ get `/user/:id`
 ```js
 {
   id: 'abc-def-hij-klm',
+  group: '123',
   info: {
     ip: '1.2.3.4',
     platform: 'android',

@@ -5,12 +5,14 @@ var app = require('./')
 var flare = require('flare-gun').route('http://localhost:3001/api')
 var Joi = require('joi')
 var _ = require('lodash')
+var Promise = require('bluebird')
 var uuidRegExp = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 app.listen(3001)
 
 var userSchema = {
   id: Joi.string().regex(uuidRegExp).required(),
+  group: Joi.string(),
   info: Joi.object(),
   experiments: Joi.object(),
   convertions: Joi.object()
@@ -48,16 +50,16 @@ describe('Flak Cannon', function(){
     it('Gets users', function () {
       return flare
         .post('/users', {
+          group: '123',
           info: {
-            id: '123',
             abc: 'def'
           }
         })
         .stash('joe')
         .get('/users/:joe.id')
         .expect(200, _.defaults({
+          group: '123',
           info: {
-            id: '123',
             abc: 'def'
           }
         }, userSchema))
@@ -66,14 +68,25 @@ describe('Flak Cannon', function(){
     it('Converts actions', function () {
       return flare
         .post('/users', {
+          group: '123',
           info: {
-            id: '123',
             abc: 'def'
           }
         })
         .stash('joe')
         .put('/users/:joe.id/convert/testing')
         .expect(200, _.defaults({
+          conversions: {
+            testing: 1
+          }
+        }, userSchema))
+    })
+
+    it('Updates group', function () {
+      return flare
+        .put('/users/:joe.id/group/same')
+        .expect(200, _.defaults({
+          group: 'same',
           conversions: {
             testing: 1
           }
@@ -86,7 +99,7 @@ describe('Flak Cannon', function(){
       return flare
         .post('/experiments', {
           name: 'expTest',
-          values: ['red', 'green', 'blue']
+          values: ['red', 'green', 'blue', 'a', 'b', 'c', 'd', 'e', 'f']
         })
         .expect(200, _.defaults({
           name: 'expTest',
@@ -96,11 +109,13 @@ describe('Flak Cannon', function(){
 
     it('Gets new users', function () {
       return flare
-        .post('/users', {})
+        .post('/users', {
+          group: 'tester'
+        })
         .stash('joe')
         .expect(200, _.defaults({
           experiments: {
-            expTest: Joi.string().regex(/red|green|blue/)
+            expTest: Joi.string().regex(/red|green|blue|a|b|c|d|e|f/)
           }
         }, userSchema))
     })
@@ -121,30 +136,42 @@ describe('Flak Cannon', function(){
 
     it('Adds to experiment', function () {
       return flare
-        .put('/user/:joe.id/experiments/expTest')
+        .put('/users/:joe.id/experiments/expTest')
         .expect(200, _.defaults({
           experiments: {
-            expTest: Joi.string().regex(/red|green|blue/).required()
+            expTest: Joi.string().regex(/red|green|blue|a|b|c|d|e|f/).required()
           }
         }, userSchema))
     })
 
     it('Adds to experiment with assignment', function () {
       return flare
-        .put('/user/:joe.id/experiments/expTest/red')
+        .put('/users/:joe.id/experiments/expTest/red')
         .expect(200, _.defaults({
+          group: 'tester',
           experiments: {
             expTest: 'red'
           }
         }, userSchema))
     })
 
+    it('Creates with same experiments of matching ids', function () {
+      return flare
+      .then(function (f) {
+        return Promise.map(Array(10), function () {
+          return flare
+          .post('/users', {
+            group: 'same'
+          })
+          .expect(200, _.defaults({
+            experiments: {
+              expTest: 'red'
+            }
+          }, userSchema))
+        }).then(function () {
+          return f
+        })
+      })
+    })
   })
-
-    /*it('Creates with same experiments of matching ids', function () {
-
-    })*/
-/*
-  })
-*/
 })

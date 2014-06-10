@@ -14,6 +14,7 @@
     "node-uuid": "1.4.1"
   },
   "devDependencies": {
+    "bluebird": "2.0.7",
     "flare-gun": "0.1.2",
     "joi": "4.6.0",
     "lodash": "2.4.1"
