@@ -89,9 +89,10 @@ router.delete('/users/:id/experiments/:name', function (req, res) {
   })
 })
 
-router.put('/user/:id/experiments/:name', function (req, res) {
+router.put('/user/:id/experiments/:name/:val?', function (req, res) {
   var id = req.params.id
   var expName = req.params.name
+  var val = req.params.val
 
   Experiment.findOne({name: expName}, function (err, experiment) {
     if (err) {
@@ -102,9 +103,9 @@ router.put('/user/:id/experiments/:name', function (req, res) {
     if (err) {
       return res.send(err)
     }
+    val = val || _.sample(experiment.values)
+    user.experiments[expName] = val
 
-    user.experiments[expName] = _.sample(experiment.values)
-    
     user.save(function (err, user) {
         if (err) {
           return res.send(err)

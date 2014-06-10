@@ -128,20 +128,18 @@ describe('Flak Cannon', function(){
           }
         }, userSchema))
     })
-  })
-/*
-    it('Adds to experiment with assignment', function (done) {
-      request(app)
-        .put('/user/' + uuid + '/experiment/expTest/red')
-        .expect(200, {
+
+    it('Adds to experiment with assignment', function () {
+      return flare
+        .put('/user/:joe.id/experiments/expTest/red')
+        .expect(200, _.defaults({
           experiments: {
             expTest: 'red'
           }
-        })
-        .end(done)
+        }, userSchema))
     })
 
-
+  })
 
     /*it('Creates with same experiments of matching ids', function () {
 
