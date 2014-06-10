@@ -2,7 +2,7 @@
   "name": "flak-cannon",
   "version": "0.0.0",
   "scripts": {
-    "test": "mocha test"
+    "test": "./node_modules/mocha/bin/mocha test && ./node_modules/ze-goggles/index.js -i doc.json -o doc.md"
   },
   "dependencies": {
     "asciimo": "0.3.1",
@@ -17,6 +17,8 @@
     "bluebird": "2.0.7",
     "flare-gun": "0.1.2",
     "joi": "4.6.0",
-    "lodash": "2.4.1"
+    "lodash": "2.4.1",
+    "mocha": "1.20.1",
+    "ze-goggles": "0.1.2"
   }
 }

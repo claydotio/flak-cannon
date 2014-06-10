@@ -1,4 +1,6 @@
 ### API
+#### [Docs](doc.md)
+
 ##### new user
 post `/user`
 ```js

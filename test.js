@@ -2,7 +2,9 @@
 'use strict'
 
 var app = require('./')
-var flare = require('flare-gun').route('http://localhost:3001/api')
+var flare = require('flare-gun')
+  .route('http://localhost:3001/api')
+  .docFile('doc.json')
 var Joi = require('joi')
 var _ = require('lodash')
 var Promise = require('bluebird')
@@ -45,6 +47,7 @@ describe('Flak Cannon', function(){
             abc: 'def'
           }
         }, userSchema))
+        .doc('User', 'create')
     })
 
     it('Gets users', function () {
@@ -63,6 +66,7 @@ describe('Flak Cannon', function(){
             abc: 'def'
           }
         }, userSchema))
+        .doc('User', 'get')
     })
 
     it('Converts actions', function () {
@@ -80,6 +84,7 @@ describe('Flak Cannon', function(){
             testing: 1
           }
         }, userSchema))
+        .doc('User', 'convert')
     })
 
     it('Updates group', function () {
@@ -91,6 +96,7 @@ describe('Flak Cannon', function(){
             testing: 1
           }
         }, userSchema))
+        .doc('User', 'set testing group')
     })
   })
 
@@ -105,6 +111,7 @@ describe('Flak Cannon', function(){
           name: 'expTest',
           values: Joi.array().includes(Joi.string())
         }, experimentSchema))
+        .doc('Experiment', 'create')
     })
 
     it('Gets new users', function () {
@@ -124,6 +131,7 @@ describe('Flak Cannon', function(){
       return flare
         .get('/experiments/expTest/results')
         .expect(200, Joi.array().includes(userSchema))
+        .doc('Experiment', 'results')
     })
 
     it('Removes from experiment', function () {
@@ -132,6 +140,7 @@ describe('Flak Cannon', function(){
         .expect(200, _.defaults({
           experiments: {}
         }, userSchema))
+        .doc('User', 'remove from experiment')
     })
 
     it('Adds to experiment', function () {
@@ -142,6 +151,7 @@ describe('Flak Cannon', function(){
             expTest: Joi.string().regex(/red|green|blue|a|b|c|d|e|f/).required()
           }
         }, userSchema))
+        .doc('User', 'add to experiment')
     })
 
     it('Adds to experiment with assignment', function () {
@@ -153,9 +163,10 @@ describe('Flak Cannon', function(){
             expTest: 'red'
           }
         }, userSchema))
+        .doc('User', 'add to experiment, with value')
     })
 
-    it('Creates with same experiments of matching ids', function () {
+    it('Creates with same experiments of matching group', function () {
       return flare
       .then(function (f) {
         return Promise.map(Array(10), function () {
