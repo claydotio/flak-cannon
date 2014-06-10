@@ -118,19 +118,18 @@ describe('Flak Cannon', function(){
           experiments: {}
         }, userSchema))
     })
+
+    it('Adds to experiment', function () {
+      return flare
+        .put('/user/:joe.id/experiments/expTest')
+        .expect(200, _.defaults({
+          experiments: {
+            expTest: Joi.string().regex(/red|green|blue/).required()
+          }
+        }, userSchema))
+    })
   })
 /*
-    it('Adds to experiment', function (done) {
-      request(app)
-        .put('/user/' + uuid + '/experiment/expTest')
-        .expect(200, {
-          experiments: {
-            expTest: /red|green|blue/
-          }
-        })
-        .end(done)
-    })
-
     it('Adds to experiment with assignment', function (done) {
       request(app)
         .put('/user/' + uuid + '/experiment/expTest/red')

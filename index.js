@@ -89,6 +89,33 @@ router.delete('/users/:id/experiments/:name', function (req, res) {
   })
 })
 
+router.put('/user/:id/experiments/:name', function (req, res) {
+  var id = req.params.id
+  var expName = req.params.name
+
+  Experiment.findOne({name: expName}, function (err, experiment) {
+    if (err) {
+      return res.send(err)
+    }
+
+    User.findOne({id: id}, function (err, user) {
+    if (err) {
+      return res.send(err)
+    }
+
+    user.experiments[expName] = _.sample(experiment.values)
+    
+    user.save(function (err, user) {
+        if (err) {
+          return res.send(err)
+        }
+
+        res.json(user)
+      })
+    })
+  })
+})
+
 router.put('/users/:id/convert/:name', function (req, res) {
   var id = req.params.id
   var name = req.params.name
