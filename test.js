@@ -103,36 +103,16 @@ describe('Flak Cannon', function(){
           }
         }, userSchema))
     })
+
+    it('has results', function () {
+      return flare
+        .get('/experiments/expTest/results')
+        .expect(200, Joi.array().includes(userSchema))
+    })
   })
-/*
-    it('has results', function (done) {
-      request(app)
-        .get('/experiment/expTest/results')
-        .expect(200, function (err, res) {
-          var red = res.body.red
-          var green = res.body.green
-          var blue = res.body.blue
-
-          if (red.length + green.length + blue.length !== 1) {
-            return done(new Error('Bad results'))
-          }
-
-          done()
-        })
-    })
-
-/*
-    it('updates', function () {
-
-    })
-
-    it('removes', function () {
-
-    })
-*/
-/*
+    /*
     it('Removes from experiment', function (done) {
-      request(app)
+      r
         .del('/user/' + uuid + '/experiment/expTest')
         .expect(200, {
           experiments: {}

@@ -101,12 +101,25 @@ router.put('/users/:id/convert/:name', function (req, res) {
 router.post('/experiments', function (req, res) {
   var experiment = new Experiment(req.body)
 
-  experiment.save(function (err, user) {
+  experiment.save(function (err, experiment) {
     if (err) {
       return res.send(err)
     }
 
-    res.json(user)
+    res.json(experiment)
+  })
+})
+
+router.get('/experiments/:name/results', function (req, res) {
+  var name = req.params.name
+  var query = {}
+  query['experiments.' + name] = {$exists: true}
+  User.find(query, function (err, users) {
+    if (err) {
+      return res.send(err)
+    }
+
+    res.json(users)
   })
 })
 
