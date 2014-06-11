@@ -118,7 +118,7 @@ router.get('/users/:id', function (req, res) {
   })
 })
 
-router.delete('/users/:id/experiments/:name', function (req, res) {
+router.delete('/users/:id/experiments/:name', isAdmin, function (req, res) {
   var id = req.params.id
   var name = req.params.name
 
@@ -138,7 +138,7 @@ router.delete('/users/:id/experiments/:name', function (req, res) {
   })
 })
 
-router.put('/users/:id/group/:group', function (req, res) {
+router.put('/users/:id/group/:group', isAdmin, function (req, res) {
   var id = req.params.id
   var group = req.params.group
 
@@ -158,7 +158,7 @@ router.put('/users/:id/group/:group', function (req, res) {
   })
 })
 
-router.put('/users/:id/experiments/:name/:val?', function (req, res) {
+router.put('/users/:id/experiments/:name/:val?', isAdmin, function (req, res) {
   var id = req.params.id
   var expName = req.params.name
   var val = req.params.val

@@ -117,6 +117,10 @@ describe('Flak Cannon', function(){
 
     it('Updates group', function () {
       return flare
+        .as('anon')
+        .put('/users/:joe.id/group/same')
+        .expect(401)
+        .as('admin')
         .put('/users/:joe.id/group/same')
         .expect(200, _.defaults({
           group: 'same',
@@ -124,13 +128,14 @@ describe('Flak Cannon', function(){
             testing: 1
           }
         }, userSchema))
-        .doc('User', 'set testing group')
+        .doc('(Admin) User', 'set testing group')
     })
   })
 
   describe('Experiment', function () {
     it('is protected', function () {
       return flare
+        .as('anon')
         .post('/experiments')
         .expect(401)
     })
@@ -146,7 +151,7 @@ describe('Flak Cannon', function(){
           name: 'expTest',
           values: Joi.array().includes(Joi.string())
         }, experimentSchema))
-        .doc('Experiment', 'create')
+        .doc('(Admin) Experiment', 'create')
     })
 
     it('Gets new users', function () {
@@ -164,33 +169,46 @@ describe('Flak Cannon', function(){
 
     it('has results', function () {
       return flare
+        .as('admin')
         .get('/experiments/expTest/results')
         .expect(200, Joi.array().includes(userSchema))
-        .doc('Experiment', 'results')
+        .doc('(Admin) Experiment', 'results')
     })
 
     it('Removes from experiment', function () {
       return flare
+        .as('anon')
+        .del('/users/:joe.id/experiments/expTest')
+        .expect(401)
+        .as('admin')
         .del('/users/:joe.id/experiments/expTest')
         .expect(200, _.defaults({
           experiments: {}
         }, userSchema))
-        .doc('User', 'remove from experiment')
+        .doc('(Admin) User', 'remove from experiment')
     })
 
     it('Adds to experiment', function () {
       return flare
+        .as('anon')
+        .put('/users/:joe.id/experiments/expTest')
+        .expect(401)
+        .as('admin')
         .put('/users/:joe.id/experiments/expTest')
         .expect(200, _.defaults({
           experiments: {
             expTest: Joi.string().regex(/red|green|blue|a|b|c|d|e|f/).required()
           }
         }, userSchema))
-        .doc('User', 'add to experiment')
+        .doc('(Admin) User', 'add to experiment')
     })
 
     it('Adds to experiment with assignment', function () {
       return flare
+        .as('anon')
+        .put('/users/:joe.id/experiments/expTest/red')
+        .expect(401)
+        .as('admin')
         .put('/users/:joe.id/experiments/expTest/red')
         .expect(200, _.defaults({
           group: 'tester',
@@ -198,7 +216,7 @@ describe('Flak Cannon', function(){
             expTest: 'red'
           }
         }, userSchema))
-        .doc('User', 'add to experiment, with value')
+        .doc('(Admin) User', 'add to experiment, with value')
     })
 
     it('Creates with same experiments of matching group', function () {
