@@ -1,6 +1,14 @@
 ### API
 #### [Docs](doc.md)
 
+#### How to use when a user visits your page
+1. If they have a flak-cannon id (already created and saved somehwere)
+  1. Get their experiment groups
+2. Else create a new user
+  1. If they are authed, set the `group` property to their user id
+
+If the user is anonymous (yes, create anonymous users), and then logs in, create a new user with the proper `group`
+
 ##### new user
 post `/user`
 ```js
