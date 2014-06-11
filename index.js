@@ -8,6 +8,8 @@ var mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost:27017/' + database)
 var uuid = require('node-uuid')
 var _ = require('lodash')
+var basicAuth = require('basic-auth-connect')
+var sensitive = require('./sensitive')
 
 app.use(bodyParser())
 
@@ -17,20 +19,24 @@ var router = express.Router()
 var User = require('./models/user')
 var Experiment = require('./models/experiment')
 
-router.put('/_tests/reset', function (req, res) {
-  User.remove(function (err) {
-    if (err) {
-      return res.send(err)
-    }
-    Experiment.remove(function (err) {
+var isAdmin = basicAuth('admin', sensitive.adminPassword)
+
+if (process.env === 'test') {
+  router.put('/_tests/reset', function (req, res) {
+    User.remove(function (err) {
       if (err) {
         return res.send(err)
       }
+      Experiment.remove(function (err) {
+        if (err) {
+          return res.send(err)
+        }
 
-      res.json({success: true})
+        res.json({success: true})
+      })
     })
   })
-})
+}
 
 router.post('/users', function (req, res) {
   req.body.id = uuid.v4()
@@ -184,7 +190,7 @@ router.put('/users/:id/convert/:name', function (req, res) {
   })
 })
 
-router.post('/experiments', function (req, res) {
+router.post('/experiments', isAdmin, function (req, res) {
   var experiment = new Experiment(req.body)
 
   experiment.save(function (err, experiment) {
@@ -196,7 +202,7 @@ router.post('/experiments', function (req, res) {
   })
 })
 
-router.get('/experiments/:name/results', function (req, res) {
+router.get('/experiments/:name/results', isAdmin, function (req, res) {
   var name = req.params.name
   var query = {}
   query['experiments.' + name] = {$exists: true}

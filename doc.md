@@ -601,6 +601,596 @@
     "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
 }
 ```
+### create
+##### post /api/users
+```js
+// req
+{
+    "info": {
+        "abc": "def"
+    }
+}
+```
+```js
+// res
+{
+    "info": {
+        "abc": "def"
+    },
+    "id": "b59f78d7-de75-4a49-ad26-2976ea04e8bb"
+}
+```
+### get
+##### get /api/users/37ef908a-e24f-45a2-b509-90dabdb6acc3
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "37ef908a-e24f-45a2-b509-90dabdb6acc3"
+}
+```
+### convert
+##### put /api/users/20296d62-b7cb-4f7a-be13-a5d89e5b587c/convert/testing
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "20296d62-b7cb-4f7a-be13-a5d89e5b587c"
+}
+```
+### set testing group
+##### put /api/users/20296d62-b7cb-4f7a-be13-a5d89e5b587c/group/same
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "same",
+    "id": "20296d62-b7cb-4f7a-be13-a5d89e5b587c",
+    "info": {
+        "abc": "def"
+    }
+}
+```
+### remove from experiment
+##### delete /api/users/a75134bb-841a-4f01-bb7b-8ffc25758375/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "tester",
+    "id": "a75134bb-841a-4f01-bb7b-8ffc25758375"
+}
+```
+### add to experiment
+##### put /api/users/a75134bb-841a-4f01-bb7b-8ffc25758375/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "b"
+    },
+    "group": "tester",
+    "id": "a75134bb-841a-4f01-bb7b-8ffc25758375"
+}
+```
+### add to experiment, with value
+##### put /api/users/a75134bb-841a-4f01-bb7b-8ffc25758375/experiments/expTest/red
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "red"
+    },
+    "group": "tester",
+    "id": "a75134bb-841a-4f01-bb7b-8ffc25758375"
+}
+```
+### create
+##### post /api/users
+```js
+// req
+{
+    "info": {
+        "abc": "def"
+    }
+}
+```
+```js
+// res
+{
+    "info": {
+        "abc": "def"
+    },
+    "id": "b6062121-7c36-40b5-84e5-dfbd6409cecc"
+}
+```
+### get
+##### get /api/users/3ca25367-49a4-494d-8c0c-d481506ab658
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "3ca25367-49a4-494d-8c0c-d481506ab658"
+}
+```
+### convert
+##### put /api/users/e46608a5-2cd0-4182-836c-fa169c0cb716/convert/testing
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "e46608a5-2cd0-4182-836c-fa169c0cb716"
+}
+```
+### set testing group
+##### put /api/users/e46608a5-2cd0-4182-836c-fa169c0cb716/group/same
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "same",
+    "id": "e46608a5-2cd0-4182-836c-fa169c0cb716",
+    "info": {
+        "abc": "def"
+    }
+}
+```
+### remove from experiment
+##### delete /api/users/6ca68527-ae58-4533-8322-33df2a527bae/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "tester",
+    "id": "6ca68527-ae58-4533-8322-33df2a527bae"
+}
+```
+### add to experiment
+##### put /api/users/6ca68527-ae58-4533-8322-33df2a527bae/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "b"
+    },
+    "group": "tester",
+    "id": "6ca68527-ae58-4533-8322-33df2a527bae"
+}
+```
+### add to experiment, with value
+##### put /api/users/6ca68527-ae58-4533-8322-33df2a527bae/experiments/expTest/red
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "red"
+    },
+    "group": "tester",
+    "id": "6ca68527-ae58-4533-8322-33df2a527bae"
+}
+```
+### create
+##### post /api/users
+```js
+// req
+{
+    "info": {
+        "abc": "def"
+    }
+}
+```
+```js
+// res
+{
+    "info": {
+        "abc": "def"
+    },
+    "id": "4db3d073-ee84-4a39-b348-fd7c7771fbcd"
+}
+```
+### get
+##### get /api/users/179acbd7-4d30-4796-ba86-b4d1a1e431b0
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "179acbd7-4d30-4796-ba86-b4d1a1e431b0"
+}
+```
+### convert
+##### put /api/users/05fe77fb-284f-46ce-a774-9e1252066a2b/convert/testing
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "05fe77fb-284f-46ce-a774-9e1252066a2b"
+}
+```
+### set testing group
+##### put /api/users/05fe77fb-284f-46ce-a774-9e1252066a2b/group/same
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "same",
+    "id": "05fe77fb-284f-46ce-a774-9e1252066a2b",
+    "info": {
+        "abc": "def"
+    }
+}
+```
+### remove from experiment
+##### delete /api/users/f023d206-ddf9-4720-b9ba-250c93f22662/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "tester",
+    "id": "f023d206-ddf9-4720-b9ba-250c93f22662"
+}
+```
+### add to experiment
+##### put /api/users/f023d206-ddf9-4720-b9ba-250c93f22662/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "a"
+    },
+    "group": "tester",
+    "id": "f023d206-ddf9-4720-b9ba-250c93f22662"
+}
+```
+### add to experiment, with value
+##### put /api/users/f023d206-ddf9-4720-b9ba-250c93f22662/experiments/expTest/red
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "red"
+    },
+    "group": "tester",
+    "id": "f023d206-ddf9-4720-b9ba-250c93f22662"
+}
+```
+### create
+##### post /api/users
+```js
+// req
+{
+    "info": {
+        "abc": "def"
+    }
+}
+```
+```js
+// res
+{
+    "info": {
+        "abc": "def"
+    },
+    "id": "d0b0a571-8b00-4808-8ec7-df9e0e57531e"
+}
+```
+### get
+##### get /api/users/43764002-85e8-4664-905a-f0afe0873bbc
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "43764002-85e8-4664-905a-f0afe0873bbc"
+}
+```
+### convert
+##### put /api/users/cad608ea-88d6-479b-9c89-736ce3b9a331/convert/testing
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "cad608ea-88d6-479b-9c89-736ce3b9a331"
+}
+```
+### set testing group
+##### put /api/users/cad608ea-88d6-479b-9c89-736ce3b9a331/group/same
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "same",
+    "id": "cad608ea-88d6-479b-9c89-736ce3b9a331",
+    "info": {
+        "abc": "def"
+    }
+}
+```
+### remove from experiment
+##### delete /api/users/99d32c84-5d5b-45ed-84bd-a96d5910f935/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "tester",
+    "id": "99d32c84-5d5b-45ed-84bd-a96d5910f935"
+}
+```
+### add to experiment
+##### put /api/users/99d32c84-5d5b-45ed-84bd-a96d5910f935/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "c"
+    },
+    "group": "tester",
+    "id": "99d32c84-5d5b-45ed-84bd-a96d5910f935"
+}
+```
+### add to experiment, with value
+##### put /api/users/99d32c84-5d5b-45ed-84bd-a96d5910f935/experiments/expTest/red
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "red"
+    },
+    "group": "tester",
+    "id": "99d32c84-5d5b-45ed-84bd-a96d5910f935"
+}
+```
+### create
+##### post /api/users
+```js
+// req
+{
+    "info": {
+        "abc": "def"
+    }
+}
+```
+```js
+// res
+{
+    "info": {
+        "abc": "def"
+    },
+    "id": "2b2f2495-af02-44db-931b-61d9a29775f4"
+}
+```
+### get
+##### get /api/users/13951ea6-c1d7-4da3-8712-237fb2e2963d
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "13951ea6-c1d7-4da3-8712-237fb2e2963d"
+}
+```
+### convert
+##### put /api/users/a411cac4-0144-43f2-957f-42c216159d98/convert/testing
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "123",
+    "info": {
+        "abc": "def"
+    },
+    "id": "a411cac4-0144-43f2-957f-42c216159d98"
+}
+```
+### set testing group
+##### put /api/users/a411cac4-0144-43f2-957f-42c216159d98/group/same
+```js
+// req
+
+```
+```js
+// res
+{
+    "conversions": {
+        "testing": 1
+    },
+    "group": "same",
+    "id": "a411cac4-0144-43f2-957f-42c216159d98",
+    "info": {
+        "abc": "def"
+    }
+}
+```
+### remove from experiment
+##### delete /api/users/a13cbcb6-6071-4b11-b29b-984d2f0b1631/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "group": "tester",
+    "id": "a13cbcb6-6071-4b11-b29b-984d2f0b1631"
+}
+```
+### add to experiment
+##### put /api/users/a13cbcb6-6071-4b11-b29b-984d2f0b1631/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "f"
+    },
+    "group": "tester",
+    "id": "a13cbcb6-6071-4b11-b29b-984d2f0b1631"
+}
+```
+### add to experiment, with value
+##### put /api/users/a13cbcb6-6071-4b11-b29b-984d2f0b1631/experiments/expTest/red
+```js
+// req
+
+```
+```js
+// res
+{
+    "experiments": {
+        "expTest": "red"
+    },
+    "group": "tester",
+    "id": "a13cbcb6-6071-4b11-b29b-984d2f0b1631"
+}
+```
 #Experiment
 ### create
 ##### post /api/experiments
@@ -869,6 +1459,238 @@
         },
         "group": "tester",
         "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
+    }
+]
+```
+### create
+##### post /api/experiments
+```js
+// req
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+```js
+// res
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+### results
+##### get /api/experiments/expTest/results
+```js
+// req
+
+```
+```js
+// res
+[
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "a75134bb-841a-4f01-bb7b-8ffc25758375"
+    }
+]
+```
+### create
+##### post /api/experiments
+```js
+// req
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+```js
+// res
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+### results
+##### get /api/experiments/expTest/results
+```js
+// req
+
+```
+```js
+// res
+[
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "a75134bb-841a-4f01-bb7b-8ffc25758375"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "6ca68527-ae58-4533-8322-33df2a527bae"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "f023d206-ddf9-4720-b9ba-250c93f22662"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "99d32c84-5d5b-45ed-84bd-a96d5910f935"
+    }
+]
+```
+### create
+##### post /api/experiments
+```js
+// req
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+```js
+// res
+{
+    "name": "expTest",
+    "values": [
+        "red",
+        "green",
+        "blue",
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
+        "f"
+    ]
+}
+```
+### results
+##### get /api/experiments/expTest/results
+```js
+// req
+
+```
+```js
+// res
+[
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "a75134bb-841a-4f01-bb7b-8ffc25758375"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "6ca68527-ae58-4533-8322-33df2a527bae"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "f023d206-ddf9-4720-b9ba-250c93f22662"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "99d32c84-5d5b-45ed-84bd-a96d5910f935"
+    },
+    {
+        "experiments": {
+            "expTest": "red"
+        },
+        "group": "tester",
+        "id": "a13cbcb6-6071-4b11-b29b-984d2f0b1631"
     }
 ]
 ```

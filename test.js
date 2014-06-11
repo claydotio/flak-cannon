@@ -2,9 +2,19 @@
 'use strict'
 
 var app = require('./')
+var sensitive = require('./sensitive')
 var flare = require('flare-gun')
   .route('http://localhost:3001/api')
   .docFile('doc.json')
+  .actor('admin', {
+    auth: {
+      user: 'admin',
+      pass: sensitive.adminPassword
+    }
+  })
+  .actor('anon')
+  .as('anon')
+
 var Joi = require('joi')
 var _ = require('lodash')
 var Promise = require('bluebird')
@@ -101,8 +111,15 @@ describe('Flak Cannon', function(){
   })
 
   describe('Experiment', function () {
+    it('is protected', function () {
+      return flare
+        .post('/experiments')
+        .expect(401)
+    })
+
     it('Creates', function () {
       return flare
+        .as('admin')
         .post('/experiments', {
           name: 'expTest',
           values: ['red', 'green', 'blue', 'a', 'b', 'c', 'd', 'e', 'f']
