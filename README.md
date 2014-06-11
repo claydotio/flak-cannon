@@ -9,6 +9,10 @@
 
 If the user is anonymous (yes, create anonymous users), and then logs in, create a new user with the proper `group`
 
+#### Creating an experiment
+experiment creation requires admin login. See sensitive.js for the password  
+Use basic auth when making the request - admin:pass
+
 ##### new user
 post `/user`
 ```js
