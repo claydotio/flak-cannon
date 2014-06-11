@@ -3,6 +3,7 @@
 var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
+var useragent = require('express-useragent')
 var database = process.env === 'test' ? 'flak_cannon_test' : 'flak_cannon'
 var mongoose = require('mongoose')
 var sensitive = require('./sensitive')
@@ -17,6 +18,7 @@ var basicAuth = require('basic-auth-connect')
 
 
 app.use(bodyParser())
+app.use(useragent.express())
 
 var port = process.env.PORT || 3000
 var router = express.Router()
@@ -44,8 +46,26 @@ if (process.env === 'test') {
 }
 
 router.post('/users', function (req, res) {
-  req.body.id = uuid.v4()
-  var user = new User(req.body)
+  var defaultInfo = {
+    ip: req.ip
+  }
+
+  if (req.headers['user-agent']) {
+
+    // merge in user agent based info
+    _.merge(defaultInfo, _.transform(req.useragent, function (obj, val, key) {
+        if(val) {
+          obj[key] = val
+        }
+    }))
+  }
+
+  var defaultUser = {
+    id: uuid.v4(),
+    info: defaultInfo
+  }
+
+  var user = new User(_.defaults(req.body, defaultUser))
 
   User.findOne({group: user.group}, function (err, member) {
     if (err) {

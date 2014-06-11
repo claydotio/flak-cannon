@@ -2,7 +2,7 @@
   "name": "flak-cannon",
   "version": "0.0.0",
   "scripts": {
-    "test": "rm doc.json && NODE_ENV=test ./node_modules/mocha/bin/mocha test && ./node_modules/ze-goggles/index.js -i doc.json -o doc.md",
+    "test": "rm -f doc.json && NODE_ENV=test ./node_modules/mocha/bin/mocha test && ./node_modules/ze-goggles/index.js -i doc.json -o doc.md",
     "start": "./bin/api"
   },
   "dependencies": {
@@ -12,6 +12,7 @@
     "cli-color": "0.3.2",
     "commander": "2.2.0",
     "express": "4.4.2",
+    "express-useragent": "0.1.0",
     "mongoose": "3.8.12",
     "node-uuid": "1.4.1"
   },

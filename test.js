@@ -60,6 +60,24 @@ describe('Flak Cannon', function(){
         .doc('User', 'create')
     })
 
+    it('Creates with default info', function () {
+      return flare
+        .request({
+          uri: 'http://localhost:3001/api/users',
+          method: 'post',
+          headers: {
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36'
+          }
+        })
+        .expect(200, _.defaults({
+          info: Joi.object().keys({
+            ip: '127.0.0.1',
+            browser: 'Chrome',
+            isDesktop: true
+          }).unknown()
+        }, userSchema))
+    })
+
     it('Gets users', function () {
       return flare
         .post('/users', {
