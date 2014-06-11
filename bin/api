@@ -14,11 +14,7 @@ var clc = require('cli-color')
 // options
 
 program
-  .option('-H, --host <host>', 'specify the host [0.0.0.0]', '0.0.0.0')
   .option('-p, --port <port>', 'specify the port [3000]', '3000')
-  .option('-b, --backlog <size>', 'specify the backlog size [511]', '511')
-  .option('-r, --ratelimit <n>', 'ratelimit requests [2500]', '2500')
-  .option('-d, --ratelimit-duration <ms>', 'ratelimit duration [1h]', '1h')
   .parse(process.argv)
 
 asciimo.write('Flak Cannon', 'Cybermedium', function (art) {
@@ -26,5 +22,5 @@ asciimo.write('Flak Cannon', 'Cybermedium', function (art) {
 })
 
 // listen
-app.listen(program.port, program.host, ~~program.backlog)
-console.log('Listening on %s:%s', program.host, program.port)
+app.listen(program.port)
+console.log('Listening on port: %s', program.port)

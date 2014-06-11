@@ -5,11 +5,16 @@ var app = express()
 var bodyParser = require('body-parser')
 var database = process.env === 'test' ? 'flak_cannon_test' : 'flak_cannon'
 var mongoose = require('mongoose')
-mongoose.connect('mongodb://localhost:27017/' + database)
+var sensitive = require('./sensitive')
+var mongoUser = sensitive.mongo.user
+var mongoPass = sensitive.mongo.pass
+mongoose.connect( sensitive.mongo.user ?
+  'mongodb://' + mongoUser + ':' + mongoPass + '@localhost:27017/' + database :
+  'mongodb://localhost:27017/' + database)
 var uuid = require('node-uuid')
 var _ = require('lodash')
 var basicAuth = require('basic-auth-connect')
-var sensitive = require('./sensitive')
+
 
 app.use(bodyParser())
 

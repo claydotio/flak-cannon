@@ -1,3 +1,7 @@
 module.exports = {
-  adminPassword: ''
+  adminPassword: '',
+  mongo: {
+    user: '',
+    pass: ''
+  }
 }
