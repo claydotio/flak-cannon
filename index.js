@@ -8,7 +8,7 @@ var mongoose = require('mongoose')
 var sensitive = require('./sensitive')
 var mongoUser = sensitive.mongo.user
 var mongoPass = sensitive.mongo.pass
-mongoose.connect( sensitive.mongo.user ?
+mongoose.connect(sensitive.mongo.user ?
   'mongodb://' + mongoUser + ':' + mongoPass + '@localhost:27017/' + database :
   'mongodb://localhost:27017/' + database)
 var uuid = require('node-uuid')
