@@ -3,7 +3,8 @@
 
 var app = require('./')
 var sensitive = require('./sensitive')
-var flare = require('flare-gun')
+var Flare = require('flare-gun')
+var flare = new Flare()
   .route('http://localhost:3001/api')
   .docFile('doc.json')
   .actor('admin', {
@@ -237,5 +238,9 @@ describe('Flak Cannon', function(){
         })
       })
     })
+  })
+
+  describe('Results', function () {
+    
   })
 })
