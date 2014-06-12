@@ -1,6 +1,12 @@
 ### API
 #### [Docs](doc.md)
 
+#### Starting flak-cannon
+```
+cp flakcannon.conf /etc/init/flakcannon.conf
+start flakcannon
+```
+
 #### How to use when a user visits your page
 1. If they have a flak-cannon id (already created and saved somehwere)
   1. Get their experiment groups

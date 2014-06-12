@@ -7,11 +7,13 @@ var useragent = require('express-useragent')
 var database = process.env === 'test' ? 'flak_cannon_test' : 'flak_cannon'
 var mongoose = require('mongoose')
 var sensitive = require('./sensitive')
+var mongoHost = sensitive.mongo.host || 'localhost'
+var mongoPort = sensitive.mongo.port || 2717
 var mongoUser = sensitive.mongo.user
 var mongoPass = sensitive.mongo.pass
 mongoose.connect(sensitive.mongo.user ?
-  'mongodb://' + mongoUser + ':' + mongoPass + '@localhost:27017/' + database :
-  'mongodb://localhost:27017/' + database)
+  'mongodb://' + mongoUser + ':' + mongoPass + '@' + mongoHost + ':' + mongoPort + '/' + database :
+  'mongodb://' + mongoHost + ':' + mongoPort + '/' + database)
 var uuid = require('node-uuid')
 var _ = require('lodash')
 var basicAuth = require('basic-auth-connect')
