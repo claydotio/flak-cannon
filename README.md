@@ -80,6 +80,35 @@ get `/experiments/:name/results`
 ]
 ```
 
+##### results v2
+
+post `/experiments/:name/results`
+```js
+{
+  [{
+    date: '1/19/2038',
+    splits: {
+      all: {
+        val1: {
+          convertable1: 4,
+          convertable2: 7,
+          convertable3: 200
+        },
+        val2: {
+          convertable1: 3,
+          convertable3: 10
+        },
+        val3: {
+          convertable1: 1,
+          convertable2: 4
+        }
+      }
+    }
+  }]
+  // or with params... TODO
+}
+```
+
 
 
 Purpose:
