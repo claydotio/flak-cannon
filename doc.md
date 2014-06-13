@@ -15,11 +15,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "3c687383-e7cf-4535-99a9-1f90de4dd284"
+    "id": "2e803219-68c0-4ef4-9a77-b829e976eb35"
 }
 ```
 ### get
-##### get /api/users/29313c31-7f94-4096-8a36-0a76a49b6424
+##### get /api/users/fc27f291-d889-4b44-aefe-664351c86473
 ```js
 // req
 
@@ -31,11 +31,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "29313c31-7f94-4096-8a36-0a76a49b6424"
+    "id": "fc27f291-d889-4b44-aefe-664351c86473"
 }
 ```
 ### convert
-##### put /api/users/023177ed-b9a3-49dc-9234-af56efbdc583/convert/testing
+##### put /api/users/3fed8064-a238-4bef-9a7e-130edfb2f74f/convert/testing
 ```js
 // req
 
@@ -50,12 +50,12 @@
     "info": {
         "abc": "def"
     },
-    "id": "023177ed-b9a3-49dc-9234-af56efbdc583"
+    "id": "3fed8064-a238-4bef-9a7e-130edfb2f74f"
 }
 ```
 #(Admin) User
 ### set testing group
-##### put /api/users/023177ed-b9a3-49dc-9234-af56efbdc583/group/same
+##### put /api/users/3fed8064-a238-4bef-9a7e-130edfb2f74f/group/same
 ```js
 // req
 
@@ -67,14 +67,14 @@
         "testing": 1
     },
     "group": "same",
-    "id": "023177ed-b9a3-49dc-9234-af56efbdc583",
+    "id": "3fed8064-a238-4bef-9a7e-130edfb2f74f",
     "info": {
         "abc": "def"
     }
 }
 ```
 ### remove from experiment
-##### delete /api/users/17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0/experiments/expTest
+##### delete /api/users/740bd152-8318-4e35-84ee-8a398f09272d/experiments/expTest
 ```js
 // req
 
@@ -83,14 +83,14 @@
 // res
 {
     "group": "tester",
-    "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
+    "id": "740bd152-8318-4e35-84ee-8a398f09272d",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment
-##### put /api/users/17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0/experiments/expTest
+##### put /api/users/740bd152-8318-4e35-84ee-8a398f09272d/experiments/expTest
 ```js
 // req
 
@@ -99,17 +99,17 @@
 // res
 {
     "experiments": {
-        "expTest": "b"
+        "expTest": "blue"
     },
     "group": "tester",
-    "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
+    "id": "740bd152-8318-4e35-84ee-8a398f09272d",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment, with value
-##### put /api/users/17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0/experiments/expTest/red
+##### put /api/users/740bd152-8318-4e35-84ee-8a398f09272d/experiments/expTest/red
 ```js
 // req
 
@@ -121,7 +121,7 @@
         "expTest": "red"
     },
     "group": "tester",
-    "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
+    "id": "740bd152-8318-4e35-84ee-8a398f09272d",
     "info": {
         "ip": "127.0.0.1"
     }
@@ -164,6 +164,18 @@
     ]
 }
 ```
+### remove
+##### delete /api/experiments/expTest
+```js
+// req
+
+```
+```js
+// res
+{
+    "success": true
+}
+```
 ### results
 ##### get /api/experiments/expTest/results
 ```js
@@ -175,10 +187,10 @@
 [
     {
         "experiments": {
-            "expTest": "a"
+            "expTest": "d"
         },
         "group": "tester",
-        "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
+        "id": "740bd152-8318-4e35-84ee-8a398f09272d",
         "info": {
             "ip": "127.0.0.1"
         }

@@ -69,12 +69,26 @@ router.post('/users', function (req, res) {
 
   var user = new User(_.defaults(req.body, defaultUser))
 
+  User.findOne({clientId: user.clientId}, function (err, member) {
+    if (err) {
+      return res.send(err)
+    }
+    if (user.clientId && member) {
+      user.experiments = member.experiments
+      return user.save(function (err, user) {
+        if (err) {
+          return res.send(err)
+        }
+
+        res.json(user)
+      })
+    }
   User.findOne({group: user.group}, function (err, member) {
     if (err) {
       return res.send(err)
     }
 
-    if (member) {
+    if (user.group && member) {
       user.experiments = member.experiments
       return user.save(function (err, user) {
         if (err) {
@@ -106,6 +120,7 @@ router.post('/users', function (req, res) {
       })
     })
   })
+})
 })
 
 router.get('/users/:id', function (req, res) {
@@ -226,6 +241,17 @@ router.post('/experiments', isAdmin, function (req, res) {
     }
 
     res.json(experiment)
+  })
+})
+
+router.delete('/experiments/:name', isAdmin, function (req, res) {
+  var name = req.params.name
+  Experiment.remove({name: name}, function (err) {
+    if (err) {
+      return res.send(err)
+    }
+
+    res.json({success: true})
   })
 })
 

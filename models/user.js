@@ -6,6 +6,7 @@ var Schema = mongoose.Schema
 var UserSchema = new Schema({
   id: String,
   group: String,
+  clientId: String,
   info: Object,
   experiments: Object,
   conversions: Object,

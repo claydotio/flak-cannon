@@ -26,6 +26,7 @@ app.listen(3001)
 var userSchema = {
   id: Joi.string().regex(uuidRegExp).required(),
   group: Joi.string(),
+  clientId: Joi.string(),
   info: Joi.object(),
   experiments: Joi.object(),
   convertions: Joi.object()
@@ -148,6 +149,7 @@ describe('Flak Cannon', function(){
           name: 'expTest',
           values: ['red', 'green', 'blue', 'a', 'b', 'c', 'd', 'e', 'f']
         })
+        .stash('expTest')
         .expect(200, _.defaults({
           name: 'expTest',
           values: Joi.array().includes(Joi.string())
@@ -155,8 +157,22 @@ describe('Flak Cannon', function(){
         .doc('(Admin) Experiment', 'create')
     })
 
+    it('Removes', function () {
+      return flare
+        .as('admin')
+        .del('/experiments/:expTest.name')
+        .expect(200)
+        .doc('(Admin) Experiment', 'remove')
+    })
+
     it('Gets new users', function () {
       return flare
+        .as('admin')
+        .post('/experiments', {
+          name: 'expTest',
+          values: ['red', 'green', 'blue', 'a', 'b', 'c', 'd', 'e', 'f']
+        })
+        .stash('expTest')
         .post('/users', {
           group: 'tester'
         })
@@ -222,21 +238,60 @@ describe('Flak Cannon', function(){
 
     it('Creates with same experiments of matching group', function () {
       return flare
-      .then(function (f) {
-        return Promise.map(Array(10), function () {
-          return flare
-          .post('/users', {
-            group: 'same'
-          })
-          .expect(200, _.defaults({
-            experiments: {
-              expTest: 'red'
-            }
-          }, userSchema))
-        }).then(function () {
-          return f
+        .post('/users', {
+          group: 'joegroup'
         })
-      })
+        .stash('joe')
+        .then(function (flare) {
+          return Promise.map(Array(10), function () {
+            return flare
+            .post('/users', {
+              group: 'joegroup'
+            })
+            .expect(200, _.defaults({
+              experiments: {
+                expTest: ':joe.experiments.expTest'
+              }
+            }, userSchema))
+          })
+        })
+    })
+
+    it('Creates new test regardless of empty group', function () {
+      return flare
+        .post('/users', {})
+        .as('admin')
+        .del('/experiments/:expTest.name')
+        .post('/users', {})
+        .expect(200, _.defaults({
+          experiments: {}
+        }, userSchema))
+    })
+
+    it('Creates with same experiments of matching clientId', function () {
+      return flare
+        .post('/experiments', {
+          name: 'expTest',
+          values: ['red', 'green', 'blue', 'a', 'b', 'c', 'd', 'e', 'f']
+        })
+        .stash('expTest')
+        .post('/users', {
+          clientId: '123'
+        })
+        .stash('joe')
+        .then(function (flare) {
+          return Promise.map(Array(10), function () {
+            return flare
+            .post('/users', {
+              clientId: '123'
+            })
+            .expect(200, _.defaults({
+              experiments: {
+                expTest: ':joe.experiments.expTest'
+              }
+            }, userSchema))
+          })
+        })
     })
   })
 

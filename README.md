@@ -28,7 +28,10 @@ post `/user`
 {
   // optional, subsequent posts with the
   // same `group` will be placed in the same test groups
-  group: '123',
+  // DOES NOT DO ANYTHING IF THERE IS A MATCHING clientId
+  group: 'abc',
+  // same clientId will be placed in the same test groups
+  clientId: '123',
   info: {
     ip: '1.2.3.4',
     platform: 'android',
@@ -41,7 +44,8 @@ get `/user/:id`
 ```js
 {
   id: 'abc-def-hij-klm',
-  group: '123',
+  group: 'abc',
+  clientId: '123',
   info: {
     ip: '1.2.3.4',
     platform: 'android',
