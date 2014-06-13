@@ -15,11 +15,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "0d9fc1ad-2d4c-462c-8b8c-1ac27c85d314"
+    "id": "3c687383-e7cf-4535-99a9-1f90de4dd284"
 }
 ```
 ### get
-##### get /api/users/d935a6ca-70a8-4893-847a-b739ed7441fc
+##### get /api/users/29313c31-7f94-4096-8a36-0a76a49b6424
 ```js
 // req
 
@@ -31,11 +31,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "d935a6ca-70a8-4893-847a-b739ed7441fc"
+    "id": "29313c31-7f94-4096-8a36-0a76a49b6424"
 }
 ```
 ### convert
-##### put /api/users/fc308980-bc84-4817-8a91-5a4d0e37ebc3/convert/testing
+##### put /api/users/023177ed-b9a3-49dc-9234-af56efbdc583/convert/testing
 ```js
 // req
 
@@ -50,12 +50,12 @@
     "info": {
         "abc": "def"
     },
-    "id": "fc308980-bc84-4817-8a91-5a4d0e37ebc3"
+    "id": "023177ed-b9a3-49dc-9234-af56efbdc583"
 }
 ```
 #(Admin) User
 ### set testing group
-##### put /api/users/fc308980-bc84-4817-8a91-5a4d0e37ebc3/group/same
+##### put /api/users/023177ed-b9a3-49dc-9234-af56efbdc583/group/same
 ```js
 // req
 
@@ -67,14 +67,14 @@
         "testing": 1
     },
     "group": "same",
-    "id": "fc308980-bc84-4817-8a91-5a4d0e37ebc3",
+    "id": "023177ed-b9a3-49dc-9234-af56efbdc583",
     "info": {
         "abc": "def"
     }
 }
 ```
 ### remove from experiment
-##### delete /api/users/f1f87190-e5f7-4360-9359-d87f73d02410/experiments/expTest
+##### delete /api/users/17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0/experiments/expTest
 ```js
 // req
 
@@ -83,14 +83,14 @@
 // res
 {
     "group": "tester",
-    "id": "f1f87190-e5f7-4360-9359-d87f73d02410",
+    "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment
-##### put /api/users/f1f87190-e5f7-4360-9359-d87f73d02410/experiments/expTest
+##### put /api/users/17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0/experiments/expTest
 ```js
 // req
 
@@ -99,17 +99,17 @@
 // res
 {
     "experiments": {
-        "expTest": "blue"
+        "expTest": "b"
     },
     "group": "tester",
-    "id": "f1f87190-e5f7-4360-9359-d87f73d02410",
+    "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment, with value
-##### put /api/users/f1f87190-e5f7-4360-9359-d87f73d02410/experiments/expTest/red
+##### put /api/users/17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0/experiments/expTest/red
 ```js
 // req
 
@@ -121,7 +121,7 @@
         "expTest": "red"
     },
     "group": "tester",
-    "id": "f1f87190-e5f7-4360-9359-d87f73d02410",
+    "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
     "info": {
         "ip": "127.0.0.1"
     }
@@ -175,304 +175,10 @@
 [
     {
         "experiments": {
-            "expTest": "red"
+            "expTest": "a"
         },
         "group": "tester",
-        "id": "38bc528e-0041-4576-9810-4f8c5e9c635a"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "a75134bb-841a-4f01-bb7b-8ffc25758375"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "6ca68527-ae58-4533-8322-33df2a527bae"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "f023d206-ddf9-4720-b9ba-250c93f22662"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "99d32c84-5d5b-45ed-84bd-a96d5910f935"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "a13cbcb6-6071-4b11-b29b-984d2f0b1631"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "6c1fa6e6-a504-43f0-90c0-435e4733933f"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "c68da7e4-beda-4775-8d4e-3172eff5c373"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "3c5f5bb6-c8bb-4082-b0c7-0b9d4ceeb5a7"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "bbe70851-43d4-4910-8e79-406dcb646147"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "7f72bc4e-220f-457e-95dc-474873e321e8"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "52055d48-d10d-49ad-a393-6deec035ef94"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "f8386a5f-abdd-4567-95e3-78c1ddb0799d"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "e15bc888-8a10-4ad2-adec-dbab06d97d9c"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "b457bce7-a5cb-42c4-bf10-ce298243dc9a"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "d192711f-a72b-41e9-8da4-4cd4e1bbc5cf"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "5524eaba-c82a-48a4-97e9-d8b14c069530"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "d0526edf-88ef-4c67-ac8b-70e8da45274b"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "e25786d7-b69c-4ef4-adca-5e53bb6ba1cf"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "1648b32b-83ac-4410-8c0e-a16c04aae77d"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "1b46060d-c383-4fca-880f-5af1eda5a3db"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "395b176c-6185-4090-bdeb-fa9cf8cf1f77"
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "c7296a93-39b3-400a-bdea-fbd5a4de6716",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "883ca769-ed5b-4898-9391-c237b6256345",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "6b550183-10e3-4ff9-8f26-8de207f5237b",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "50e89618-fcb3-4375-a96e-4a6a44767948",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "6c20b46a-4dd3-4f9c-bef1-e4ac5613c3e6",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "603d821a-51c4-4633-96aa-b93266b9e32a",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "f3c3f2aa-3d91-489d-aee3-2c5e529eca79",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "43b1bc18-2040-4c5e-98ed-dd4716034924",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "e5d25a58-a16d-4ac0-aaba-19bb0a8920e2",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "0618937f-ca1d-4763-a275-0ae21d6854e4",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "6b3c67da-ae71-41c2-9fb6-fe10305f272a",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "96ad82b0-89e3-48c4-9a44-579cd9eefe96",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "15ee1e00-ed3e-4770-ac90-0f9d132b8d88",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "2481c818-e29a-42b8-8e51-fa0349e7fa51",
-        "info": {
-            "ip": "127.0.0.1"
-        }
-    },
-    {
-        "experiments": {
-            "expTest": "red"
-        },
-        "group": "tester",
-        "id": "f1f87190-e5f7-4360-9359-d87f73d02410",
+        "id": "17a6b8ef-bdd4-4a8a-a2fe-24cc9fae92d0",
         "info": {
             "ip": "127.0.0.1"
         }

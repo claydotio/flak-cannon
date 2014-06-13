@@ -241,6 +241,6 @@ describe('Flak Cannon', function(){
   })
 
   describe('Results', function () {
-    
+
   })
 })

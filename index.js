@@ -4,7 +4,7 @@ var express = require('express')
 var app = express()
 var bodyParser = require('body-parser')
 var useragent = require('express-useragent')
-var database = process.env === 'test' ? 'flak_cannon_test' : 'flak_cannon'
+var database = process.env.NODE_ENV === 'test' ? 'flak_cannon_test' : 'flak_cannon'
 var mongoose = require('mongoose')
 var sensitive = require('./sensitive')
 var mongoHost = sensitive.mongo.host || 'localhost'
@@ -30,7 +30,7 @@ var Experiment = require('./models/experiment')
 
 var isAdmin = basicAuth('admin', sensitive.adminPassword)
 
-if (process.env === 'test') {
+if (process.env.NODE_ENV === 'test') {
   router.put('/_tests/reset', function (req, res) {
     User.remove(function (err) {
       if (err) {
