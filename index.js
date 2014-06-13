@@ -8,7 +8,7 @@ var database = process.env === 'test' ? 'flak_cannon_test' : 'flak_cannon'
 var mongoose = require('mongoose')
 var sensitive = require('./sensitive')
 var mongoHost = sensitive.mongo.host || 'localhost'
-var mongoPort = sensitive.mongo.port || 2717
+var mongoPort = sensitive.mongo.port || 27017
 var mongoUser = sensitive.mongo.user
 var mongoPass = sensitive.mongo.pass
 mongoose.connect(sensitive.mongo.user ?
