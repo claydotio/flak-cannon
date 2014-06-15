@@ -28,8 +28,7 @@ var userSchema = {
   group: Joi.string(),
   clientId: Joi.string(),
   info: Joi.object(),
-  experiments: Joi.object(),
-  convertions: Joi.object()
+  experiments: Joi.object()
 }
 
 var experimentSchema = {
@@ -99,7 +98,7 @@ describe('Flak Cannon', function(){
         .doc('User', 'get')
     })
 
-    it('Converts actions', function () {
+    /*it('Converts actions', function () {
       return flare
         .post('/users', {
           group: '123',
@@ -115,7 +114,7 @@ describe('Flak Cannon', function(){
           }
         }, userSchema))
         .doc('User', 'convert')
-    })
+    })*/
 
     it('Updates group', function () {
       return flare
@@ -125,10 +124,7 @@ describe('Flak Cannon', function(){
         .as('admin')
         .put('/users/:joe.id/group/same')
         .expect(200, _.defaults({
-          group: 'same',
-          conversions: {
-            testing: 1
-          }
+          group: 'same'
         }, userSchema))
         .doc('(Admin) User', 'set testing group')
     })
