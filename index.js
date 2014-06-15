@@ -27,6 +27,7 @@ var router = express.Router()
 
 var User = require('./models/user')
 var Experiment = require('./models/experiment')
+var Conversion = require('./models/conversion')
 
 var isAdmin = basicAuth('admin', sensitive.adminPassword)
 
@@ -185,14 +186,24 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, function (req, res) {
       return res.send(err)
     }
 
-    User.findOne({id: id}, function (err, user) {
-    if (err) {
-      return res.send(err)
+    if (!experiment) {
+      return res.send(404)
     }
-    val = val || _.sample(experiment.values)
-    user.experiments[expName] = val
 
-    user.save(function (err, user) {
+    User.findOne({id: id}, function (err, user) {
+      if (err) {
+        return res.send(err)
+      }
+
+      if (!user) {
+        return res.send(404)
+      }
+
+      val = val || _.sample(experiment.values)
+      user.experiments = user.experiments || {}
+      user.experiments[expName] = val
+
+      user.save(function (err, user) {
         if (err) {
           return res.send(err)
         }
@@ -203,31 +214,39 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, function (req, res) {
   })
 })
 
-router.put('/users/:id/convert/:name', function (req, res) {
-  var id = req.params.id
+router.put('/users/:userId/convert/:name', function (req, res) {
+  var userId = req.params.userId
   var name = req.params.name
+  var timestamp
 
-  User.findOne({id: id}, function (err, user) {
+  // TODO: abstract this out
+  if (process.env.NODE_ENV === 'test') {
+    timestamp = req.params.timestamp
+  }
+
+  User.findOne({id: userId}, function (err, user) {
     if (err) {
       return res.send(err)
     }
 
-    if (!user.conversions) {
-      user.conversions = {}
+    var conversionConstructor = {
+      name: name,
+      userId: userId,
+      experiments: user.experiments
     }
 
-    if (!user.conversions[name]) {
-      user.conversions[name] = 1
-    } else {
-      user.conversions[name] += 1
+    if (timestamp) {
+      conversionConstructor.timestamp = timestamp
     }
 
-    user.save(function (err, user) {
+    var conversion = new Conversion(conversionConstructor)
+
+    conversion.save(function (err, conversion) {
       if (err) {
         return res.send(err)
       }
 
-      res.json(user)
+      res.json(conversion)
     })
   })
 })
@@ -258,6 +277,21 @@ router.delete('/experiments/:name', isAdmin, function (req, res) {
 router.get('/experiments/:name/results', isAdmin, function (req, res) {
   var name = req.params.name
   var query = {}
+  /*
+  [{
+    // experiment test key
+    expVal1: {
+
+      // split : signups
+      'platform1:browser1': 10,
+      'platform2:browser1': 20,
+      'platform1:browser2': 100
+    },
+    expVal2: {
+      // ...
+    }
+    // ...
+  }]*/
   query['experiments.' + name] = {$exists: true}
   User.find(query, function (err, users) {
     if (err) {

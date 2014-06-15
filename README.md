@@ -92,31 +92,25 @@ get `/experiments/:name/results`
 
 ##### results v2
 
-post `/experiments/:name/results`
+get `/experiments/:name/results?from=date&to=date&split=platform,browser&conversion=signup`
+
+
 ```js
-{
-  [{
-    date: '1/19/2038',
-    splits: {
-      all: {
-        val1: {
-          convertable1: 4,
-          convertable2: 7,
-          convertable3: 200
-        },
-        val2: {
-          convertable1: 3,
-          convertable3: 10
-        },
-        val3: {
-          convertable1: 1,
-          convertable2: 4
-        }
-      }
-    }
-  }]
-  // or with params... TODO
-}
+// each element is one hour by default
+[{
+  // experiment test key
+  expVal1: {
+
+    // split : signups
+    'platform1:browser1': 10,
+    'platform2:browser1': 20,
+    'platform1:browser2': 100
+  },
+  expVal2: {
+    // ...
+  }
+  // ...
+}]
 ```
 
 

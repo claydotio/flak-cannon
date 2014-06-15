@@ -98,24 +98,6 @@ describe('Flak Cannon', function(){
         .doc('User', 'get')
     })
 
-    /*it('Converts actions', function () {
-      return flare
-        .post('/users', {
-          group: '123',
-          info: {
-            abc: 'def'
-          }
-        })
-        .stash('joe')
-        .put('/users/:joe.id/convert/testing')
-        .expect(200, _.defaults({
-          conversions: {
-            testing: 1
-          }
-        }, userSchema))
-        .doc('User', 'convert')
-    })*/
-
     it('Updates group', function () {
       return flare
         .as('anon')
@@ -292,6 +274,110 @@ describe('Flak Cannon', function(){
   })
 
   describe('Results', function () {
+    it('Converts actions', function () {
+      return flare
+        .post('/users', {
+          group: '123',
+          info: {
+            abc: 'def'
+          }
+        })
+        .stash('joe')
+        .as('admin')
+        .post('/experiments', {
+          name: 'convertible',
+          values: ['a', 'b']
+        })
+        .expect(200)
+        .put('/users/:joe.id/experiments/convertible')
+        .expect(200)
+        .as('anon')
+        .put('/users/:joe.id/convert/testing')
+        .expect(200, {
+          name: 'testing',
+          userId: ':joe.id',
+          experiments: Joi.array().includes('expTest').required(),
+          timestamp: Joi.date()
+        })
+        .doc('User', 'convert')
+        .put('/users/:joe.id/convert/testing?timestamp=1/2/14')
+        .expect(200, {
+          name: 'testing',
+          userId: ':joe.id',
+          experiments: Joi.array().includes('expTest').required(),
+          timestamp: Joi.date('1/2/14')
+        })
 
+    })
+/*
+    it('Gets user conversion results', function () {
+      return flare
+        .request({
+          uri: 'http://localhost:3001/api/users',
+          method: 'post',
+          headers: {
+            'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36'
+          }
+        })
+        .stash('joe1')
+        .request({
+          uri: 'http://localhost:3001/api/users',
+          method: 'post',
+          headers: {
+            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'
+          }
+        })
+        .stash('joe2')
+        .as('admin')
+        .post('/experiments', {
+          name: 'dingdong',
+          values: ['a', 'b']
+        })
+        .expect(200)
+        .put('/users/:joe1.id/experiments/dingdong/a')
+        .expect(200)
+        .put('/users/:joe2.id/experiments/dingdong/b')
+        .expect(200)
+
+        .post('/users/:joe1.id/convert/ding?timestamp=1/1/14')
+        .post('/users/:joe1.id/convert/ding?timestamp=1/2/14')
+        .post('/users/:joe1.id/convert/ding?timestamp=1/3/14')
+        .post('/users/:joe1.id/convert/ding?timestamp=1/3/14')
+
+        .post('/users/:joe2.id/convert/ding?timestamp=1/1/14')
+        .post('/users/:joe2.id/convert/ding?timestamp=1/1/14')
+        .post('/users/:joe2.id/convert/ding?timestamp=1/2/14')
+        .post('/users/:joe2.id/convert/ding?timestamp=1/3/14')
+        .post('/users/:joe2.id/convert/ding?timestamp=1/4/14')
+
+        .get('/experiments/dingdong/results?' +
+             'from=1/1/14&to=1/3/14&split=platform,browser&conversion=ding')
+        .expect(200, Joi.array().includes({
+          a: {
+            'abc': Joi.number()
+          },
+          b: {
+            'abc': Joi.number()
+          }
+        }))
+        .then(function (flare) {
+          /*
+          [{
+            // experiment test key
+            expVal1: {
+
+              // split : signups
+              'platform1:browser1': 10,
+              'platform2:browser1': 20,
+              'platform1:browser2': 100
+            },
+            expVal2: {
+              // ...
+            }
+            // ...
+          }]
+          console.log(flare.res.body)
+        })
+    })*/
   })
 })
