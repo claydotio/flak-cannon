@@ -4,15 +4,13 @@ var Schema = mongoose.Schema
 
 var ExperimentSchema = new Schema({
   name: String,
-  values: Array,
-  _createdAt: { type: Date, default: Date.now }
+  values: Array
 })
 
 ExperimentSchema.method('toJSON', function() {
   var experiment = this.toObject()
   delete experiment.__v
   delete experiment._id
-  delete experiment._createdAt
   return experiment
 })
 
