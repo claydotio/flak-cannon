@@ -162,14 +162,6 @@ describe('Flak Cannon', function(){
         }, userSchema))
     })
 
-    it('has results', function () {
-      return flare
-        .as('admin')
-        .get('/experiments/expTest/results')
-        .expect(200, Joi.array().includes(userSchema))
-        .doc('(Admin) Experiment', 'results')
-    })
-
     it('Removes from experiment', function () {
       return flare
         .as('anon')
@@ -296,7 +288,9 @@ describe('Flak Cannon', function(){
         .expect(200, {
           name: 'testing',
           userId: ':joe.id',
-          experiments: Joi.array().includes('expTest').required(),
+          experiments: Joi.array().includes(
+            Joi.string('expTest')
+          ).length(1).required(),
           timestamp: Joi.date()
         })
         .doc('User', 'convert')
@@ -309,8 +303,9 @@ describe('Flak Cannon', function(){
         })
 
     })
-/*
+
     it('Gets user conversion results', function () {
+      return
       return flare
         .request({
           uri: 'http://localhost:3001/api/users',
@@ -339,27 +334,20 @@ describe('Flak Cannon', function(){
         .put('/users/:joe2.id/experiments/dingdong/b')
         .expect(200)
 
-        .post('/users/:joe1.id/convert/ding?timestamp=1/1/14')
-        .post('/users/:joe1.id/convert/ding?timestamp=1/2/14')
-        .post('/users/:joe1.id/convert/ding?timestamp=1/3/14')
-        .post('/users/:joe1.id/convert/ding?timestamp=1/3/14')
+        .put('/users/:joe1.id/convert/ding?timestamp=1/1/14')
+        .expect(200)
+        .put('/users/:joe1.id/convert/ding?timestamp=1/2/14')
+        .put('/users/:joe1.id/convert/ding?timestamp=1/3/14')
+        .put('/users/:joe1.id/convert/ding?timestamp=1/3/14')
 
-        .post('/users/:joe2.id/convert/ding?timestamp=1/1/14')
-        .post('/users/:joe2.id/convert/ding?timestamp=1/1/14')
-        .post('/users/:joe2.id/convert/ding?timestamp=1/2/14')
-        .post('/users/:joe2.id/convert/ding?timestamp=1/3/14')
-        .post('/users/:joe2.id/convert/ding?timestamp=1/4/14')
+        .put('/users/:joe2.id/convert/ding?timestamp=1/1/14')
+        .put('/users/:joe2.id/convert/ding?timestamp=1/1/14')
+        .put('/users/:joe2.id/convert/ding?timestamp=1/2/14')
+        .put('/users/:joe2.id/convert/ding?timestamp=1/3/14')
+        .put('/users/:joe2.id/convert/ding?timestamp=1/4/14')
 
         .get('/experiments/dingdong/results?' +
              'from=1/1/14&to=1/3/14&split=platform,browser&conversion=ding')
-        .expect(200, Joi.array().includes({
-          a: {
-            'abc': Joi.number()
-          },
-          b: {
-            'abc': Joi.number()
-          }
-        }))
         .then(function (flare) {
           /*
           [{
@@ -375,9 +363,18 @@ describe('Flak Cannon', function(){
               // ...
             }
             // ...
-          }]
+          }]*/
           console.log(flare.res.body)
         })
-    })*/
+        .expect(200, Joi.array().includes({
+          a: {
+            'abc': Joi.number()
+          },
+          b: {
+            'abc': Joi.number()
+          }
+        }).length(3))
+        .doc('(Admin) Experiment', 'results')
+    })
   })
 })

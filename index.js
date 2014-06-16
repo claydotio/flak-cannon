@@ -35,14 +35,20 @@ if (process.env.NODE_ENV === 'test') {
   router.put('/_tests/reset', function (req, res) {
     User.remove(function (err) {
       if (err) {
-        return res.send(err)
+        return res.send(500, err)
       }
       Experiment.remove(function (err) {
         if (err) {
-          return res.send(err)
+          return res.send(500, err)
         }
 
-        res.json({success: true})
+        Conversion.remove(function (err) {
+          if (err) {
+            return res.send(500, err)
+          }
+
+          res.json({success: true})
+        })
       })
     })
   })
@@ -72,13 +78,13 @@ router.post('/users', function (req, res) {
 
   User.findOne({clientId: user.clientId}, function (err, member) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
     if (user.clientId && member) {
       user.experiments = member.experiments
       return user.save(function (err, user) {
         if (err) {
-          return res.send(err)
+          return res.send(500, err)
         }
 
         res.json(user)
@@ -86,14 +92,14 @@ router.post('/users', function (req, res) {
     }
   User.findOne({group: user.group}, function (err, member) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     if (user.group && member) {
       user.experiments = member.experiments
       return user.save(function (err, user) {
         if (err) {
-          return res.send(err)
+          return res.send(500, err)
         }
 
         res.json(user)
@@ -114,7 +120,7 @@ router.post('/users', function (req, res) {
 
       user.save(function (err, user) {
         if (err) {
-          return res.send(err)
+          return res.send(500, err)
         }
 
         res.json(user)
@@ -129,7 +135,7 @@ router.get('/users/:id', function (req, res) {
 
   User.findOne({id: id}, function (err, user) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     res.json(user)
@@ -142,13 +148,13 @@ router.delete('/users/:id/experiments/:name', isAdmin, function (req, res) {
 
   User.findOne({id: id}, function (err, user) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     delete user.experiments[name]
     user.save(function (err, user) {
       if (err) {
-        return res.send(err)
+        return res.send(500, err)
       }
 
       res.json(user)
@@ -162,13 +168,13 @@ router.put('/users/:id/group/:group', isAdmin, function (req, res) {
 
   User.findOne({id: id}, function (err, user) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     user.group = group
     user.save(function (err, user) {
       if (err) {
-        return res.send(err)
+        return res.send(500, err)
       }
 
       res.json(user)
@@ -183,7 +189,7 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, function (req, res) {
 
   Experiment.findOne({name: expName}, function (err, experiment) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     if (!experiment) {
@@ -192,7 +198,7 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, function (req, res) {
 
     User.findOne({id: id}, function (err, user) {
       if (err) {
-        return res.send(err)
+        return res.send(500, err)
       }
 
       if (!user) {
@@ -205,7 +211,7 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, function (req, res) {
 
       user.save(function (err, user) {
         if (err) {
-          return res.send(err)
+          return res.send(500, err)
         }
 
         res.json(user)
@@ -221,18 +227,18 @@ router.put('/users/:userId/convert/:name', function (req, res) {
 
   // TODO: abstract this out
   if (process.env.NODE_ENV === 'test') {
-    timestamp = req.params.timestamp
+    timestamp = req.query.timestamp
   }
 
   User.findOne({id: userId}, function (err, user) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     var conversionConstructor = {
       name: name,
       userId: userId,
-      experiments: user.experiments
+      experiments: Object.keys(user.experiments)
     }
 
     if (timestamp) {
@@ -243,7 +249,7 @@ router.put('/users/:userId/convert/:name', function (req, res) {
 
     conversion.save(function (err, conversion) {
       if (err) {
-        return res.send(err)
+        return res.send(500, err)
       }
 
       res.json(conversion)
@@ -256,7 +262,7 @@ router.post('/experiments', isAdmin, function (req, res) {
 
   experiment.save(function (err, experiment) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     res.json(experiment)
@@ -267,7 +273,7 @@ router.delete('/experiments/:name', isAdmin, function (req, res) {
   var name = req.params.name
   Experiment.remove({name: name}, function (err) {
     if (err) {
-      return res.send(err)
+      return res.send(500, err)
     }
 
     res.json({success: true})
@@ -276,7 +282,50 @@ router.delete('/experiments/:name', isAdmin, function (req, res) {
 
 router.get('/experiments/:name/results', isAdmin, function (req, res) {
   var name = req.params.name
-  var query = {}
+  var startDate = new Date(req.query.from)
+  var endDate = new Date(req.query.to)
+  var splits = (req.query.split || '').split(',')
+  var conversion = req.query.conversion
+
+  var query = {
+    'experiments': name,
+    'name': conversion,
+    'timestamp': {
+      $gte: startDate,
+      $lte: endDate
+    }
+  }
+
+  Conversion.find(query,
+    {userId: true, timestamp: true, _id: false},
+    function (err, conversions) {
+    if (err) {
+      return res.send(500, err)
+    }
+
+    function getUserIds(conversions) {
+      return _.uniq(_.flatten(_.map(conversions,
+        _.compose(_.values, _.partialRight(_.pick, 'userId'))
+      )))
+    }
+
+    var conversionsByDay = _.values(_.groupBy(conversions, function (conversion) {
+      return conversion.timestamp.setHours(0,0,0,0)
+    }))
+
+    console.log(conversionsByDay);
+
+    User.find({id: {$in: getUserIds(conversions)}}, function (err, users) {
+      if (err) {
+        return res.send(500, err)
+      }
+
+      
+
+      res.json(conversions)
+    })
+  })
+
   /*
   [{
     // experiment test key
@@ -292,14 +341,6 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
     }
     // ...
   }]*/
-  query['experiments.' + name] = {$exists: true}
-  User.find(query, function (err, users) {
-    if (err) {
-      return res.send(err)
-    }
-
-    res.json(users)
-  })
 })
 
 app.use('/api', router)
