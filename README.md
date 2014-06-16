@@ -92,7 +92,7 @@ get `/experiments/:name/results`
 
 ##### results v2
 
-get `/experiments/:name/results?from=date&to=date&split=platform,browser&conversion=signup`
+get `/experiments/:name/results?from=date&to=date&split=Platform,Browser&conversion=signup`
 
 
 ```js
@@ -102,9 +102,8 @@ get `/experiments/:name/results?from=date&to=date&split=platform,browser&convers
   expVal1: {
 
     // split : signups
-    'platform1:browser1': 10,
-    'platform2:browser1': 20,
-    'platform1:browser2': 100
+    'Linux,Chrome': 10,
+    'Apple Mac,Chrome': 100
   },
   expVal2: {
     // ...

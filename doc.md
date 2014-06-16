@@ -15,11 +15,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "52df3fb0-c868-49c0-8ac6-811209e657a0"
+    "id": "ae92cbe4-a416-492d-a673-33c151fede44"
 }
 ```
 ### get
-##### get /api/users/f9f0168c-3465-456c-b18b-ece032841a83
+##### get /api/users/b18c16c2-78ac-4084-a81a-9013726220de
 ```js
 // req
 
@@ -31,11 +31,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "f9f0168c-3465-456c-b18b-ece032841a83"
+    "id": "b18c16c2-78ac-4084-a81a-9013726220de"
 }
 ```
 ### convert
-##### put /api/users/1b542a17-350e-4832-ab38-23a7b688ac47/convert/testing
+##### put /api/users/2a08d8ee-16a3-4a72-a3fd-28a400e2b244/convert/testing
 ```js
 // req
 
@@ -44,16 +44,17 @@
 // res
 {
     "name": "testing",
-    "userId": "1b542a17-350e-4832-ab38-23a7b688ac47",
-    "experiments": [
-        "expTest"
-    ],
-    "timestamp": "2014-06-16T06:01:33.591Z"
+    "userId": "2a08d8ee-16a3-4a72-a3fd-28a400e2b244",
+    "experiments": {
+        "convertible": "a",
+        "expTest": "f"
+    },
+    "timestamp": "2014-06-16T08:11:04.737Z"
 }
 ```
 #(Admin) User
 ### set testing group
-##### put /api/users/f9f0168c-3465-456c-b18b-ece032841a83/group/same
+##### put /api/users/b18c16c2-78ac-4084-a81a-9013726220de/group/same
 ```js
 // req
 
@@ -65,11 +66,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "f9f0168c-3465-456c-b18b-ece032841a83"
+    "id": "b18c16c2-78ac-4084-a81a-9013726220de"
 }
 ```
 ### remove from experiment
-##### delete /api/users/649a3c05-2ae0-4016-a67e-4a67b1c9bdca/experiments/expTest
+##### delete /api/users/224743c8-a0a6-4135-8cbe-b4f4f5d6cc49/experiments/expTest
 ```js
 // req
 
@@ -78,14 +79,14 @@
 // res
 {
     "group": "tester",
-    "id": "649a3c05-2ae0-4016-a67e-4a67b1c9bdca",
+    "id": "224743c8-a0a6-4135-8cbe-b4f4f5d6cc49",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment
-##### put /api/users/649a3c05-2ae0-4016-a67e-4a67b1c9bdca/experiments/expTest
+##### put /api/users/224743c8-a0a6-4135-8cbe-b4f4f5d6cc49/experiments/expTest
 ```js
 // req
 
@@ -94,17 +95,17 @@
 // res
 {
     "experiments": {
-        "expTest": "d"
+        "expTest": "f"
     },
     "group": "tester",
-    "id": "649a3c05-2ae0-4016-a67e-4a67b1c9bdca",
+    "id": "224743c8-a0a6-4135-8cbe-b4f4f5d6cc49",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment, with value
-##### put /api/users/649a3c05-2ae0-4016-a67e-4a67b1c9bdca/experiments/expTest/red
+##### put /api/users/224743c8-a0a6-4135-8cbe-b4f4f5d6cc49/experiments/expTest/red
 ```js
 // req
 
@@ -116,7 +117,7 @@
         "expTest": "red"
     },
     "group": "tester",
-    "id": "649a3c05-2ae0-4016-a67e-4a67b1c9bdca",
+    "id": "224743c8-a0a6-4135-8cbe-b4f4f5d6cc49",
     "info": {
         "ip": "127.0.0.1"
     }
@@ -170,4 +171,41 @@
 {
     "success": true
 }
+```
+### results
+##### get /api/experiments/dingdong/results?from=1/1/14&to=1/3/14&split=Platform,Browser&conversion=ding
+```js
+// req
+
+```
+```js
+// res
+[
+    {
+        "a": {
+            "Linux,Chrome": 1,
+            "Apple Mac,Chrome": 2
+        },
+        "b": {
+            "Linux,Chrome": 2
+        }
+    },
+    {
+        "a": {
+            "Linux,Chrome": 1
+        },
+        "b": {
+            "Linux,Chrome": 1
+        }
+    },
+    {
+        "a": {
+            "Linux,Chrome": 2,
+            "Apple Mac,Chrome": 1
+        },
+        "b": {
+            "Linux,Chrome": 1
+        }
+    }
+]
 ```

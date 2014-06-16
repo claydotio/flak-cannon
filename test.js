@@ -288,9 +288,9 @@ describe('Flak Cannon', function(){
         .expect(200, {
           name: 'testing',
           userId: ':joe.id',
-          experiments: Joi.array().includes(
-            Joi.string('expTest')
-          ).length(1).required(),
+          experiments: Joi.object({
+            'expTest': Joi.string()
+          }).unknown(),
           timestamp: Joi.date()
         })
         .doc('User', 'convert')
@@ -298,13 +298,15 @@ describe('Flak Cannon', function(){
         .expect(200, {
           name: 'testing',
           userId: ':joe.id',
-          experiments: Joi.array().includes('expTest').required(),
+          experiments: Joi.object({
+            'expTest': Joi.string()
+          }).unknown(),
           timestamp: Joi.date('1/2/14')
         })
 
     })
 
-    it.only('Gets user conversion results', function () {
+    it('Gets user conversion results', function () {
       return flare
         .request({
           uri: 'http://localhost:3001/api/users',
@@ -322,6 +324,14 @@ describe('Flak Cannon', function(){
           }
         })
         .stash('joe2')
+        .request({
+          uri: 'http://localhost:3001/api/users',
+          method: 'post',
+          headers: {
+            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'
+          }
+        })
+        .stash('joe3')
         .as('admin')
         .post('/experiments', {
           name: 'dingdong',
@@ -329,12 +339,23 @@ describe('Flak Cannon', function(){
         })
         .expect(200)
         .put('/users/:joe1.id/experiments/dingdong/a')
-        .expect(200)
+        .expect(200, _.defaults({
+          experiments: Joi.object({
+            dingdong: Joi.string('a').required()
+          }).unknown()
+        }, userSchema))
         .put('/users/:joe2.id/experiments/dingdong/b')
-        .expect(200)
+        .put('/users/:joe3.id/experiments/dingdong/a')
 
         .put('/users/:joe1.id/convert/ding?timestamp=1/1/14')
-        .expect(200)
+        .expect(200, {
+          name: 'ding',
+          userId: ':joe1.id',
+          experiments: Joi.object({
+            'dingdong': Joi.string().required()
+          }).unknown(),
+          timestamp: Joi.date()
+        })
         .put('/users/:joe1.id/convert/ding?timestamp=1/2/14')
         .put('/users/:joe1.id/convert/ding?timestamp=1/3/14')
         .put('/users/:joe1.id/convert/ding?timestamp=1/3/14')
@@ -345,33 +366,19 @@ describe('Flak Cannon', function(){
         .put('/users/:joe2.id/convert/ding?timestamp=1/3/14')
         .put('/users/:joe2.id/convert/ding?timestamp=1/4/14')
 
-        .get('/experiments/dingdong/results?' +
-             'from=1/1/14&to=1/3/14&split=platform,browser&conversion=ding')
-        .then(function (flare) {
-          /*
-          [{
-            // experiment test key
-            expVal1: {
+        .put('/users/:joe3.id/convert/ding?timestamp=1/1/14')
+        .put('/users/:joe3.id/convert/ding?timestamp=1/1/14')
+        .put('/users/:joe3.id/convert/ding?timestamp=1/3/14')
 
-              // split : signups
-              'platform1:browser1': 10,
-              'platform2:browser1': 20,
-              'platform1:browser2': 100
-            },
-            expVal2: {
-              // ...
-            }
-            // ...
-          }]*/
-          console.log(flare.res.body)
-        })
+        .get('/experiments/dingdong/results?' +
+             'from=1/1/14&to=1/3/14&split=Platform,Browser&conversion=ding')
         .expect(200, Joi.array().includes({
-          a: {
-            'abc': Joi.number()
-          },
-          b: {
-            'abc': Joi.number()
-          }
+          a: Joi.object({
+            'Apple Mac,Chrome': Joi.number()
+          }).unknown(),
+          b: Joi.object({
+            'Linux,Chrome': Joi.number()
+          }).unknown()
         }).length(3))
         .doc('(Admin) Experiment', 'results')
     })

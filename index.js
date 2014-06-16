@@ -209,7 +209,9 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, function (req, res) {
       user.experiments = user.experiments || {}
       user.experiments[expName] = val
 
-      user.save(function (err, user) {
+      User.update({id: id}, {$set: {
+        'experiments': user.experiments
+      }}, function (err) {
         if (err) {
           return res.send(500, err)
         }
@@ -321,40 +323,41 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
 
       users = _.zipObject(userIds, users)
 
-      function countByExperiment(conversion) {
+      // TODO: Doc these functions
+      function countByExperimentName(conversion, name) {
         return _.countBy(conversion, function (conversion) {
           return conversion.experiments[name]
         })
       }
 
+      function groupByExperimentName(conversion, name) {
+        return _.groupBy(conversion, function (conversion) {
+          return conversion.experiments[name]
+        })
+      }
 
+      function countBySplits(conversions, name, splits, users) {
+        return _.mapValues(groupByExperimentName(conversions, name), function (conversions) {
+          return _.countBy(conversions, _.partial(getSplitByConversion, users))
+        })
+      }
 
-      var results = _.map(conversionsByDay, function (conversion) {
-        return countByExperiment(conversion)
+      function getSplitByConversion(users, conversion) {
+        return _.map(splits, function (split) {
+          return users[conversion.userId].info[split]
+        })
+      }
+
+      var results = _.map(conversionsByDay, function (conversions) {
+        if (splits.length) {
+          return countBySplits(conversions, name, splits, users)
+        }
+        return countByExperimentName(conversions, name)
       })
-
-      console.log(results);
-
 
       res.json(results)
     })
   })
-
-  /*
-  [{
-    // experiment test key
-    expVal1: {
-
-      // split : signups
-      'platform1:browser1': 10,
-      'platform2:browser1': 20,
-      'platform1:browser2': 100
-    },
-    expVal2: {
-      // ...
-    }
-    // ...
-  }]*/
 })
 
 app.use('/api', router)
