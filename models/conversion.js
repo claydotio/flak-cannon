@@ -6,7 +6,7 @@ var ConversionSchema = new Schema({
   name: String,
   timestamp: { type: Date, default: Date.now },
   userId: String,
-  experiments: Array
+  experiments: Object
 })
 
 ConversionSchema.method('toJSON', function() {

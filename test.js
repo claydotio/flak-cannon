@@ -304,8 +304,7 @@ describe('Flak Cannon', function(){
 
     })
 
-    it('Gets user conversion results', function () {
-      return
+    it.only('Gets user conversion results', function () {
       return flare
         .request({
           uri: 'http://localhost:3001/api/users',

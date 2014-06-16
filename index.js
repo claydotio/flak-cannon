@@ -238,7 +238,7 @@ router.put('/users/:userId/convert/:name', function (req, res) {
     var conversionConstructor = {
       name: name,
       userId: userId,
-      experiments: Object.keys(user.experiments)
+      experiments: user.experiments
     }
 
     if (timestamp) {
@@ -288,7 +288,6 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
   var conversion = req.query.conversion
 
   var query = {
-    'experiments': name,
     'name': conversion,
     'timestamp': {
       $gte: startDate,
@@ -296,8 +295,9 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
     }
   }
 
+  query['experiments.' + name] = {$exists: true}
+
   Conversion.find(query,
-    {userId: true, timestamp: true, _id: false},
     function (err, conversions) {
     if (err) {
       return res.send(500, err)
@@ -313,16 +313,30 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
       return conversion.timestamp.setHours(0,0,0,0)
     }))
 
-    console.log(conversionsByDay);
-
-    User.find({id: {$in: getUserIds(conversions)}}, function (err, users) {
+    var userIds = getUserIds(conversions)
+    User.find({id: {$in: userIds}}, function (err, users) {
       if (err) {
         return res.send(500, err)
       }
 
-      
+      users = _.zipObject(userIds, users)
 
-      res.json(conversions)
+      function countByExperiment(conversion) {
+        return _.countBy(conversion, function (conversion) {
+          return conversion.experiments[name]
+        })
+      }
+
+
+
+      var results = _.map(conversionsByDay, function (conversion) {
+        return countByExperiment(conversion)
+      })
+
+      console.log(results);
+
+
+      res.json(results)
     })
   })
 
