@@ -361,4 +361,5 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
 })
 
 app.use('/api', router)
+app.use(express.static(__dirname + '/client'))
 module.exports = app

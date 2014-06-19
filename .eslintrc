@@ -9,6 +9,7 @@
     "no-self-compare": true,
     "radix": true,
     "wrwap-iife": true,
+    "no-unused-vars": false,
 
     "no-global-strict": false,
 
