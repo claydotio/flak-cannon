@@ -44,7 +44,8 @@ recoil.config = function (ctrl) {
       })
 
       var graph = new Rickshaw.Graph({
-        element: $el,
+        // hmm....
+        element: $el.childNodes[1],
         width: 500,
         height: 400,
         renderer: 'line',
@@ -52,18 +53,21 @@ recoil.config = function (ctrl) {
       })
 
       var hoverDetail = new Rickshaw.Graph.HoverDetail({
-          graph: graph
+          graph: graph,
+          yFormatter: Math.floor
       })
-
-      var xAxis = new Rickshaw.Graph.Axis.Time({
-          graph: graph
-      })
-      xAxis.render()
 
       var yAxis = new Rickshaw.Graph.Axis.Y({
           graph: graph
       })
       yAxis.render()
+
+      var legend = new Rickshaw.Graph.Legend({
+          graph: graph,
+
+          // hmm....
+          element: $el.childNodes[0]
+      })
 
       graph.render()
     })
@@ -71,9 +75,10 @@ recoil.config = function (ctrl) {
 }
 
 recoil.view = function (ctrl) {
-  return [
-    m('div.chart', {config: recoil.config(ctrl)})
-  ]
+  return m('div.recoil', {config: recoil.config(ctrl)}, [
+    m('div.legend'),
+    m('div.chart')
+  ])
 }
 
 var ctrl = new recoil.Controller()

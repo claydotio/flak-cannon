@@ -1,0 +1,8 @@
+.legend, .chart {
+  display: inline-block;
+  margin: 20px;
+}
+.legend {
+  /* hmm... */
+  top: -200px;
+}
