@@ -323,36 +323,33 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
 
       users = _.zipObject(userIds, users)
 
-      // TODO: Doc these functions
-      function countByExperimentName(conversion, name) {
-        return _.countBy(conversion, function (conversion) {
-          return conversion.experiments[name]
-        })
-      }
-
-      function groupByExperimentName(conversion, name) {
-        return _.groupBy(conversion, function (conversion) {
-          return conversion.experiments[name]
-        })
-      }
-
-      function countBySplits(conversions, name, splits, users) {
-        return _.mapValues(groupByExperimentName(conversions, name), function (conversions) {
-          return _.countBy(conversions, _.partial(getSplitByConversion, users))
-        })
-      }
-
-      function getSplitByConversion(users, conversion) {
-        return _.map(splits, function (split) {
-          return users[conversion.userId].info[split]
-        })
-      }
-
       var results = _.map(conversionsByDay, function (conversions) {
-        if (splits.length) {
-          return countBySplits(conversions, name, splits, users)
-        }
-        return countByExperimentName(conversions, name)
+
+        return _.reduce(conversions, function (results, conversion) {
+
+          // join split info with conversion
+          conversion.splits = conversion.splits || {}
+          _.forEach(splits, function (split) {
+            conversion.splits[split] = users[conversion.userId].info[split]
+          })
+
+          // create uniq result key based on splits
+          var resultKey = conversion.experiments[name]
+          if (splits.length) {
+            resultKey += ':' + _.map(splits, function (split) {
+              return conversion.splits[split]
+            }).join(':')
+          }
+
+          results[resultKey] = results[resultKey] || {
+            conversionCount: 0,
+            splits: conversion.splits
+          }
+
+          results[resultKey].conversionCount += 1
+
+          return results
+        }, {})
       })
 
       res.json(results)
