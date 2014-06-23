@@ -2,7 +2,7 @@
   "name": "flak-cannon",
   "version": "0.0.0",
   "scripts": {
-    "test": "rm -f doc.json && NODE_ENV=test ./node_modules/mocha/bin/mocha test && ./node_modules/ze-goggles/index.js -i doc.json -o doc.md",
+    "test": "rm -f doc.json && export NODE_ENV=test && ./node_modules/mocha/bin/mocha test && ./node_modules/ze-goggles/index.js -i doc.json -o doc.md",
     "start": "./bin/api"
   },
   "dependencies": {
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "bluebird": "2.0.7",
-    "flare-gun": "0.2.3",
+    "flare-gun": "0.2.4",
     "joi": "4.6.0",
     "lodash": "2.4.1",
     "mocha": "1.20.1",

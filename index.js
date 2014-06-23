@@ -38,28 +38,26 @@ var Conversion = require('./models/conversion')
 
 var isAdmin = basicAuth('admin', sensitive.adminPassword)
 
-if (process.env.NODE_ENV === 'test') {
-  router.put('/_tests/reset', function (req, res) {
-    User.remove(function (err) {
+router.put('/_tests/reset', function (req, res) {
+  User.remove(function (err) {
+    if (err) {
+      return res.send(500, err)
+    }
+    Experiment.remove(function (err) {
       if (err) {
         return res.send(500, err)
       }
-      Experiment.remove(function (err) {
+
+      Conversion.remove(function (err) {
         if (err) {
           return res.send(500, err)
         }
 
-        Conversion.remove(function (err) {
-          if (err) {
-            return res.send(500, err)
-          }
-
-          res.json({success: true})
-        })
+        res.json({success: true})
       })
     })
   })
-}
+})
 
 router.post('/users', function (req, res) {
   var defaultInfo = {
@@ -234,10 +232,12 @@ router.put('/users/:userId/convert/:name', function (req, res) {
   var name = req.params.name
   var timestamp
 
-  // TODO: abstract this out
-  if (process.env.NODE_ENV === 'test') {
+  isAdmin(req, {
+    setHeader: _.noop,
+    end: _.noop
+  }, function () {
     timestamp = req.query.timestamp
-  }
+  })
 
   User.findOne({id: userId}, function (err, user) {
     if (err) {
@@ -313,14 +313,14 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
     }
 
     function getUserIds(conversions) {
-      return _.uniq(_.flatten(_.map(conversions,
-        _.compose(_.values, _.partialRight(_.pick, 'userId'))
-      )))
-    }
+      var ids = {}
+      var i = conversions.length
+      while (i--) {
+        ids[conversions[i].userId] = true
+      }
 
-    var conversionsByDay = _.values(_.groupBy(conversions, function (conversion) {
-      return conversion.timestamp.setHours(0,0,0,0)
-    }))
+      return Object.keys(ids)
+    }
 
     var userIds = getUserIds(conversions)
     User.find({id: {$in: userIds}}, function (err, users) {
@@ -330,37 +330,41 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
 
       users = _.zipObject(userIds, users)
 
-      // TODO: Doc these functions
-      function countByExperimentName(conversion, name) {
-        return _.countBy(conversion, function (conversion) {
-          return conversion.experiments[name]
-        })
-      }
+      var conversionsBySplit = _.transform(conversions, function (results, conversion) {
 
-      function groupByExperimentName(conversion, name) {
-        return _.groupBy(conversion, function (conversion) {
-          return conversion.experiments[name]
+        // join split info with conversion
+        conversion.splits = conversion.splits || {}
+        _.forEach(splits, function (split) {
+          conversion.splits[split] = users[conversion.userId].info[split]
         })
-      }
 
-      function countBySplits(conversions, name, splits, users) {
-        return _.mapValues(groupByExperimentName(conversions, name), function (conversions) {
-          return _.countBy(conversions, _.partial(getSplitByConversion, users))
-        })
-      }
+        var testKey = conversion.experiments[name]
+        var resultKey = testKey + ':' + _.map(splits, function (split) {
+              return conversion.splits[split]
+            }).join(':')
 
-      function getSplitByConversion(users, conversion) {
-        return _.map(splits, function (split) {
-          return users[conversion.userId].info[split]
-        })
-      }
+        results[resultKey] = results[resultKey] || []
 
-      var results = _.map(conversionsByDay, function (conversions) {
-        if (splits.length) {
-          return countBySplits(conversions, name, splits, users)
-        }
-        return countByExperimentName(conversions, name)
-      })
+        results[resultKey].push(conversion)
+      }, {})
+
+      var results = _.values(
+          _.transform(conversionsBySplit, function (results, conversions, key) {
+
+          results[key] = {
+            test: conversions[0].experiments[name],
+            splits: conversions[0].splits,
+            data: _.map(_.values(_.groupBy(conversions, function (conversion) {
+              return conversion.timestamp.setHours(0,0,0,0)
+            })), function (c) {
+              return {
+                count: c.length,
+                timestamp: c[0].timestamp
+              }
+            })
+          }
+        }, {})
+      )
 
       res.json(results)
     })

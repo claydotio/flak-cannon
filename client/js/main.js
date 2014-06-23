@@ -5,82 +5,60 @@ var recoil = {}
 recoil.Results = function () {
   return m.request({
     method: 'GET',
-    url: 'data.json'
+    url: '/api/experiments/signupText/results?' +
+         'from=1/1/14&to=1/30/14&split=Platform,Browser&conversion=signUp'
   })
 }
 
-recoil.Controller = function () {
+recoil.controller = function () {
   this.results = new recoil.Results()
 }
 
-recoil.config = function (ctrl) {
-  return function drawChart($el, isInit) {
+recoil.sparkline = function (result) {
+  return function ($el, isInit) {
     if (isInit) {
       return
     }
 
     var palette = new Rickshaw.Color.Palette()
-
-    ctrl.results.then(function (data) {
-      var flattened = _.map(data, function (day) {
-        return _.transform(day, function (flat, results, experimentName) {
-          _.forEach(results, function (result, name) {
-            flat[experimentName + ':' + name] = result
-          })
-        }, {})
-      })
-
-      var series = _.map(Object.keys(flattened[0]), function (key) {
-        return {
-          name: key,
-          data: _.map(flattened, function (flat, i) {
-            return {
+    var graph = new Rickshaw.Graph({
+      element: $el,
+      width: 100,
+      height: 50,
+      renderer: 'line',
+      series: [{
+        data: _.map(result.data, function (datum, i) {
+          return {
               x: i,
-              y: flat[key]
-            }
-          }),
-          color: palette.color()
-        }
-      })
-
-      var graph = new Rickshaw.Graph({
-        // hmm....
-        element: $el.childNodes[1],
-        width: 500,
-        height: 400,
-        renderer: 'line',
-        series: series
-      })
-
-      var hoverDetail = new Rickshaw.Graph.HoverDetail({
-          graph: graph,
-          yFormatter: Math.floor
-      })
-
-      var yAxis = new Rickshaw.Graph.Axis.Y({
-          graph: graph
-      })
-      yAxis.render()
-
-      var legend = new Rickshaw.Graph.Legend({
-          graph: graph,
-
-          // hmm....
-          element: $el.childNodes[0]
-      })
-
-      graph.render()
+              y: datum.count
+          }
+        }),
+        color: palette.color()
+      }]
     })
+
+    graph.render()
+
   }
 }
 
 recoil.view = function (ctrl) {
-  return m('div.recoil', {config: recoil.config(ctrl)}, [
-    m('div.legend'),
-    m('div.chart')
-  ])
+  var titles = ['test', 'sparkline']
+    .concat(_.keys(ctrl.results()[0].splits))
+    .concat(['conversions'])
+  return m('table', titles.map(m.bind(m, 'th'))
+  .concat(_.map(_.values(ctrl.results()), function (result) {
+    return m('tr', [
+      m('td', result.test),
+      m('td', [m('div.sparkline', {config: recoil.sparkline(result)})])
+    ]
+    .concat(_.map(_.values(result.splits), m.bind(m, 'td') ))
+    .concat([
+      m('td', _.reduce(result.data, function (sum, datum) {
+        return sum + datum.count
+      }, 0))
+    ]))
+  })))
 }
 
-var ctrl = new recoil.Controller()
-
-m.render(document.getElementById('recoil'), recoil.view(ctrl))
+m.module(document.getElementById('recoil'), recoil)

@@ -15,11 +15,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "ae92cbe4-a416-492d-a673-33c151fede44"
+    "id": "1e291494-f051-4042-9e1c-d81d581dcd85"
 }
 ```
 ### get
-##### get /api/users/b18c16c2-78ac-4084-a81a-9013726220de
+##### get /api/users/034d8ea1-eee8-4d11-ad3d-90c2634a6769
 ```js
 // req
 
@@ -31,11 +31,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "b18c16c2-78ac-4084-a81a-9013726220de"
+    "id": "034d8ea1-eee8-4d11-ad3d-90c2634a6769"
 }
 ```
 ### convert
-##### put /api/users/2a08d8ee-16a3-4a72-a3fd-28a400e2b244/convert/testing
+##### put /api/users/5a59358a-2c6a-4050-a585-a2b6d5cc0db8/convert/testing
 ```js
 // req
 
@@ -44,17 +44,17 @@
 // res
 {
     "name": "testing",
-    "userId": "2a08d8ee-16a3-4a72-a3fd-28a400e2b244",
+    "userId": "5a59358a-2c6a-4050-a585-a2b6d5cc0db8",
     "experiments": {
         "convertible": "a",
-        "expTest": "f"
+        "expTest": "green"
     },
-    "timestamp": "2014-06-16T08:11:04.737Z"
+    "timestamp": "2014-06-23T05:07:02.487Z"
 }
 ```
 #(Admin) User
 ### set testing group
-##### put /api/users/b18c16c2-78ac-4084-a81a-9013726220de/group/same
+##### put /api/users/034d8ea1-eee8-4d11-ad3d-90c2634a6769/group/same
 ```js
 // req
 
@@ -66,11 +66,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "b18c16c2-78ac-4084-a81a-9013726220de"
+    "id": "034d8ea1-eee8-4d11-ad3d-90c2634a6769"
 }
 ```
 ### remove from experiment
-##### delete /api/users/224743c8-a0a6-4135-8cbe-b4f4f5d6cc49/experiments/expTest
+##### delete /api/users/8f620b56-3c3a-4a4f-88e7-a454115e7722/experiments/expTest
 ```js
 // req
 
@@ -79,14 +79,14 @@
 // res
 {
     "group": "tester",
-    "id": "224743c8-a0a6-4135-8cbe-b4f4f5d6cc49",
+    "id": "8f620b56-3c3a-4a4f-88e7-a454115e7722",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment
-##### put /api/users/224743c8-a0a6-4135-8cbe-b4f4f5d6cc49/experiments/expTest
+##### put /api/users/8f620b56-3c3a-4a4f-88e7-a454115e7722/experiments/expTest
 ```js
 // req
 
@@ -95,17 +95,17 @@
 // res
 {
     "experiments": {
-        "expTest": "f"
+        "expTest": "c"
     },
     "group": "tester",
-    "id": "224743c8-a0a6-4135-8cbe-b4f4f5d6cc49",
+    "id": "8f620b56-3c3a-4a4f-88e7-a454115e7722",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment, with value
-##### put /api/users/224743c8-a0a6-4135-8cbe-b4f4f5d6cc49/experiments/expTest/red
+##### put /api/users/8f620b56-3c3a-4a4f-88e7-a454115e7722/experiments/expTest/red
 ```js
 // req
 
@@ -117,7 +117,7 @@
         "expTest": "red"
     },
     "group": "tester",
-    "id": "224743c8-a0a6-4135-8cbe-b4f4f5d6cc49",
+    "id": "8f620b56-3c3a-4a4f-88e7-a454115e7722",
     "info": {
         "ip": "127.0.0.1"
     }
@@ -182,30 +182,63 @@
 // res
 [
     {
-        "a": {
-            "Linux,Chrome": 1,
-            "Apple Mac,Chrome": 2
+        "test": "a",
+        "splits": {
+            "Platform": "Apple Mac",
+            "Browser": "Chrome"
         },
-        "b": {
-            "Linux,Chrome": 2
-        }
+        "data": [
+            {
+                "count": 1,
+                "timestamp": "2014-01-01T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-02T08:00:00.000Z"
+            },
+            {
+                "count": 2,
+                "timestamp": "2014-01-03T08:00:00.000Z"
+            }
+        ]
     },
     {
-        "a": {
-            "Linux,Chrome": 1
+        "test": "b",
+        "splits": {
+            "Platform": "Linux",
+            "Browser": "Chrome"
         },
-        "b": {
-            "Linux,Chrome": 1
-        }
+        "data": [
+            {
+                "count": 2,
+                "timestamp": "2014-01-01T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-02T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-03T08:00:00.000Z"
+            }
+        ]
     },
     {
-        "a": {
-            "Linux,Chrome": 2,
-            "Apple Mac,Chrome": 1
+        "test": "a",
+        "splits": {
+            "Platform": "Linux",
+            "Browser": "Chrome"
         },
-        "b": {
-            "Linux,Chrome": 1
-        }
+        "data": [
+            {
+                "count": 2,
+                "timestamp": "2014-01-01T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-03T08:00:00.000Z"
+            }
+        ]
     }
 ]
 ```

@@ -373,12 +373,15 @@ describe('Flak Cannon', function(){
         .get('/experiments/dingdong/results?' +
              'from=1/1/14&to=1/3/14&split=Platform,Browser&conversion=ding')
         .expect(200, Joi.array().includes({
-          a: Joi.object({
-            'Apple Mac,Chrome': Joi.number()
-          }).unknown(),
-          b: Joi.object({
-            'Linux,Chrome': Joi.number()
-          }).unknown()
+          test: Joi.string().required(),
+          data: Joi.array().includes({
+            count: Joi.number(),
+            timestamp: Joi.date()
+          }),
+          splits: {
+            Platform: Joi.string(),
+            Browser: Joi.string()
+          }
         }).length(3))
         .doc('(Admin) Experiment', 'results')
     })
