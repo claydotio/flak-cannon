@@ -11,16 +11,23 @@ var mongoHost = sensitive.mongo.host || 'localhost'
 var mongoPort = sensitive.mongo.port || 27017
 var mongoUser = sensitive.mongo.user
 var mongoPass = sensitive.mongo.pass
+
 mongoose.connect(sensitive.mongo.user ?
   'mongodb://' + mongoUser + ':' + mongoPass + '@' + mongoHost + ':' + mongoPort + '/' + database :
   'mongodb://' + mongoHost + ':' + mongoPort + '/' + database)
+
 var uuid = require('node-uuid')
 var _ = require('lodash')
 var basicAuth = require('basic-auth-connect')
 
-
 app.use(bodyParser())
 app.use(useragent.express())
+app.all('/*', function(req, res, next) {
+	res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Headers', 'X-Requested-With')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
+  next()
+})
 
 var port = process.env.PORT || 3000
 var router = express.Router()
