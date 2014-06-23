@@ -31,28 +31,26 @@ var Conversion = require('./models/conversion')
 
 var isAdmin = basicAuth('admin', sensitive.adminPassword)
 
-if (process.env.NODE_ENV === 'test') {
-  router.put('/_tests/reset', function (req, res) {
-    User.remove(function (err) {
+router.put('/_tests/reset', function (req, res) {
+  User.remove(function (err) {
+    if (err) {
+      return res.send(500, err)
+    }
+    Experiment.remove(function (err) {
       if (err) {
         return res.send(500, err)
       }
-      Experiment.remove(function (err) {
+
+      Conversion.remove(function (err) {
         if (err) {
           return res.send(500, err)
         }
 
-        Conversion.remove(function (err) {
-          if (err) {
-            return res.send(500, err)
-          }
-
-          res.json({success: true})
-        })
+        res.json({success: true})
       })
     })
   })
-}
+})
 
 router.post('/users', function (req, res) {
   var defaultInfo = {
@@ -227,10 +225,12 @@ router.put('/users/:userId/convert/:name', function (req, res) {
   var name = req.params.name
   var timestamp
 
-  // TODO: abstract this out
-  if (process.env.NODE_ENV === 'test') {
+  isAdmin(req, {
+    setHeader: _.noop,
+    end: _.noop
+  }, function () {
     timestamp = req.query.timestamp
-  }
+  })
 
   User.findOne({id: userId}, function (err, user) {
     if (err) {

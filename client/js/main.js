@@ -5,7 +5,8 @@ var recoil = {}
 recoil.Results = function () {
   return m.request({
     method: 'GET',
-    url: 'data.json'
+    url: '/api/experiments/signupText/results?' +
+         'from=1/1/14&to=1/30/14&split=Platform,Browser&conversion=signUp'
   })
 }
 
@@ -53,7 +54,9 @@ recoil.view = function (ctrl) {
     ]
     .concat(_.map(_.values(result.splits), m.bind(m, 'td') ))
     .concat([
-      m('td', result.data.length)
+      m('td', _.reduce(result.data, function (sum, datum) {
+        return sum + datum.count
+      }, 0))
     ]))
   })))
 }
