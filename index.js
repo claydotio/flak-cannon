@@ -306,14 +306,14 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
     }
 
     function getUserIds(conversions) {
-      return _.uniq(_.flatten(_.map(conversions,
-        _.compose(_.values, _.partialRight(_.pick, 'userId'))
-      )))
-    }
+      var ids = {}
+      var i = conversions.length
+      while (i--) {
+        ids[conversions[i].userId] = true
+      }
 
-    var conversionsByDay = _.values(_.groupBy(conversions, function (conversion) {
-      return conversion.timestamp.setHours(0,0,0,0)
-    }))
+      return Object.keys(ids)
+    }
 
     var userIds = getUserIds(conversions)
     User.find({id: {$in: userIds}}, function (err, users) {
