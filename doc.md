@@ -15,11 +15,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "07c3ca65-26ee-4f67-aee6-dc4139d4ec26"
+    "id": "3b601e3f-6ed0-4496-9c2c-1bda3e61f90a"
 }
 ```
 ### get
-##### get /api/users/eb1ff042-29b0-45b9-af9a-8c3fc70d55f4
+##### get /api/users/8eaf13c1-a0e4-4f91-8d38-77afd3b172b8
 ```js
 // req
 
@@ -31,11 +31,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "eb1ff042-29b0-45b9-af9a-8c3fc70d55f4"
+    "id": "8eaf13c1-a0e4-4f91-8d38-77afd3b172b8"
 }
 ```
 ### convert
-##### put /api/users/0370cfe5-723f-45b0-bbe2-c7dbbf36b51a/convert/testing
+##### put /api/users/95fa8f9a-270a-4c2a-95de-4641c6ec2830/convert/testing
 ```js
 // req
 
@@ -44,17 +44,17 @@
 // res
 {
     "name": "testing",
-    "userId": "0370cfe5-723f-45b0-bbe2-c7dbbf36b51a",
+    "userId": "95fa8f9a-270a-4c2a-95de-4641c6ec2830",
     "experiments": {
         "convertible": "a",
         "expTest": "green"
     },
-    "timestamp": "2014-06-22T22:26:58.510Z"
+    "timestamp": "2014-06-22T23:39:54.263Z"
 }
 ```
 #(Admin) User
 ### set testing group
-##### put /api/users/eb1ff042-29b0-45b9-af9a-8c3fc70d55f4/group/same
+##### put /api/users/8eaf13c1-a0e4-4f91-8d38-77afd3b172b8/group/same
 ```js
 // req
 
@@ -66,11 +66,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "eb1ff042-29b0-45b9-af9a-8c3fc70d55f4"
+    "id": "8eaf13c1-a0e4-4f91-8d38-77afd3b172b8"
 }
 ```
 ### remove from experiment
-##### delete /api/users/2454602b-dd5d-4c6c-aa3b-84232896e9b2/experiments/expTest
+##### delete /api/users/51178651-ec8e-4b85-a61b-098852660856/experiments/expTest
 ```js
 // req
 
@@ -79,14 +79,14 @@
 // res
 {
     "group": "tester",
-    "id": "2454602b-dd5d-4c6c-aa3b-84232896e9b2",
+    "id": "51178651-ec8e-4b85-a61b-098852660856",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment
-##### put /api/users/2454602b-dd5d-4c6c-aa3b-84232896e9b2/experiments/expTest
+##### put /api/users/51178651-ec8e-4b85-a61b-098852660856/experiments/expTest
 ```js
 // req
 
@@ -95,17 +95,17 @@
 // res
 {
     "experiments": {
-        "expTest": "a"
+        "expTest": "e"
     },
     "group": "tester",
-    "id": "2454602b-dd5d-4c6c-aa3b-84232896e9b2",
+    "id": "51178651-ec8e-4b85-a61b-098852660856",
     "info": {
         "ip": "127.0.0.1"
     }
 }
 ```
 ### add to experiment, with value
-##### put /api/users/2454602b-dd5d-4c6c-aa3b-84232896e9b2/experiments/expTest/red
+##### put /api/users/51178651-ec8e-4b85-a61b-098852660856/experiments/expTest/red
 ```js
 // req
 
@@ -117,7 +117,7 @@
         "expTest": "red"
     },
     "group": "tester",
-    "id": "2454602b-dd5d-4c6c-aa3b-84232896e9b2",
+    "id": "51178651-ec8e-4b85-a61b-098852660856",
     "info": {
         "ip": "127.0.0.1"
     }
@@ -183,6 +183,7 @@
 [
     {
         "a:Apple Mac:Chrome": {
+            "test": "a",
             "conversionCount": 1,
             "splits": {
                 "Platform": "Apple Mac",
@@ -190,6 +191,7 @@
             }
         },
         "b:Linux:Chrome": {
+            "test": "b",
             "conversionCount": 2,
             "splits": {
                 "Platform": "Linux",
@@ -197,6 +199,7 @@
             }
         },
         "a:Linux:Chrome": {
+            "test": "a",
             "conversionCount": 2,
             "splits": {
                 "Platform": "Linux",
@@ -206,6 +209,7 @@
     },
     {
         "a:Apple Mac:Chrome": {
+            "test": "a",
             "conversionCount": 1,
             "splits": {
                 "Platform": "Apple Mac",
@@ -213,6 +217,7 @@
             }
         },
         "b:Linux:Chrome": {
+            "test": "b",
             "conversionCount": 1,
             "splits": {
                 "Platform": "Linux",
@@ -222,6 +227,7 @@
     },
     {
         "a:Apple Mac:Chrome": {
+            "test": "a",
             "conversionCount": 2,
             "splits": {
                 "Platform": "Apple Mac",
@@ -229,6 +235,7 @@
             }
         },
         "b:Linux:Chrome": {
+            "test": "b",
             "conversionCount": 1,
             "splits": {
                 "Platform": "Linux",
@@ -236,6 +243,7 @@
             }
         },
         "a:Linux:Chrome": {
+            "test": "a",
             "conversionCount": 1,
             "splits": {
                 "Platform": "Linux",

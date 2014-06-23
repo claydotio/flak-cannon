@@ -334,14 +334,13 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
           })
 
           // create uniq result key based on splits
-          var resultKey = conversion.experiments[name]
-          if (splits.length) {
-            resultKey += ':' + _.map(splits, function (split) {
+          var testKey = conversion.experiments[name]
+          var resultKey = testKey + ':' + _.map(splits, function (split) {
               return conversion.splits[split]
             }).join(':')
-          }
 
           results[resultKey] = results[resultKey] || {
+            test: testKey,
             conversionCount: 0,
             splits: conversion.splits
           }

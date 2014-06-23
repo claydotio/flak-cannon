@@ -1,114 +1,72 @@
 [
     {
-        "red": {
-            "Linux,Chrome": 100,
-            "Apple Mac,Chrome": 200
+        "a:Apple Mac:Chrome": {
+            "test": "a",
+            "conversionCount": 1,
+            "splits": {
+                "Platform": "Apple Mac",
+                "Browser": "Chrome"
+            }
         },
-        "blue": {
-            "Linux,Chrome": 70,
-            "Apple Mac,Chrome": 160,
-            "Windows,Chrome": 400
+        "b:Linux:Chrome": {
+            "test": "b",
+            "conversionCount": 2,
+            "splits": {
+                "Platform": "Linux",
+                "Browser": "Chrome"
+            }
         },
-        "green": {
-            "Windows,Chrome": 40,
-            "Linux,Chrome": 2,
-            "Apple Mac,Chrome": 20
+        "a:Linux:Chrome": {
+            "test": "a",
+            "conversionCount": 2,
+            "splits": {
+                "Platform": "Linux",
+                "Browser": "Chrome"
+            }
         }
     },
     {
-        "red": {
-            "Linux,Chrome": 90,
-            "Apple Mac,Chrome": 210
+        "a:Apple Mac:Chrome": {
+            "test": "a",
+            "conversionCount": 1,
+            "splits": {
+                "Platform": "Apple Mac",
+                "Browser": "Chrome"
+            }
         },
-        "blue": {
-            "Linux,Chrome": 50,
-            "Apple Mac,Chrome": 140,
-            "Windows,Chrome": 370
-        },
-        "green": {
-            "Windows,Chrome": 60,
-            "Linux,Chrome": 4,
-            "Apple Mac,Chrome": 50
+        "b:Linux:Chrome": {
+            "test": "b",
+            "conversionCount": 1,
+            "splits": {
+                "Platform": "Linux",
+                "Browser": "Chrome"
+            }
         }
     },
     {
-        "red": {
-            "Linux,Chrome": 200,
-            "Apple Mac,Chrome": 400
+        "a:Apple Mac:Chrome": {
+            "test": "a",
+            "conversionCount": 2,
+            "splits": {
+                "Platform": "Apple Mac",
+                "Browser": "Chrome"
+            }
         },
-        "blue": {
-            "Linux,Chrome": 140,
-            "Apple Mac,Chrome": 360,
-            "Windows,Chrome": 600
+        "b:Linux:Chrome": {
+            "test": "b",
+            "conversionCount": 1,
+            "splits": {
+                "Platform": "Linux",
+                "Browser": "Chrome"
+            }
         },
-        "green": {
-            "Windows,Chrome": 10,
-            "Linux,Chrome": 3,
-            "Apple Mac,Chrome": 40
-        }
-    },
-    {
-        "red": {
-            "Linux,Chrome": 80,
-            "Apple Mac,Chrome": 80
-        },
-        "blue": {
-            "Linux,Chrome": 60,
-            "Apple Mac,Chrome": 100,
-            "Windows,Chrome": 200
-        },
-        "green": {
-            "Windows,Chrome": 30,
-            "Linux,Chrome": 4,
-            "Apple Mac,Chrome": 50
-        }
-    },
-    {
-        "red": {
-            "Linux,Chrome": 120,
-            "Apple Mac,Chrome": 240
-        },
-        "blue": {
-            "Linux,Chrome": 80,
-            "Apple Mac,Chrome": 120,
-            "Windows,Chrome": 390
-        },
-        "green": {
-            "Windows,Chrome": 30,
-            "Linux,Chrome": 1,
-            "Apple Mac,Chrome": 50
-        }
-    },
-    {
-        "red": {
-            "Linux,Chrome": 150,
-            "Apple Mac,Chrome": 230
-        },
-        "blue": {
-            "Linux,Chrome": 30,
-            "Apple Mac,Chrome": 60,
-            "Windows,Chrome": 200
-        },
-        "green": {
-            "Windows,Chrome": 20,
-            "Linux,Chrome": 0,
-            "Apple Mac,Chrome": 0
-        }
-    },
-    {
-        "red": {
-            "Linux,Chrome": 100,
-            "Apple Mac,Chrome": 200
-        },
-        "blue": {
-            "Linux,Chrome": 70,
-            "Apple Mac,Chrome": 160,
-            "Windows,Chrome": 400
-        },
-        "green": {
-            "Windows,Chrome": 40,
-            "Linux,Chrome": 2,
-            "Apple Mac,Chrome": 20
+        "a:Linux:Chrome": {
+            "test": "a",
+            "conversionCount": 1,
+            "splits": {
+                "Platform": "Linux",
+                "Browser": "Chrome"
+            }
         }
     }
 ]

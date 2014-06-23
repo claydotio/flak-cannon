@@ -375,10 +375,11 @@ describe('Flak Cannon', function(){
         .expect(200, Joi.array().includes(
           Joi.object({
             'a:Linux:Chrome': {
+              test: Joi.string('a').required(),
               conversionCount: Joi.number(),
               splits: {
-                Platform: Joi.string(),
-                Browser: Joi.string()
+                Platform: 'Linux',
+                Browser: 'Chrome'
               }
             }
           }).unknown()
