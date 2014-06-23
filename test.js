@@ -372,18 +372,17 @@ describe('Flak Cannon', function(){
 
         .get('/experiments/dingdong/results?' +
              'from=1/1/14&to=1/3/14&split=Platform,Browser&conversion=ding')
-        .expect(200, Joi.array().includes(
-          Joi.object({
-            'a:Linux:Chrome': {
-              test: Joi.string('a').required(),
-              conversionCount: Joi.number(),
-              splits: {
-                Platform: 'Linux',
-                Browser: 'Chrome'
-              }
-            }
-          }).unknown()
-        ).length(3))
+        .expect(200, Joi.array().includes({
+          test: Joi.string().required(),
+          data: Joi.array().includes({
+            count: Joi.number(),
+            timestamp: Joi.date()
+          }),
+          splits: {
+            Platform: Joi.string(),
+            Browser: Joi.string()
+          }
+        }).length(3))
         .doc('(Admin) Experiment', 'results')
     })
   })

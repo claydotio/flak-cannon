@@ -323,33 +323,41 @@ router.get('/experiments/:name/results', isAdmin, function (req, res) {
 
       users = _.zipObject(userIds, users)
 
-      var results = _.map(conversionsByDay, function (conversions) {
+      var conversionsBySplit = _.transform(conversions, function (results, conversion) {
 
-        return _.reduce(conversions, function (results, conversion) {
+        // join split info with conversion
+        conversion.splits = conversion.splits || {}
+        _.forEach(splits, function (split) {
+          conversion.splits[split] = users[conversion.userId].info[split]
+        })
 
-          // join split info with conversion
-          conversion.splits = conversion.splits || {}
-          _.forEach(splits, function (split) {
-            conversion.splits[split] = users[conversion.userId].info[split]
-          })
-
-          // create uniq result key based on splits
-          var testKey = conversion.experiments[name]
-          var resultKey = testKey + ':' + _.map(splits, function (split) {
+        var testKey = conversion.experiments[name]
+        var resultKey = testKey + ':' + _.map(splits, function (split) {
               return conversion.splits[split]
             }).join(':')
 
-          results[resultKey] = results[resultKey] || {
-            test: testKey,
-            conversionCount: 0,
-            splits: conversion.splits
+        results[resultKey] = results[resultKey] || []
+
+        results[resultKey].push(conversion)
+      }, {})
+
+      var results = _.values(
+          _.transform(conversionsBySplit, function (results, conversions, key) {
+
+          results[key] = {
+            test: conversions[0].experiments[name],
+            splits: conversions[0].splits,
+            data: _.map(_.values(_.groupBy(conversions, function (conversion) {
+              return conversion.timestamp.setHours(0,0,0,0)
+            })), function (c) {
+              return {
+                count: c.length,
+                timestamp: c[0].timestamp
+              }
+            })
           }
-
-          results[resultKey].conversionCount += 1
-
-          return results
         }, {})
-      })
+      )
 
       res.json(results)
     })

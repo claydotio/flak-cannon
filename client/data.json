@@ -1,72 +1,61 @@
 [
     {
-        "a:Apple Mac:Chrome": {
-            "test": "a",
-            "conversionCount": 1,
-            "splits": {
-                "Platform": "Apple Mac",
-                "Browser": "Chrome"
-            }
+        "test": "a",
+        "splits": {
+            "Platform": "Apple Mac",
+            "Browser": "Chrome"
         },
-        "b:Linux:Chrome": {
-            "test": "b",
-            "conversionCount": 2,
-            "splits": {
-                "Platform": "Linux",
-                "Browser": "Chrome"
+        "data": [
+            {
+                "count": 1,
+                "timestamp": "2014-01-01T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-02T08:00:00.000Z"
+            },
+            {
+                "count": 2,
+                "timestamp": "2014-01-03T08:00:00.000Z"
             }
-        },
-        "a:Linux:Chrome": {
-            "test": "a",
-            "conversionCount": 2,
-            "splits": {
-                "Platform": "Linux",
-                "Browser": "Chrome"
-            }
-        }
+        ]
     },
     {
-        "a:Apple Mac:Chrome": {
-            "test": "a",
-            "conversionCount": 1,
-            "splits": {
-                "Platform": "Apple Mac",
-                "Browser": "Chrome"
-            }
+        "test": "b",
+        "splits": {
+            "Platform": "Linux",
+            "Browser": "Chrome"
         },
-        "b:Linux:Chrome": {
-            "test": "b",
-            "conversionCount": 1,
-            "splits": {
-                "Platform": "Linux",
-                "Browser": "Chrome"
+        "data": [
+            {
+                "count": 2,
+                "timestamp": "2014-01-01T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-02T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-03T08:00:00.000Z"
             }
-        }
+        ]
     },
     {
-        "a:Apple Mac:Chrome": {
-            "test": "a",
-            "conversionCount": 2,
-            "splits": {
-                "Platform": "Apple Mac",
-                "Browser": "Chrome"
-            }
+        "test": "a",
+        "splits": {
+            "Platform": "Linux",
+            "Browser": "Chrome"
         },
-        "b:Linux:Chrome": {
-            "test": "b",
-            "conversionCount": 1,
-            "splits": {
-                "Platform": "Linux",
-                "Browser": "Chrome"
+        "data": [
+            {
+                "count": 2,
+                "timestamp": "2014-01-01T08:00:00.000Z"
+            },
+            {
+                "count": 1,
+                "timestamp": "2014-01-03T08:00:00.000Z"
             }
-        },
-        "a:Linux:Chrome": {
-            "test": "a",
-            "conversionCount": 1,
-            "splits": {
-                "Platform": "Linux",
-                "Browser": "Chrome"
-            }
-        }
+        ]
     }
 ]
