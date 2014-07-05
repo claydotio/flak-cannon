@@ -266,6 +266,18 @@ router.put('/users/:userId/convert/:name', function (req, res) {
   })
 })
 
+router.get('/conversions/uniq', function (req, res) {
+  Conversion.find({}, {name: 'true'}, function (err, conversions) {
+    if (err) {
+      return res.send(500, err)
+    }
+
+    res.json(_.uniq(conversions, function (conv) {
+      return conv.name
+    }))
+  })
+})
+
 router.post('/experiments', isAdmin, function (req, res) {
   var experiment = new Experiment(req.body)
 
@@ -286,6 +298,16 @@ router.delete('/experiments/:name', isAdmin, function (req, res) {
     }
 
     res.json({success: true})
+  })
+})
+
+router.get('/experiments', isAdmin, function (req, res) {
+  Experiment.find({}, function (err, experiments) {
+    if (err) {
+      return res.send(500, err)
+    }
+
+    return res.json(experiments)
   })
 })
 

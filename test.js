@@ -39,6 +39,7 @@ var experimentSchema = {
 flare = flare.put('/_tests/reset')
 
 describe('Flak Cannon', function(){
+  this.timeout(100)
   describe('User', function () {
     it('Creates', function(){
       return flare
@@ -133,6 +134,17 @@ describe('Flak Cannon', function(){
           values: Joi.array().includes(Joi.string())
         }, experimentSchema))
         .doc('(Admin) Experiment', 'create')
+    })
+
+    it('Gets', function () {
+      return flare
+        .as('admin')
+        .get('/experiments')
+        .expect(200, Joi.array().includes(_.defaults({
+          name: 'expTest',
+          values: Joi.array().includes(Joi.string())
+        }, experimentSchema)))
+        .doc('(Admin) Experiment', 'get')
     })
 
     it('Removes', function () {
@@ -304,6 +316,15 @@ describe('Flak Cannon', function(){
           timestamp: Joi.date('1/2/14')
         })
 
+    })
+
+    it('Gets conversion names', function () {
+      return flare
+        .as('admin')
+        .get('/conversions/uniq')
+        .expect(200, Joi.array().includes({
+          name: Joi.string().required()
+        }))
     })
 
     it('Gets user conversion results', function () {
