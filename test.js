@@ -193,6 +193,10 @@ describe('Flak Cannon', function(){
         .put('/users/:joe.id/experiments/expTest')
         .expect(401)
         .as('admin')
+        .put('/users/-1/experiments/expTest')
+        .expect(404)
+        .put('/users/:joe.id/experiments/NOT_A_TEST')
+        .expect(404)
         .put('/users/:joe.id/experiments/expTest')
         .expect(200, _.defaults({
           experiments: {
