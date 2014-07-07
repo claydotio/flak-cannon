@@ -15,11 +15,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "cdec4e22-061b-4b3d-8890-691adb8a00fa"
+    "id": "2b7381cb-d457-4ae2-a6b6-df1b487217ff"
 }
 ```
 ### get
-##### get /api/users/af709f07-f07e-403d-8a2f-0119de030458
+##### get /api/users/55c629e0-eda2-49c4-8523-3b91fc765350
 ```js
 // req
 
@@ -31,11 +31,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "af709f07-f07e-403d-8a2f-0119de030458"
+    "id": "55c629e0-eda2-49c4-8523-3b91fc765350"
 }
 ```
 ### convert
-##### put /api/users/9fe81b0f-9138-4b94-944d-df2f4a958f22/convert/testing
+##### put /api/users/79f665f0-aed3-4614-81ec-fa69cab3b5b6/convert/testing
 ```js
 // req
 
@@ -44,17 +44,17 @@
 // res
 {
     "name": "testing",
-    "userId": "9fe81b0f-9138-4b94-944d-df2f4a958f22",
+    "userId": "79f665f0-aed3-4614-81ec-fa69cab3b5b6",
     "experiments": {
-        "convertible": "b",
+        "convertible": "a",
         "expTest": "red"
     },
-    "timestamp": "2014-07-07T04:11:33.813Z"
+    "timestamp": "2014-07-07T04:43:30.158Z"
 }
 ```
 #(Admin) User
 ### set testing group
-##### put /api/users/af709f07-f07e-403d-8a2f-0119de030458/group/same
+##### put /api/users/55c629e0-eda2-49c4-8523-3b91fc765350/group/same
 ```js
 // req
 
@@ -66,11 +66,11 @@
     "info": {
         "abc": "def"
     },
-    "id": "af709f07-f07e-403d-8a2f-0119de030458"
+    "id": "55c629e0-eda2-49c4-8523-3b91fc765350"
 }
 ```
 ### remove from experiment
-##### delete /api/users/45a067b6-6a18-41b4-b37a-6085c332edad/experiments/expTest
+##### delete /api/users/606ee199-44c8-4dfc-913c-6767ddb8cca1/experiments/expTest
 ```js
 // req
 
@@ -79,14 +79,48 @@
 // res
 {
     "group": "tester",
-    "id": "45a067b6-6a18-41b4-b37a-6085c332edad",
+    "id": "606ee199-44c8-4dfc-913c-6767ddb8cca1",
     "info": {
-        "ip": "127.0.0.1"
+        "isMobile": false,
+        "isiPad": false,
+        "isiPod": false,
+        "isiPhone": false,
+        "isAndroid": false,
+        "isBlackberry": false,
+        "isOpera": false,
+        "isIE": false,
+        "isIECompatibilityMode": false,
+        "isSafari": false,
+        "isFirefox": false,
+        "isWebkit": false,
+        "isChrome": false,
+        "isKonqueror": false,
+        "isOmniWeb": false,
+        "isSeaMonkey": false,
+        "isFlock": false,
+        "isAmaya": false,
+        "isEpiphany": false,
+        "isDesktop": false,
+        "isWindows": false,
+        "isLinux": false,
+        "isLinux64": false,
+        "isMac": false,
+        "isBada": false,
+        "isSamsung": false,
+        "isRaspberry": false,
+        "isBot": false,
+        "isCurl": false,
+        "isAndroidTablet": false,
+        "isWinJs": false,
+        "Browser": "unknown",
+        "OS": "unknown",
+        "Platform": "unknown",
+        "source": ""
     }
 }
 ```
 ### add to experiment
-##### put /api/users/45a067b6-6a18-41b4-b37a-6085c332edad/experiments/expTest
+##### put /api/users/606ee199-44c8-4dfc-913c-6767ddb8cca1/experiments/expTest
 ```js
 // req
 
@@ -94,18 +128,52 @@
 ```js
 // res
 {
-    "experiments": {
-        "expTest": "b"
-    },
     "group": "tester",
-    "id": "45a067b6-6a18-41b4-b37a-6085c332edad",
+    "id": "606ee199-44c8-4dfc-913c-6767ddb8cca1",
     "info": {
-        "ip": "127.0.0.1"
+        "isMobile": false,
+        "isiPad": false,
+        "isiPod": false,
+        "isiPhone": false,
+        "isAndroid": false,
+        "isBlackberry": false,
+        "isOpera": false,
+        "isIE": false,
+        "isIECompatibilityMode": false,
+        "isSafari": false,
+        "isFirefox": false,
+        "isWebkit": false,
+        "isChrome": false,
+        "isKonqueror": false,
+        "isOmniWeb": false,
+        "isSeaMonkey": false,
+        "isFlock": false,
+        "isAmaya": false,
+        "isEpiphany": false,
+        "isDesktop": false,
+        "isWindows": false,
+        "isLinux": false,
+        "isLinux64": false,
+        "isMac": false,
+        "isBada": false,
+        "isSamsung": false,
+        "isRaspberry": false,
+        "isBot": false,
+        "isCurl": false,
+        "isAndroidTablet": false,
+        "isWinJs": false,
+        "Browser": "unknown",
+        "OS": "unknown",
+        "Platform": "unknown",
+        "source": ""
+    },
+    "experiments": {
+        "expTest": "c"
     }
 }
 ```
 ### add to experiment, with value
-##### put /api/users/45a067b6-6a18-41b4-b37a-6085c332edad/experiments/expTest/red
+##### put /api/users/606ee199-44c8-4dfc-913c-6767ddb8cca1/experiments/expTest/red
 ```js
 // req
 
@@ -117,9 +185,43 @@
         "expTest": "red"
     },
     "group": "tester",
-    "id": "45a067b6-6a18-41b4-b37a-6085c332edad",
+    "id": "606ee199-44c8-4dfc-913c-6767ddb8cca1",
     "info": {
-        "ip": "127.0.0.1"
+        "isMobile": false,
+        "isiPad": false,
+        "isiPod": false,
+        "isiPhone": false,
+        "isAndroid": false,
+        "isBlackberry": false,
+        "isOpera": false,
+        "isIE": false,
+        "isIECompatibilityMode": false,
+        "isSafari": false,
+        "isFirefox": false,
+        "isWebkit": false,
+        "isChrome": false,
+        "isKonqueror": false,
+        "isOmniWeb": false,
+        "isSeaMonkey": false,
+        "isFlock": false,
+        "isAmaya": false,
+        "isEpiphany": false,
+        "isDesktop": false,
+        "isWindows": false,
+        "isLinux": false,
+        "isLinux64": false,
+        "isMac": false,
+        "isBada": false,
+        "isSamsung": false,
+        "isRaspberry": false,
+        "isBot": false,
+        "isCurl": false,
+        "isAndroidTablet": false,
+        "isWinJs": false,
+        "Browser": "unknown",
+        "OS": "unknown",
+        "Platform": "unknown",
+        "source": ""
     }
 }
 ```
@@ -209,7 +311,7 @@
     {
         "test": "a",
         "splits": {
-            "Platform": "Linux",
+            "Platform": "Apple Mac",
             "Browser": "Chrome"
         },
         "data": [
@@ -251,7 +353,7 @@
     {
         "test": "a",
         "splits": {
-            "Platform": "Apple Mac",
+            "Platform": "Linux",
             "Browser": "Chrome"
         },
         "data": [

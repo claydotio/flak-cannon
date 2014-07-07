@@ -53,79 +53,77 @@ function response(fn) {
       res.send(404)
     })
     .catch(function (err) {
+      console.error(err.stack)
       res.send(500, err)
     })
   }
 }
 
-router.put('/_tests/reset', response(function (req, res) {
+function deleteAllData() {
   return Promise.all([
     User.remove().exec(),
     Experiment.remove().exec(),
     Conversion.remove().exec()
   ])
-}))
+}
 
-router.post('/users', response(function (req, res) {
-  var defaultInfo = {
-    ip: req.ip
-  }
+function userDefaults(ip, useragent) {
+  var defaultInfo = _.defaults({
+    ip: ip
+  }, useragent)
 
-  if (req.headers['user-agent']) {
-
-    // merge in user agent based info
-    _.merge(defaultInfo, _.transform(req.useragent, function (obj, val, key) {
-        if(val) {
-          obj[key] = val
-        }
-    }))
-  }
-
-  var defaultUser = {
+  return {
     id: uuid.v4(),
-    info: defaultInfo
+    info: defaultInfo,
+    experiments: {}
   }
+}
 
-  var user = new User(_.defaults(req.body, defaultUser))
+function assignUserExperiments(user) {
 
+  // same user, assign experiments the same
   return User.findOne({clientId: user.clientId}).exec().then(function (member) {
-    if (user.clientId && member) {
+
+    var userAlreadyExists = user.clientId && member
+    if (userAlreadyExists) {
       user.experiments = member.experiments
-      return Promise.promisify(user.save, user)()
-      .then(_.first)
+      return user
     }
 
+    // same group, assign experiments the same
     return User.findOne({group: user.group}).exec().then(function (member) {
 
-      if (user.group && member) {
+      var groupAlreadyExists = user.group && member
+      if (groupAlreadyExists) {
         user.experiments = member.experiments
-        return Promise.promisify(user.save, user)()
-        .then(_.first)
+        return user
       }
 
+      // brand new user, assign new experiment
       return Experiment.find().exec().then(function (experiments) {
         var experiment = _.sample(experiments)
         if (experiment) {
-          var val = _.sample(experiment.values)
-
-          if (!user.experiments) {
-            user.experiments = {}
-          }
-
-          user.experiments[experiment.name] = val
+          user.experiments[experiment.name] = _.sample(experiment.values)
         }
 
-        return Promise.promisify(user.save, user)()
-        .then(_.first)
+        return user
       })
     })
   })
+}
+
+router.put('/_tests/reset', response(deleteAllData))
+
+router.post('/users', response(function (req, res) {
+  var user = new User(_.defaults(req.body, userDefaults(req.id, req.useragent)))
+  return assignUserExperiments(user)
+    .then(function (user) {
+      return Promise.promisify(user.save, user)().then(_.first)
+    })
 }))
 
 router.get('/users/:id', response(function (req, res) {
-  var id = req.params.id
-
-  return User.findOne({id: id}).exec()
+  return User.findOne({id: req.params.id}).exec()
 }))
 
 router.delete('/users/:id/experiments/:name', isAdmin, response(function (req, res) {
@@ -133,11 +131,8 @@ router.delete('/users/:id/experiments/:name', isAdmin, response(function (req, r
   var name = req.params.name
 
   return User.findOne({id: id}).exec().then(function (user) {
-
     delete user.experiments[name]
-
-    return Promise.promisify(user.save, user)()
-    .then(_.first)
+    return Promise.promisify(user.save, user)().then(_.first)
   })
 }))
 
@@ -146,10 +141,8 @@ router.put('/users/:id/group/:group', isAdmin, response(function (req, res) {
   var group = req.params.group
 
   return User.findOne({id: id}).exec().then(function (user) {
-
     user.group = group
-    return Promise.promisify(user.save, user)()
-    .then(_.first)
+    return Promise.promisify(user.save, user)().then(_.first)
   })
 }))
 
@@ -158,25 +151,21 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, response(function (req
   var expName = req.params.name
   var val = req.params.val
 
-  return Experiment.findOne({name: expName}).exec().then(function (experiment) {
-    if (!experiment) {
+  return Promise.all([
+    Experiment.findOne({name: expName}).exec(),
+    User.findOne({id: id}).exec()
+  ]).spread(function (experiment, user) {
+    if (!experiment || !user) {
       throw new Error('404')
     }
 
-    return User.findOne({id: id}).exec().then(function (user) {
-      if (!user) {
-        throw new Error('404')
-      }
+    val = val || _.sample(experiment.values)
+    user.experiments[expName] = val
 
-      val = val || _.sample(experiment.values)
-      user.experiments = user.experiments || {}
-      user.experiments[expName] = val
-
-      return User.update({id: id}, {$set: {
-        'experiments': user.experiments
-      }}).exec().then(function () {
-        return user
-      })
+    return User.update({id: id}, {$set: {
+      'experiments': user.experiments
+    }}).exec().then(function () {
+      return user
     })
   })
 }))
@@ -184,14 +173,6 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, response(function (req
 router.put('/users/:userId/convert/:name', response(function (req, res) {
   var userId = req.params.userId
   var name = req.params.name
-  var timestamp
-
-  isAdmin(req, {
-    setHeader: _.noop,
-    end: _.noop
-  }, function () {
-    timestamp = req.query.timestamp
-  })
 
   return User.findOne({id: userId}).exec().then(function (user) {
     var conversionConstructor = {
@@ -200,30 +181,27 @@ router.put('/users/:userId/convert/:name', response(function (req, res) {
       experiments: user.experiments
     }
 
-    if (timestamp) {
-      conversionConstructor.timestamp = timestamp
-    }
+    // only allow admins to set timestamps
+    isAdmin(req, {setHeader: _.noop,end: _.noop}, function () {
+      conversionConstructor.timestamp = req.query.timestamp
+    })
 
     var conversion = new Conversion(conversionConstructor)
 
-    return Promise.promisify(conversion.save, conversion)()
-    .then(_.first)
+    return Promise.promisify(conversion.save, conversion)().then(_.first)
   })
 }))
 
 router.get('/conversions/uniq', response(function (req, res) {
   return Conversion.find({}, {name: 'true'}).exec().then(function (conversions) {
-    return _.uniq(conversions, function (conv) {
-      return conv.name
-    })
+    return _.uniq(conversions, 'name')
   })
 }))
 
 router.post('/experiments', isAdmin, response(function (req, res) {
   var experiment = new Experiment(req.body)
 
-  return Promise.promisify(experiment.save, experiment)()
-  .then(_.first)
+  return Promise.promisify(experiment.save, experiment)().then(_.first)
 }))
 
 router.delete('/experiments/:name', isAdmin, response(function (req, res) {
@@ -254,6 +232,7 @@ router.get('/experiments/:name/results', isAdmin, response(function (req, res) {
 
   query['experiments.' + name] = {$exists: true}
 
+  // get conversions in requested time range
   return Conversion.find(query).exec().then(function (conversions) {
     function getUserIds(conversions) {
       var ids = {}
@@ -265,13 +244,12 @@ router.get('/experiments/:name/results', isAdmin, response(function (req, res) {
       return Object.keys(ids)
     }
 
+    // join split info with conversion
     var userIds = getUserIds(conversions)
     return User.find({id: {$in: userIds}}).exec().then(function (users) {
       users = _.zipObject(userIds, users)
 
       var conversionsBySplit = _.transform(conversions, function (results, conversion) {
-
-        // join split info with conversion
         conversion.splits = conversion.splits || {}
         _.forEach(splits, function (split) {
           conversion.splits[split] = users[conversion.userId].info[split]
@@ -287,6 +265,7 @@ router.get('/experiments/:name/results', isAdmin, response(function (req, res) {
         results[resultKey].push(conversion)
       }, {})
 
+      // TODO: Clean this up
       var results = _.values(
           _.transform(conversionsBySplit, function (results, conversions, key) {
 
