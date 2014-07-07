@@ -38,7 +38,7 @@ var flare = new Flare()
     console.log('creating experiments')
     return Promise.map(experiments, function (experiment) {
       return flare
-        .post('/experiments', experiment)
+        .post('/fake/experiments', experiment)
     })
   })
   .flare(function (flare) {
@@ -47,7 +47,7 @@ var flare = new Flare()
     return Promise.map(Array(numUsers), function (x, i) {
       return flare
         .request({
-          uri: 'http://localhost:3001/api/users',
+          uri: 'http://localhost:3001/api/fake/users',
           method: 'post',
           headers: {
             'user-agent': _.sample(userAgents)
@@ -57,14 +57,15 @@ var flare = new Flare()
     })
   })
   .flare(function (flare) {
-    
+
     console.log('converting users')
     return Promise.map(Array(numDays), function (x, day) {
+      if (day === 0) return
       return Promise.map(Array(numUsers), function (x, i) {
         if (Math.random() > 0.8) {
           var convertable = _.sample(convertibles)
           return flare
-            .put('/users/:x' + i + '.id/convert/' +
+            .put('/fake/users/:x' + i + '.id/convert/' +
                   convertable + '?timestamp=1/' + day + '/14')
         }
       })

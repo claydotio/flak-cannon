@@ -21,14 +21,116 @@ SparkLine = (data) ->
 
   m 'div.sparkline', {config: sparkline}
 
+# Determine if two values are statistically different
+# returns the p-value
+#
+# http://www.iancampbell.co.uk/twobytwo/n-1_theory.htm
+# B is successful converions
+# not-B is unsuccessful conversions
+# A is test 1
+# not-A is test 2
+#
+# formula
+# (a*d - b*c)**2 * (N -1) / (m*n*r*s)
+#
+#          B  not-B  Total
+# A     |  a    b      m
+# not-A |  c    d      n
+# Total |  r    s      N
+#
+nMinusOneChiSquare = (aConversions, aTotal, bConversions, bTotal) ->
+  a = aConversions
+  b = aTotal - aConversions
+  c = bConversions
+  d = bConversions - bTotal
+
+  r = a + c
+  s = b + d
+  m = a + b
+  n = c + d
+  N = m + n + r + s
+
+  chi2 = (a*d - b*c)**2 * (N - 1) / (m*n*r*s)
+  z = Math.sqrt(Math.abs(chi2))
+  pFromZ(z)
+
+pFromZ = (z) ->
+  Z_MAX = 6.0
+
+  if z == 0.0
+    x = 0.0
+  else
+    y = 0.5 * Math.abs(z)
+    if y > (Z_MAX * 0.5)
+      x = 1.0
+    else if y < 1.0
+      w = y * y
+      x = ((((((((0.000124818987 * w -
+                  0.001075204047) * w + 0.005198775019) * w -
+                  0.019198292004) * w + 0.059054035642) * w -
+                  0.151968751364) * w + 0.319152932694) * w -
+                  0.531923007300) * w + 0.797884560593) * y * 2.0
+    else
+      y -= 2.0
+      x = (((((((((((((-0.000045255659 * y +
+                        0.000152529290) * y - 0.000019538132) * y -
+                        0.000676904986) * y + 0.001390604284) * y -
+                        0.000794620820) * y - 0.002034254874) * y +
+                        0.006549791214) * y - 0.010557625006) * y +
+                        0.011630447319) * y - 0.009279453341) * y +
+                        0.005353579108) * y - 0.002141268741) * y +
+                        0.000535310849) * y + 0.999936657524
+  if z > 0.0 then ((x + 1.0) * 0.5) else ((1.0 - x) * 0.5)
+
+isPSignificant = (p) ->
+  p > 0.05
+
 ResultStore = do ->
+  transform = (data) ->
+
+    # count total conversions
+    data = data.map (result) ->
+      result.totalConversions = _.reduce(result.data, (sum, datum) ->
+        sum + datum.count
+      , 0)
+      return result
+
+    # calculate p-value and percentage change against the first result
+    control = data[0]
+    control.p = 0
+    control.percentDelta = 0
+
+    data = data.slice(1).map (result) ->
+      aConversions = result.totalConversions
+      aTotal = result.participantCount
+      bConversions = control.totalConversions
+      bTotal = control.participantCount
+
+      aPercent = aConversions / aTotal
+      bPercent = bConversions / bTotal
+      percentDelta = aPercent - bPercent
+
+      p = nMinusOneChiSquare(
+        aConversions,
+        aTotal,
+        bConversions,
+        bTotal)
+
+      result.p = p
+      result.percentDelta = percentDelta
+
+      return result
+
+    data = [control].concat _.sortBy(data, 'percentDelta').reverse()
+    return data
+
   data = m.request
     method: 'GET'
-    url: '''/api/experiments/signupText/results?
+    url: '''/api/fake/experiments/signupText/results?
          from=1/1/14&to=1/30/14&split=Platform,Browser&conversion=signUp'''
 
   getAll: ->
-    data
+    data.then(transform)
   query: (q) ->
     q = _.defaults q,
        experiment: ''
@@ -39,12 +141,12 @@ ResultStore = do ->
 
     m.request
       method: 'GET'
-      url: """/api/experiments/#{q.experiment}/results
+      url: """/api/fake/experiments/#{q.experiment}/results
       ?from=#{moment(q.start).format('L')}
       &to=#{moment(q.end).format('L')}
       &split=#{q.splits}
       &conversion=#{q.conversion}"""
-    .then(data)
+    .then(transform).then(data)
 
 QueryBuilder = (queryHandler) ->
   experiment = m.prop 'signupText'
@@ -90,7 +192,7 @@ QueryBuilder = (queryHandler) ->
 ExperimentStore = do ->
   data = m.request
     method: 'GET'
-    url: '/api/experiments'
+    url: '/api/fake/experiments'
 
   getAll: ->
     data
@@ -98,7 +200,7 @@ ExperimentStore = do ->
 ConversionStore = do ->
   data = m.request
     method: 'GET'
-    url: '/api/conversions/uniq'
+    url: '/api/fake/conversions/uniq'
 
   getAll: ->
     data
@@ -134,7 +236,11 @@ QueryView = QueryBuilder(ResultStore.query)
 RecoilView = (ctrl) ->
   titles = ['test', 'sparkline']
     .concat(if ctrl.results()[0] then _.keys(ctrl.results()[0].splits))
-    .concat(['conversions'])
+    .concat(['conversions', 'participants',
+             'percent', 'p', 'delta'])
+
+  percent = (n) ->
+    (n * 100).toFixed(2) + '%'
 
   return [
     ShowState(ctrl.experiments(), ctrl.conversions())
@@ -143,15 +249,20 @@ RecoilView = (ctrl) ->
     m 'br'
     m('table', titles.map(m.bind(m, 'th'))
     .concat(_.map(_.values(ctrl.results()), (result) ->
+      color = if result.percentDelta > 0 then 'green' else
+              if result.percentDelta == 0 then 'black' else 'red'
+
       return m('tr', [
         m('td', result.test),
         m('td', [SparkLine(result.data)])
       ]
       .concat(_.map(_.values(result.splits), m.bind(m, 'td') ))
       .concat([
-        m('td', _.reduce(result.data, (sum, datum) ->
-          return sum + datum.count
-        , 0))
+        m 'td', result.totalConversions
+        m 'td', result.participantCount
+        m 'td', percent result.totalConversions / result.participantCount
+        m 'td', result.p
+        m 'td', style: color: color, percent result.percentDelta
       ]))
     )))
   ]

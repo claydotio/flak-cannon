@@ -267,24 +267,41 @@ router.get('/:namespace/experiments/:name/results', isAdmin, response(function (
 
     // join split info with conversion
     var userIds = getUserIds(conversions)
-    return User.find({id: {$in: userIds}, namespace: namespace}).exec().then(function (users) {
-      users = _.zipObject(userIds, users)
+    var userQuery = {
+      namespace: namespace
+    }
+    userQuery['experiments.' + name] = {$exists: true}
 
+    return User.find(userQuery).exec().then(function (users) {
+      var usersById = _.transform(users, function (result, user) {
+        result[user.id] = user
+      }, {})
+
+      // group conversions by split
       var conversionsBySplit = _.transform(conversions, function (results, conversion) {
         conversion.splits = conversion.splits || {}
         _.forEach(splits, function (split) {
-          conversion.splits[split] = users[conversion.userId].info[split]
+          conversion.splits[split] = usersById[conversion.userId].info[split]
         })
 
         var testKey = conversion.experiments[name]
         var resultKey = testKey + ':' + _.map(splits, function (split) {
-              return conversion.splits[split]
-            }).join(':')
+          return conversion.splits[split]
+        }).join(':')
 
         results[resultKey] = results[resultKey] || []
 
         results[resultKey].push(conversion)
       }, {})
+
+      var userCountsBySplit = _.countBy(users, function (user) {
+        var testKey = user.experiments[name]
+        var resultKey = testKey + ':' + _.map(splits, function (split) {
+          return user.info[split]
+        }).join(':')
+
+        return resultKey
+      })
 
       // TODO: Clean this up
       var results = _.values(
@@ -292,6 +309,7 @@ router.get('/:namespace/experiments/:name/results', isAdmin, response(function (
 
           results[key] = {
             test: conversions[0].experiments[name],
+            participantCount: userCountsBySplit[key],
             splits: conversions[0].splits,
             data: _.map(_.values(_.groupBy(conversions, function (conversion) {
               return conversion.timestamp.setHours(0,0,0,0)

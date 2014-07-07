@@ -33,9 +33,9 @@ var userSchema = {
 }
 
 var experimentSchema = {
-  name: Joi.string(),
+  name: Joi.string().required(),
   namespace: 'testapp',
-  values: Joi.array().includes(Joi.string())
+  values: Joi.array().includes(Joi.string()).required()
 }
 
 flare = flare.put('/_tests/reset')
@@ -145,7 +145,7 @@ describe('Flak Cannon', function(){
         .get('/experiments')
         .expect(200, Joi.array().includes(_.defaults({
           name: 'expTest',
-          values: Joi.array().includes(Joi.string())
+          values: Joi.array().includes(Joi.string()).required()
         }, experimentSchema)))
         .doc('(Admin) Experiment', 'get')
     })
@@ -172,7 +172,7 @@ describe('Flak Cannon', function(){
         .stash('joe')
         .expect(200, _.defaults({
           experiments: {
-            expTest: Joi.string().regex(/red|green|blue|a|b|c|d|e|f/)
+            expTest: Joi.string().regex(/red|green|blue|a|b|c|d|e|f/).required()
           }
         }, userSchema))
     })
@@ -309,9 +309,9 @@ describe('Flak Cannon', function(){
           namespace: 'testapp',
           userId: ':joe.id',
           experiments: Joi.object({
-            'expTest': Joi.string()
+            'expTest': Joi.string().required()
           }).unknown(),
-          timestamp: Joi.date()
+          timestamp: Joi.date().required()
         })
         .doc('User', 'convert')
         .put('/users/:joe.id/convert/testing?timestamp=1/2/14')
@@ -320,7 +320,7 @@ describe('Flak Cannon', function(){
           namespace: 'testapp',
           userId: ':joe.id',
           experiments: Joi.object({
-            'expTest': Joi.string()
+            'expTest': Joi.string().required()
           }).unknown(),
           timestamp: Joi.date('1/2/14')
         })
@@ -385,7 +385,7 @@ describe('Flak Cannon', function(){
           experiments: Joi.object({
             'dingdong': Joi.string().required()
           }).unknown(),
-          timestamp: Joi.date()
+          timestamp: Joi.date().required()
         })
         .put('/users/:joe1.id/convert/ding?timestamp=1/2/14')
         .put('/users/:joe1.id/convert/ding?timestamp=1/3/14')
@@ -405,13 +405,14 @@ describe('Flak Cannon', function(){
              'from=1/1/14&to=1/3/14&split=Platform,Browser&conversion=ding')
         .expect(200, Joi.array().includes({
           test: Joi.string().required(),
+          participantCount: Joi.number().required(),
           data: Joi.array().includes({
-            count: Joi.number(),
-            timestamp: Joi.date()
+            count: Joi.number().required(),
+            timestamp: Joi.date().required()
           }),
           splits: {
-            Platform: Joi.string(),
-            Browser: Joi.string()
+            Platform: Joi.string().required(),
+            Browser: Joi.string().required()
           }
         }).length(3))
         .doc('(Admin) Experiment', 'results')
