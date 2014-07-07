@@ -23,7 +23,7 @@ experiment creation requires admin login. See sensitive.js for the password
 Use basic auth when making the request - admin:pass
 
 ##### new user
-post `/users`
+post `/myapp/users`
 ```js
 {
   // optional, subsequent posts with the
@@ -40,7 +40,7 @@ post `/users`
 }
 ```
 
-get `/users/:id`
+get `/myapp/users/:id`
 ```js
 {
   id: 'abc-def-hij-klm',
@@ -62,11 +62,11 @@ get `/users/:id`
 }
 ```
 
-put, del `/users/:id/experiments/:name/(:value)`
-put `/users/:id/convert/:name` // +1
+put, del `/myapp/users/:id/experiments/:name/(:value)`
+put `/myapp/users/:id/convert/:name` // +1
 
 ##### new experiement
-post `/experiment`
+post `/myapp/experiment`
 ```js
 {
   name: 'exp_name',
@@ -77,12 +77,12 @@ post `/experiment`
   }
 }
 ```
-patch, del `/experiments/:name` // [NOT IMPLEMENTED]
+patch, del `/myapp/experiments/:name` // [NOT IMPLEMENTED]
 
 
 ##### results
 
-get `/experiments/:name/results`
+get `/myapp/experiments/:name/results`
 ```js
 // A bit jank, and slow. This should probably have some query options
 [
@@ -92,7 +92,7 @@ get `/experiments/:name/results`
 
 ##### results v2
 
-get `/experiments/:name/results?from=date&to=date&split=Platform,Browser&conversion=signup`
+get `/myapp/experiments/:name/results?from=date&to=date&split=Platform,Browser&conversion=signup`
 
 
 ```js

@@ -5,7 +5,7 @@ var app = require('./')
 var sensitive = require('./sensitive')
 var Flare = require('flare-gun')
 var flare = new Flare()
-  .route('http://localhost:3001/api')
+  .route('http://localhost:3001/api/testapp')
   .docFile('doc.json')
   .actor('admin', {
     auth: {
@@ -25,6 +25,7 @@ app.listen(3001)
 
 var userSchema = {
   id: Joi.string().regex(uuidRegExp).required(),
+  namespace: 'testapp',
   group: Joi.string(),
   clientId: Joi.string(),
   info: Joi.object(),
@@ -33,13 +34,15 @@ var userSchema = {
 
 var experimentSchema = {
   name: Joi.string(),
+  namespace: 'testapp',
   values: Joi.array().includes(Joi.string())
 }
 
 flare = flare.put('/_tests/reset')
 
 describe('Flak Cannon', function(){
-  this.timeout(100)
+  this.timeout(200)
+
   describe('User', function () {
     it('Creates', function(){
       return flare
@@ -65,7 +68,7 @@ describe('Flak Cannon', function(){
     it('Creates with default info', function () {
       return flare
         .request({
-          uri: 'http://localhost:3001/api/users',
+          uri: 'http://localhost:3001/api/testapp/users',
           method: 'post',
           headers: {
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36'
@@ -303,6 +306,7 @@ describe('Flak Cannon', function(){
         .put('/users/:joe.id/convert/testing')
         .expect(200, {
           name: 'testing',
+          namespace: 'testapp',
           userId: ':joe.id',
           experiments: Joi.object({
             'expTest': Joi.string()
@@ -313,6 +317,7 @@ describe('Flak Cannon', function(){
         .put('/users/:joe.id/convert/testing?timestamp=1/2/14')
         .expect(200, {
           name: 'testing',
+          namespace: 'testapp',
           userId: ':joe.id',
           experiments: Joi.object({
             'expTest': Joi.string()
@@ -334,7 +339,7 @@ describe('Flak Cannon', function(){
     it('Gets user conversion results', function () {
       return flare
         .request({
-          uri: 'http://localhost:3001/api/users',
+          uri: 'http://localhost:3001/api/testapp/users',
           method: 'post',
           headers: {
             'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1944.0 Safari/537.36'
@@ -342,7 +347,7 @@ describe('Flak Cannon', function(){
         })
         .stash('joe1')
         .request({
-          uri: 'http://localhost:3001/api/users',
+          uri: 'http://localhost:3001/api/testapp/users',
           method: 'post',
           headers: {
             'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'
@@ -350,7 +355,7 @@ describe('Flak Cannon', function(){
         })
         .stash('joe2')
         .request({
-          uri: 'http://localhost:3001/api/users',
+          uri: 'http://localhost:3001/api/testapp/users',
           method: 'post',
           headers: {
             'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/35.0.1916.114 Safari/537.36'
@@ -375,6 +380,7 @@ describe('Flak Cannon', function(){
         .put('/users/:joe1.id/convert/ding?timestamp=1/1/14')
         .expect(200, {
           name: 'ding',
+          namespace: 'testapp',
           userId: ':joe1.id',
           experiments: Joi.object({
             'dingdong': Joi.string().required()
@@ -409,6 +415,29 @@ describe('Flak Cannon', function(){
           }
         }).length(3))
         .doc('(Admin) Experiment', 'results')
+    })
+  })
+
+  describe('namespace', function () {
+    it('namespaces', function () {
+      return flare
+        .request({
+          uri: 'http://localhost:3001/api/testapp/conversions/uniq',
+          method: 'get'
+        })
+        .expect(200, Joi.array().min(1))
+        .request({
+          uri: 'http://localhost:3001/api/NOT_testapp/conversions/uniq',
+          method: 'get'
+        })
+        .expect(200, Joi.array().length(0))
+        .request({
+          uri: 'http://localhost:3001/api/NOT_testapp/users',
+          method: 'post'
+        })
+        .expect(200, _.defaults({
+          namespace: 'NOT_testapp'
+        }, userSchema))
     })
   })
 })

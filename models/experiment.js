@@ -4,6 +4,7 @@ var Schema = mongoose.Schema
 
 var ExperimentSchema = new Schema({
   name: String,
+  namespace: String,
   values: Array
 })
 

@@ -1,6 +1,6 @@
 #User
 ### create
-##### post /api/users
+##### post /api/testapp/users
 ```js
 // req
 {
@@ -15,11 +15,12 @@
     "info": {
         "abc": "def"
     },
-    "id": "2b7381cb-d457-4ae2-a6b6-df1b487217ff"
+    "id": "9f4cf8f1-081d-4e6a-907e-f23696800f5a",
+    "namespace": "testapp"
 }
 ```
 ### get
-##### get /api/users/55c629e0-eda2-49c4-8523-3b91fc765350
+##### get /api/testapp/users/253f3f04-7858-4969-99c1-094a8c1729c0
 ```js
 // req
 
@@ -31,11 +32,12 @@
     "info": {
         "abc": "def"
     },
-    "id": "55c629e0-eda2-49c4-8523-3b91fc765350"
+    "id": "253f3f04-7858-4969-99c1-094a8c1729c0",
+    "namespace": "testapp"
 }
 ```
 ### convert
-##### put /api/users/79f665f0-aed3-4614-81ec-fa69cab3b5b6/convert/testing
+##### put /api/testapp/users/c8ac0e29-6c3c-48aa-a325-79852c427698/convert/testing
 ```js
 // req
 
@@ -44,17 +46,18 @@
 // res
 {
     "name": "testing",
-    "userId": "79f665f0-aed3-4614-81ec-fa69cab3b5b6",
+    "userId": "c8ac0e29-6c3c-48aa-a325-79852c427698",
     "experiments": {
-        "convertible": "a",
-        "expTest": "red"
+        "convertible": "b",
+        "expTest": "e"
     },
-    "timestamp": "2014-07-07T04:43:30.158Z"
+    "namespace": "testapp",
+    "timestamp": "2014-07-07T05:40:04.658Z"
 }
 ```
 #(Admin) User
 ### set testing group
-##### put /api/users/55c629e0-eda2-49c4-8523-3b91fc765350/group/same
+##### put /api/testapp/users/253f3f04-7858-4969-99c1-094a8c1729c0/group/same
 ```js
 // req
 
@@ -66,11 +69,12 @@
     "info": {
         "abc": "def"
     },
-    "id": "55c629e0-eda2-49c4-8523-3b91fc765350"
+    "id": "253f3f04-7858-4969-99c1-094a8c1729c0",
+    "namespace": "testapp"
 }
 ```
 ### remove from experiment
-##### delete /api/users/606ee199-44c8-4dfc-913c-6767ddb8cca1/experiments/expTest
+##### delete /api/testapp/users/11f5659d-9466-43d8-83fa-3b58255f5549/experiments/expTest
 ```js
 // req
 
@@ -79,8 +83,10 @@
 // res
 {
     "group": "tester",
-    "id": "606ee199-44c8-4dfc-913c-6767ddb8cca1",
+    "id": "11f5659d-9466-43d8-83fa-3b58255f5549",
+    "namespace": "testapp",
     "info": {
+        "ip": "127.0.0.1",
         "isMobile": false,
         "isiPad": false,
         "isiPod": false,
@@ -120,7 +126,7 @@
 }
 ```
 ### add to experiment
-##### put /api/users/606ee199-44c8-4dfc-913c-6767ddb8cca1/experiments/expTest
+##### put /api/testapp/users/11f5659d-9466-43d8-83fa-3b58255f5549/experiments/expTest
 ```js
 // req
 
@@ -129,8 +135,10 @@
 // res
 {
     "group": "tester",
-    "id": "606ee199-44c8-4dfc-913c-6767ddb8cca1",
+    "id": "11f5659d-9466-43d8-83fa-3b58255f5549",
+    "namespace": "testapp",
     "info": {
+        "ip": "127.0.0.1",
         "isMobile": false,
         "isiPad": false,
         "isiPod": false,
@@ -168,12 +176,12 @@
         "source": ""
     },
     "experiments": {
-        "expTest": "c"
+        "expTest": "e"
     }
 }
 ```
 ### add to experiment, with value
-##### put /api/users/606ee199-44c8-4dfc-913c-6767ddb8cca1/experiments/expTest/red
+##### put /api/testapp/users/11f5659d-9466-43d8-83fa-3b58255f5549/experiments/expTest/red
 ```js
 // req
 
@@ -185,8 +193,9 @@
         "expTest": "red"
     },
     "group": "tester",
-    "id": "606ee199-44c8-4dfc-913c-6767ddb8cca1",
+    "id": "11f5659d-9466-43d8-83fa-3b58255f5549",
     "info": {
+        "ip": "127.0.0.1",
         "isMobile": false,
         "isiPad": false,
         "isiPod": false,
@@ -222,12 +231,13 @@
         "OS": "unknown",
         "Platform": "unknown",
         "source": ""
-    }
+    },
+    "namespace": "testapp"
 }
 ```
 #(Admin) Experiment
 ### create
-##### post /api/experiments
+##### post /api/testapp/experiments
 ```js
 // req
 {
@@ -248,6 +258,7 @@
 ```js
 // res
 {
+    "namespace": "testapp",
     "name": "expTest",
     "values": [
         "red",
@@ -263,7 +274,7 @@
 }
 ```
 ### get
-##### get /api/experiments
+##### get /api/testapp/experiments
 ```js
 // req
 
@@ -272,6 +283,7 @@
 // res
 [
     {
+        "namespace": "testapp",
         "name": "expTest",
         "values": [
             "red",
@@ -288,7 +300,7 @@
 ]
 ```
 ### remove
-##### delete /api/experiments/expTest
+##### delete /api/testapp/experiments/expTest
 ```js
 // req
 
@@ -300,7 +312,7 @@
 }
 ```
 ### results
-##### get /api/experiments/dingdong/results?from=1/1/14&to=1/3/14&split=Platform,Browser&conversion=ding
+##### get /api/testapp/experiments/dingdong/results?from=1/1/14&to=1/3/14&split=Platform,Browser&conversion=ding
 ```js
 // req
 
@@ -311,7 +323,7 @@
     {
         "test": "a",
         "splits": {
-            "Platform": "Apple Mac",
+            "Platform": "Linux",
             "Browser": "Chrome"
         },
         "data": [
@@ -353,7 +365,7 @@
     {
         "test": "a",
         "splits": {
-            "Platform": "Linux",
+            "Platform": "Apple Mac",
             "Browser": "Chrome"
         },
         "data": [

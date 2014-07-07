@@ -4,6 +4,7 @@ var Schema = mongoose.Schema
 
 var ConversionSchema = new Schema({
   name: String,
+  namespace: String,
   timestamp: { type: Date, default: Date.now },
   userId: String,
   experiments: Object

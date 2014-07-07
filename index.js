@@ -1,43 +1,49 @@
 /*eslint no-console:0*/
 'use strict'
 var express = require('express')
-var app = express()
 var bodyParser = require('body-parser')
 var useragent = require('express-useragent')
-var database = process.env.NODE_ENV === 'test' ? 'flak_cannon_test' : 'flak_cannon'
 var mongoose = require('mongoose')
+var Promise = require('bluebird')
+var uuid = require('node-uuid')
+var _ = require('lodash')
+var basicAuth = require('basic-auth-connect')
+
 var sensitive = require('./sensitive')
+var User = require('./models/user')
+var Experiment = require('./models/experiment')
+var Conversion = require('./models/conversion')
+var isAdmin = basicAuth('admin', sensitive.adminPassword)
+
+var database = process.env.NODE_ENV === 'test' ? 'flak_cannon_test' : 'flak_cannon'
+
 var mongoHost = sensitive.mongo.host || 'localhost'
 var mongoPort = sensitive.mongo.port || 27017
 var mongoUser = sensitive.mongo.user
 var mongoPass = sensitive.mongo.pass
-var Promise = require('bluebird')
+
+var port = process.env.PORT || 3000
+var router = express.Router()
 
 mongoose.connect(sensitive.mongo.user ?
   'mongodb://' + mongoUser + ':' + mongoPass + '@' + mongoHost + ':' + mongoPort + '/' + database :
   'mongodb://' + mongoHost + ':' + mongoPort + '/' + database)
 
-var uuid = require('node-uuid')
-var _ = require('lodash')
-var basicAuth = require('basic-auth-connect')
 
+var app = express()
 app.use(bodyParser())
 app.use(useragent.express())
-app.all('/*', function(req, res, next) {
+
+// CORS
+app.use(function(req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*')
   res.header('Access-Control-Allow-Headers', 'X-Requested-With')
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE')
   next()
 })
 
-var port = process.env.PORT || 3000
-var router = express.Router()
-
-var User = require('./models/user')
-var Experiment = require('./models/experiment')
-var Conversion = require('./models/conversion')
-
-var isAdmin = basicAuth('admin', sensitive.adminPassword)
+app.use('/api', router)
+app.use(express.static(__dirname + '/client'))
 
 function response(fn) {
   return function (req, res) {
@@ -67,18 +73,6 @@ function deleteAllData() {
   ])
 }
 
-function userDefaults(ip, useragent) {
-  var defaultInfo = _.defaults({
-    ip: ip
-  }, useragent)
-
-  return {
-    id: uuid.v4(),
-    info: defaultInfo,
-    experiments: {}
-  }
-}
-
 function assignUserExperiments(user) {
 
   // same user, assign experiments the same
@@ -100,7 +94,7 @@ function assignUserExperiments(user) {
       }
 
       // brand new user, assign new experiment
-      return Experiment.find().exec().then(function (experiments) {
+      return Experiment.find({namespace: user.namespace}).exec().then(function (experiments) {
         var experiment = _.sample(experiments)
         if (experiment) {
           user.experiments[experiment.name] = _.sample(experiment.values)
@@ -112,48 +106,67 @@ function assignUserExperiments(user) {
   })
 }
 
-router.put('/_tests/reset', response(deleteAllData))
+router.put('/:namespace/_tests/reset', response(deleteAllData))
 
-router.post('/users', response(function (req, res) {
-  var user = new User(_.defaults(req.body, userDefaults(req.id, req.useragent)))
+router.post('/:namespace/users', response(function (req, res) {
+  var id = uuid.v4()
+  var ip = req.ip
+  var useragent = req.useragent
+  var namespace = req.params.namespace
+
+  var defaultUser = {
+    id: id,
+    namespace: namespace,
+    info: _.defaults({
+      ip: ip
+    }, useragent),
+    experiments: {}
+  }
+
+  var user = new User(_.defaults(req.body, defaultUser))
   return assignUserExperiments(user)
     .then(function (user) {
       return Promise.promisify(user.save, user)().then(_.first)
     })
 }))
 
-router.get('/users/:id', response(function (req, res) {
-  return User.findOne({id: req.params.id}).exec()
+router.get('/:namespace/users/:id', response(function (req, res) {
+  var id = req.params.id
+  var namespace = req.params.namespace
+  return User.findOne({id: id, namespace: namespace}).exec()
 }))
 
-router.delete('/users/:id/experiments/:name', isAdmin, response(function (req, res) {
+router.delete('/:namespace/users/:id/experiments/:name', isAdmin, response(function (req, res) {
   var id = req.params.id
   var name = req.params.name
+  var namespace = req.params.namespace
 
-  return User.findOne({id: id}).exec().then(function (user) {
+  return User.findOne({id: id, namespace: namespace}).exec().then(function (user) {
     delete user.experiments[name]
     return Promise.promisify(user.save, user)().then(_.first)
   })
 }))
 
-router.put('/users/:id/group/:group', isAdmin, response(function (req, res) {
+router.put('/:namespace/users/:id/group/:group', isAdmin, response(function (req, res) {
   var id = req.params.id
   var group = req.params.group
+  var namespace = req.params.namespace
 
-  return User.findOne({id: id}).exec().then(function (user) {
+  return User.findOne({id: id, namespace: namespace}).exec().then(function (user) {
     user.group = group
     return Promise.promisify(user.save, user)().then(_.first)
   })
 }))
 
-router.put('/users/:id/experiments/:name/:val?', isAdmin, response(function (req, res) {
+router.put('/:namespace/users/:id/experiments/:name/:val?', isAdmin, response(function (req, res) {
   var id = req.params.id
   var expName = req.params.name
   var val = req.params.val
+  var namespace = req.params.namespace
 
   return Promise.all([
-    Experiment.findOne({name: expName}).exec(),
-    User.findOne({id: id}).exec()
+    Experiment.findOne({name: expName, namespace: namespace}).exec(),
+    User.findOne({id: id, namespace: namespace}).exec()
   ]).spread(function (experiment, user) {
     if (!experiment || !user) {
       throw new Error('404')
@@ -162,7 +175,7 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, response(function (req
     val = val || _.sample(experiment.values)
     user.experiments[expName] = val
 
-    return User.update({id: id}, {$set: {
+    return User.update({id: id, namespace: namespace}, {$set: {
       'experiments': user.experiments
     }}).exec().then(function () {
       return user
@@ -170,15 +183,17 @@ router.put('/users/:id/experiments/:name/:val?', isAdmin, response(function (req
   })
 }))
 
-router.put('/users/:userId/convert/:name', response(function (req, res) {
+router.put('/:namespace/users/:userId/convert/:name', response(function (req, res) {
   var userId = req.params.userId
   var name = req.params.name
+  var namespace = req.params.namespace
 
-  return User.findOne({id: userId}).exec().then(function (user) {
+  return User.findOne({id: userId, namespace: namespace}).exec().then(function (user) {
     var conversionConstructor = {
       name: name,
       userId: userId,
-      experiments: user.experiments
+      experiments: user.experiments,
+      namespace: namespace
     }
 
     // only allow admins to set timestamps
@@ -192,31 +207,36 @@ router.put('/users/:userId/convert/:name', response(function (req, res) {
   })
 }))
 
-router.get('/conversions/uniq', response(function (req, res) {
-  return Conversion.find({}, {name: 'true'}).exec().then(function (conversions) {
+router.get('/:namespace/conversions/uniq', response(function (req, res) {
+  var namespace = req.params.namespace
+  return Conversion.find({namespace: namespace}, {name: true}).exec().then(function (conversions) {
     return _.uniq(conversions, 'name')
   })
 }))
 
-router.post('/experiments', isAdmin, response(function (req, res) {
+router.post('/:namespace/experiments', isAdmin, response(function (req, res) {
   var experiment = new Experiment(req.body)
+  experiment.namespace = req.params.namespace
 
   return Promise.promisify(experiment.save, experiment)().then(_.first)
 }))
 
-router.delete('/experiments/:name', isAdmin, response(function (req, res) {
+router.delete('/:namespace/experiments/:name', isAdmin, response(function (req, res) {
   var name = req.params.name
-  return Experiment.remove({name: name}).exec().then(function () {
+  var namespace = req.params.namespace
+  return Experiment.remove({name: name, namespace: namespace}).exec().then(function () {
     return {success: true}
   })
 }))
 
-router.get('/experiments', isAdmin, response(function (req, res) {
-  return Experiment.find({}).exec().then()
+router.get('/:namespace/experiments', isAdmin, response(function (req, res) {
+  var namespace = req.params.namespace
+  return Experiment.find({namespace: namespace}).exec().then()
 }))
 
-router.get('/experiments/:name/results', isAdmin, response(function (req, res) {
+router.get('/:namespace/experiments/:name/results', isAdmin, response(function (req, res) {
   var name = req.params.name
+  var namespace = req.params.namespace
   var startDate = new Date(req.query.from)
   var endDate = new Date(req.query.to)
   var splits = (req.query.split || '').split(',')
@@ -227,7 +247,8 @@ router.get('/experiments/:name/results', isAdmin, response(function (req, res) {
     'timestamp': {
       $gte: startDate,
       $lte: endDate
-    }
+    },
+    namespace: namespace
   }
 
   query['experiments.' + name] = {$exists: true}
@@ -246,7 +267,7 @@ router.get('/experiments/:name/results', isAdmin, response(function (req, res) {
 
     // join split info with conversion
     var userIds = getUserIds(conversions)
-    return User.find({id: {$in: userIds}}).exec().then(function (users) {
+    return User.find({id: {$in: userIds}, namespace: namespace}).exec().then(function (users) {
       users = _.zipObject(userIds, users)
 
       var conversionsBySplit = _.transform(conversions, function (results, conversion) {
@@ -289,6 +310,4 @@ router.get('/experiments/:name/results', isAdmin, response(function (req, res) {
   })
 }))
 
-app.use('/api', router)
-app.use(express.static(__dirname + '/client'))
 module.exports = app
