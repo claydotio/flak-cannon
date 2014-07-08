@@ -42,7 +42,7 @@ nMinusOneChiSquare = (aConversions, aTotal, bConversions, bTotal) ->
   a = aConversions
   b = aTotal - aConversions
   c = bConversions
-  d = bConversions - bTotal
+  d = bTotal - bConversions
 
   r = a + c
   s = b + d
@@ -52,7 +52,7 @@ nMinusOneChiSquare = (aConversions, aTotal, bConversions, bTotal) ->
 
   chi2 = (a*d - b*c)**2 * (N - 1) / (m*n*r*s)
   z = Math.sqrt(Math.abs(chi2))
-  pFromZ(z)
+  1 - pFromZ(z)
 
 pFromZ = (z) ->
   Z_MAX = 6.0
@@ -138,10 +138,11 @@ ResultStore = do ->
        end: ''
        splits: ''
        conversion: ''
+       namespace: ''
 
     m.request
       method: 'GET'
-      url: """/api/fake/experiments/#{q.experiment}/results
+      url: """/api/#{q.namespace}/experiments/#{q.experiment}/results
       ?from=#{moment(q.start).format('L')}
       &to=#{moment(q.end).format('L')}
       &split=#{q.splits}
@@ -154,6 +155,7 @@ QueryBuilder = (queryHandler) ->
   end = m.prop moment().format('L').toString()
   splits = m.prop ''
   conversion = m.prop 'signUp'
+  namespace = m.prop ''
 
   query = ->
     queryHandler
@@ -162,8 +164,13 @@ QueryBuilder = (queryHandler) ->
       end: end()
       splits: splits(),
       conversion: conversion()
+      namespace: namespace()
   ->
     m 'div', [
+      m 'input',
+        value: namespace()
+        placeholder: 'namespace'
+        onchange: m.withAttr('value', namespace)
       m 'input',
         value: experiment()
         placeholder: 'experiment'
@@ -237,7 +244,7 @@ RecoilView = (ctrl) ->
   titles = ['test', 'sparkline']
     .concat(if ctrl.results()[0] then _.keys(ctrl.results()[0].splits))
     .concat(['conversions', 'participants',
-             'percent', 'p', 'delta'])
+             'percent', 'p < 0.05', 'delta'])
 
   percent = (n) ->
     (n * 100).toFixed(2) + '%'
@@ -261,7 +268,7 @@ RecoilView = (ctrl) ->
         m 'td', result.totalConversions
         m 'td', result.participantCount
         m 'td', percent result.totalConversions / result.participantCount
-        m 'td', result.p
+        m 'td', result.p.toFixed(3)
         m 'td', style: color: color, percent result.percentDelta
       ]))
     )))
