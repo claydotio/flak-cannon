@@ -106,7 +106,7 @@ function assignUserExperiments(user) {
   })
 }
 
-router.put('/:namespace/_tests/reset', response(deleteAllData))
+router.put('/:namespace?/_tests/reset', response(deleteAllData))
 
 router.post('/:namespace/users', response(function (req, res) {
   var id = uuid.v4()
@@ -209,7 +209,10 @@ router.put('/:namespace/users/:userId/convert/:name', response(function (req, re
 
 router.get('/:namespace/conversions/uniq', response(function (req, res) {
   var namespace = req.params.namespace
-  return Conversion.find({namespace: namespace}, {name: true}).exec().then(function (conversions) {
+  return Conversion.find({
+    namespace: namespace
+  },{name: true, namespace: true})
+  .exec().then(function (conversions) {
     return _.uniq(conversions, 'name')
   })
 }))

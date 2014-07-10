@@ -85,8 +85,8 @@ pFromZ = (z) ->
 isPSignificant = (p) ->
   p > 0.05
 
-ResultStore = do ->
-  transform = (data) ->
+class ResultModel
+  transform:(data) ->
 
     # count total conversions
     data = data.map (result) ->
@@ -96,6 +96,8 @@ ResultStore = do ->
       return result
 
     # calculate p-value and percentage change against the first result
+    if !data[0]
+      return []
     control = data[0]
     control.p = 0
     control.percentDelta = 0
@@ -124,14 +126,12 @@ ResultStore = do ->
     data = [control].concat _.sortBy(data, 'percentDelta').reverse()
     return data
 
-  data = m.request
-    method: 'GET'
-    url: '''/api/fake/experiments/signupText/results?
-         from=1/1/14&to=1/30/14&split=Platform,Browser&conversion=signUp'''
 
-  getAll: ->
-    data.then(transform)
-  query: (q) ->
+  data: do ->
+    def = m.deferred()
+    def.resolve([])
+    def.promise
+  query: (q) =>
     q = _.defaults q,
        experiment: ''
        start: ''
@@ -143,11 +143,11 @@ ResultStore = do ->
     m.request
       method: 'GET'
       url: """/api/#{q.namespace}/experiments/#{q.experiment}/results
-      ?from=#{moment(q.start).format('L')}
-      &to=#{moment(q.end).format('L')}
-      &split=#{q.splits}
-      &conversion=#{q.conversion}"""
-    .then(transform).then(data)
+        ?from=#{moment(q.start).format('L')}
+        &to=#{moment(q.end).format('L')}
+        &split=#{q.splits}
+        &conversion=#{q.conversion}"""
+    .then(@transform).then(@data)
 
 QueryBuilder = (queryHandler) ->
   experiment = m.prop 'signupText'
@@ -165,6 +165,7 @@ QueryBuilder = (queryHandler) ->
       splits: splits(),
       conversion: conversion()
       namespace: namespace()
+
   ->
     m 'div', [
       m 'input',
@@ -215,7 +216,7 @@ ConversionStore = do ->
 ExperimentState = (experiments) ->
   m 'ul', experiments.map (experiment) ->
     m 'li', [
-      experiment.name,
+      experiment.name + " (#{experiment.namespace})",
       m 'ul',
         experiment.values.map (val) ->
           m 'li', val
@@ -223,7 +224,7 @@ ExperimentState = (experiments) ->
 
 ConversionState = (conversions) ->
   m 'ul', conversions.map (conversion) ->
-    m 'li', conversion.name
+    m 'li', conversion.name + " (#{conversion.namespace})"
 
 ShowState = (experiments, conversions) ->
   [
@@ -234,15 +235,16 @@ ShowState = (experiments, conversions) ->
   ]
 
 RecoilController = ->
-  results: ResultStore.getAll()
+  results = new ResultModel
+  results: results
   experiments: ExperimentStore.getAll()
   conversions: ConversionStore.getAll()
-
-QueryView = QueryBuilder(ResultStore.query)
+  queryBuilder: QueryBuilder(results.query)
 
 RecoilView = (ctrl) ->
+  results = ctrl.results.data() or []
   titles = ['test', 'sparkline']
-    .concat(if ctrl.results()[0] then _.keys(ctrl.results()[0].splits))
+    .concat(if results[0] then _.keys(results[0].splits))
     .concat(['conversions', 'participants',
              'percent', 'p < 0.05', 'delta'])
 
@@ -252,10 +254,11 @@ RecoilView = (ctrl) ->
   return [
     ShowState(ctrl.experiments(), ctrl.conversions())
     m 'br'
-    QueryView()
+    ctrl.queryBuilder()
     m 'br'
+    unless results.length then 'NO RESULTS'
     m('table', titles.map(m.bind(m, 'th'))
-    .concat(_.map(_.values(ctrl.results()), (result) ->
+    .concat(_.map(_.values(results), (result) ->
       color = if result.percentDelta > 0 then 'green' else
               if result.percentDelta == 0 then 'black' else 'red'
 
