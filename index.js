@@ -193,7 +193,8 @@ router.put('/:namespace/users/:userId/convert/:name', response(function (req, re
       name: name,
       userId: userId,
       experiments: user.experiments,
-      namespace: namespace
+      namespace: namespace,
+      timestamp: Date.now()
     }
 
     // only allow admins to set timestamps
