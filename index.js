@@ -193,13 +193,12 @@ router.put('/:namespace/users/:userId/convert/:name', response(function (req, re
       name: name,
       userId: userId,
       experiments: user.experiments,
-      namespace: namespace,
-      timestamp: Date.now()
+      namespace: namespace
     }
 
     // only allow admins to set timestamps
     isAdmin(req, {setHeader: _.noop,end: _.noop}, function () {
-      conversionConstructor.timestamp = req.query.timestamp
+      conversionConstructor.timestamp = req.query.timestamp || Date.now()
     })
 
     var conversion = new Conversion(conversionConstructor)
