@@ -332,7 +332,8 @@ describe('Flak Cannon', function(){
         .as('admin')
         .get('/conversions/uniq')
         .expect(200, Joi.array().includes({
-          name: Joi.string().required()
+          name: Joi.string().required(),
+          namespace: 'testapp'
         }))
     })
 
