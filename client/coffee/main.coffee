@@ -152,7 +152,7 @@ class ResultModel
 QueryBuilder = (queryHandler) ->
   experiment = m.prop 'signupText'
   start = m.prop moment().subtract('days', 14).format('L').toString()
-  end = m.prop moment().format('L').toString()
+  end = m.prop moment().add('days', 1).format('L').toString()
   splits = m.prop ''
   conversion = m.prop 'signUp'
   namespace = m.prop ''
