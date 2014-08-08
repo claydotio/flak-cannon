@@ -200,7 +200,7 @@ QueryBuilder = (queryHandler) ->
 ExperimentStore = do ->
   data = m.request
     method: 'GET'
-    url: '/api/fake/experiments'
+    url: '/api/experiments'
 
   getAll: ->
     data
@@ -208,7 +208,7 @@ ExperimentStore = do ->
 ConversionStore = do ->
   data = m.request
     method: 'GET'
-    url: '/api/fake/conversions/uniq'
+    url: '/api/conversions/uniq'
 
   getAll: ->
     data

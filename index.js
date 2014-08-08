@@ -207,11 +207,13 @@ router.put('/:namespace/users/:userId/convert/:name', response(function (req, re
   })
 }))
 
-router.get('/:namespace/conversions/uniq', response(function (req, res) {
-  var namespace = req.params.namespace
-  return Conversion.find({
-    namespace: namespace
-  },{name: true, namespace: true})
+router.get('/:namespace?/conversions/uniq', response(function (req, res) {
+    var namespace = req.params.namespace
+    var query = {}
+    if (namespace){
+      query['namespace'] = namespace
+    }
+  return Conversion.find(query,{name: true, namespace: true})
   .exec().then(function (conversions) {
     return _.uniq(conversions, 'name')
   })
@@ -232,9 +234,13 @@ router.delete('/:namespace/experiments/:name', isAdmin, response(function (req, 
   })
 }))
 
-router.get('/:namespace/experiments', isAdmin, response(function (req, res) {
+router.get('/:namespace?/experiments', isAdmin, response(function (req, res) {
   var namespace = req.params.namespace
-  return Experiment.find({namespace: namespace}).exec().then()
+  var query = {}
+  if (namespace){
+    query['namespace'] = namespace
+  }
+  return Experiment.find(query).exec().then()
 }))
 
 router.get('/:namespace/experiments/:name/results', isAdmin, response(function (req, res) {
