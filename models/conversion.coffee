@@ -1,9 +1,10 @@
+Events = require '../lib/events'
+
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 
 ConversionSchema = new Schema(
   event: String,
-  app: String,
   timestamp: { type: Date, default: Date.now },
   userId: String,
   params: Object
@@ -15,4 +16,12 @@ ConversionSchema.method 'toJSON', ->
   delete conversion._id
   return conversion
 
-module.exports = mongoose.model 'Conversion', ConversionSchema
+Conversion = mongoose.model 'Conversion', ConversionSchema
+
+Events.on 'experiments|index|getParams', (event) ->
+  Conversion.create
+    event: 'view'
+    userId: event.userId
+    params: event.params
+
+module.exports = Conversion

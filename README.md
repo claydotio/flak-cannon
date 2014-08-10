@@ -17,7 +17,7 @@
 Create an experiment in `/experiments` and add it to `/experiments/index.js`  
 Do not edit running experiments, instead create new ones.
 
-The `assign()` method must be deterministic, parameters must be unique across all app experiments
+The `assign()` method must be deterministic, parameters must be unique across all experiments
 
 #### Example
 
@@ -25,7 +25,6 @@ The `assign()` method must be deterministic, parameters must be unique across al
 pick = require './lib/pick'
 
 class MyExperiment
-  app: 'MyApp'
 
   ###*
    * Function to assign experiment params
@@ -45,5 +44,5 @@ module.exports = new MyExperiment()
 
   - `POST /users`
   - `GET /users/:id`
-  - `POST /users/:id/app/:app/convert/:name`
-  - `GET /conversions/:name/app/:app?params=a`
+  - `POST /users/:id/convert/:name`
+  - `GET /conversions/:event/?param=a&from=1/1/1&to=1/1/1`

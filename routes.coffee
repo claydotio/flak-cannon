@@ -16,8 +16,8 @@ routes =
   'post /users': UserCtrl.create
 
   # Conversions
-  'post /users/:userId/app/:app/convert/:name': ConversionCtrl.create
-  'get conversions/:name/app/:app': ConversionCtrl.index
+  'post /users/:userId/convert/:name': ConversionCtrl.create
+  'get /conversions/:event': ConversionCtrl.index
 
 _.map routes, (handler, route) ->
   verb = route.split(' ')[0]

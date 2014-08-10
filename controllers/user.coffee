@@ -7,7 +7,11 @@ Experiments = require '../experiments'
 
 class UserCtrl
   index: (req) ->
-    User.findOne(id: req.params.id).exec()
+    User.findOne(id: req.params.id).exec().then (user) ->
+      Experiments.getParams user.id
+      .then (params) ->
+        id: user.id
+        params: params
 
   create: (req) ->
     metaId = req.body.id
