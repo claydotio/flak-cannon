@@ -1,0 +1,21 @@
+{
+  "name": "flak-cannon-2",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.coffee",
+  "scripts": {
+    "test": "node_modules/gulp/bin/gulp.js test",
+    "start": "node_modules/coffee-script/bin/coffee index.coffee",
+    "dev": "node_modules/gulp/bin/gulp.js"
+  },
+  "dependencies": {
+    "bluebird": "2.2.2",
+    "body-parser": "1.6.2",
+    "coffee-script": "1.7.1",
+    "express": "4.8.2",
+    "lodash": "2.4.1"
+  },
+  "devDependencies": {
+    "gulp-nodemon": "1.0.4"
+  }
+}
