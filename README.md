@@ -24,7 +24,7 @@ The `assign()` method must be deterministic, parameters must be unique across al
 ```coffee
 pick = require './lib/pick'
 
-module.exports = class MyExperiment
+class MyExperiment
   app: 'MyApp'
 
   ###*
@@ -36,6 +36,9 @@ module.exports = class MyExperiment
     return {
       homepage_button: pick.uniformChoice(userId, ['a', 'b', 'c'])
     }
+
+
+module.exports = new MyExperiment()
 ```
 
 ### API
@@ -43,4 +46,4 @@ module.exports = class MyExperiment
   - `POST /users`
   - `GET /users/:id`
   - `POST /users/:id/app/:app/convert/:name`
-  - `GET /:app/conversions/:name?params=a`
+  - `GET /conversions/:name/app/:app?params=a`

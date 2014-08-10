@@ -11,14 +11,19 @@
   "dependencies": {
     "bluebird": "2.2.2",
     "body-parser": "1.6.2",
+    "chance": "0.5.9",
     "coffee-script": "1.7.1",
     "express": "4.8.2",
-    "lodash": "2.4.1"
+    "lodash": "2.4.1",
+    "mongoose": "3.8.14",
+    "uuid": "1.4.1"
   },
   "devDependencies": {
     "clay-chai": "0.0.1",
+    "flare-gun": "0.3.0",
     "gulp-coffeelint": "0.3.3",
     "gulp-mocha": "0.5.2",
-    "gulp-nodemon": "1.0.4"
+    "gulp-nodemon": "1.0.4",
+    "joi": "4.6.2"
   }
 }
