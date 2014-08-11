@@ -26,6 +26,7 @@ pick = require './lib/pick'
 
 class MyExperiment
 
+  params: ['homepage_button']
   ###*
    * Function to assign experiment params
    * @param {String} userId

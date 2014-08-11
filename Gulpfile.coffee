@@ -3,19 +3,34 @@ nodemon = require 'gulp-nodemon'
 mocha = require 'gulp-mocha'
 coffeelint = require 'gulp-coffeelint'
 
-gulp.task 'default', ->
-  nodemon script: 'bin/flak_cannon.coffee', ignore: ['*.*']
+paths =
+  serverBin: './bin/flak_cannon.coffee'
+  tests: './tests/**/*.coffee'
+  scripts: [
+    './*.coffee'
+    './controllers/**/*.coffee'
+    './models/**/*.coffee'
+    './experiments/**/*.coffee'
+    './lib/**/*.coffee'
+  ]
 
-gulp.task 'test', ['lint'], ->
 
-  # Add ./ to NODE_PATH for tests
-  process.env.NODE_PATH += ':' + __dirname
+gulp.task 'default', ['server']
 
-  gulp.src './tests/**/*.coffee'
+gulp.task 'server', ['lint:scripts'], ->
+  nodemon script: paths.serverBin, ext: 'coffee'
+
+gulp.task 'test', ['lint:tests'], ->
+  gulp.src paths.tests
   .pipe mocha()
   .once 'end', -> process.exit()
 
-gulp.task 'lint', ->
-  gulp.src '*.coffee'
+gulp.task 'lint:scripts', ->
+  gulp.src paths.scripts
+    .pipe coffeelint()
+    .pipe coffeelint.reporter()
+
+gulp.task 'lint:tests', ->
+  gulp.src paths.tests
     .pipe coffeelint()
     .pipe coffeelint.reporter()

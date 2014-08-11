@@ -5,13 +5,23 @@ Experiments = require '../experiments/index'
 Conversion = require '../models/conversion'
 
 class ConversionCtrl
-  index: (req) ->
+  index: ->
+    Conversion.distinct('event').exec()
+    .then (conversions) ->
+      _.map conversions, (conversion) ->
+        id: conversion
+
+  results: (req) ->
     app = req.params.app
     event = req.params.event
 
     param = req.query.param
+    to = req.query.to or new Date()
     from = req.query.from
-    to = req.query.to
+
+    if not from
+      from = new Date()
+      from.setDate from - 7
 
     query =
       event: event
@@ -22,9 +32,6 @@ class ConversionCtrl
     query["params.#{param}"] = {$exists: true}
 
     viewQuery = _.defaults {event: 'view'}, _.cloneDeep query
-
-    # views:
-    #   login_button: 123
 
     conversions = Conversion.aggregate [
       {$match: query}

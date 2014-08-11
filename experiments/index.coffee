@@ -16,3 +16,5 @@ module.exports =
         userId: userId
         params: params
       return params
+  getUsedParams: ->
+    Promise.resolve _.flatten _.pluck experiments, 'params'

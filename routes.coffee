@@ -12,12 +12,14 @@ ConversionCtrl = require './controllers/conversion'
 routes =
 
   # Users
+  'get /users/params': UserCtrl.getParams
   'get /users/:id': UserCtrl.index
   'post /users': UserCtrl.create
 
   # Conversions
   'post /users/:userId/convert/:name': ConversionCtrl.create
-  'get /conversions/:event': ConversionCtrl.index
+  'get /conversions': ConversionCtrl.index
+  'get /conversions/:event': ConversionCtrl.results
 
 _.map routes, (handler, route) ->
   verb = route.split(' ')[0]

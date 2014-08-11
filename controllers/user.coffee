@@ -13,6 +13,11 @@ class UserCtrl
         id: user.id
         params: params
 
+  getParams: ->
+    Experiments.getUsedParams().then (params) ->
+      _.map params, (param) ->
+        id: param
+
   create: (req) ->
     metaId = req.body.id
 

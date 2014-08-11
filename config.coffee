@@ -3,4 +3,5 @@ module.exports =
   envs:
     DEV: 'development'
     PROD: 'production'
-  port: process.env.PORT or 3000
+    TEST: 'test'
+  port: process.env.PORT or 3001
