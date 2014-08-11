@@ -7,14 +7,15 @@ experiments = [
 ]
 
 module.exports =
-  getParams: (userId, app) ->
+  getParams: (userId, dontEmit) ->
     Promise.resolve _.reduce experiments, (params, experiment) ->
       _.defaults params, experiment.assign(userId)
     , {}
     .then (params) ->
-      Events.emit 'experiments|index|getParams',
-        userId: userId
-        params: params
+      unless dontEmit
+        Events.emit 'experiments|index|getParams',
+          userId: userId
+          params: params
       return params
   getUsedParams: ->
     Promise.resolve _.flatten _.pluck experiments, 'params'

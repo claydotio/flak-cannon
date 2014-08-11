@@ -75,7 +75,7 @@ class ConversionCtrl
     userId = req.params.userId
     event = req.params.name
 
-    Experiments.getParams userId
+    Experiments.getParams userId, true
     .then (params) ->
       Conversion.create
         event: event

@@ -33,12 +33,15 @@ describe 'Conversion Routes', ->
 
     queryParams = "param=login_button&from=#{from}&to=#{to}"
 
+    for i in [0..30]
+      flare = flare
+        .post '/users'
+        .expect 200
+        .stash "jed#{i}"
+        .post "/users/:jed#{i}.id/convert/messageAction"
+        .expect 200
+
     flare
-      .post '/users'
-      .expect 200
-      .stash 'jed'
-      .post '/users/:jed.id/convert/messageAction'
-      .expect 200
       .get "/conversions/messageAction?#{queryParams}"
       .expect 200, Joi.object().required().keys
         views: Joi.array().required().includes Joi.object().required().keys
