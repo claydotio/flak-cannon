@@ -49,7 +49,7 @@ describe 'User Routes', ->
         id: Joi.string().required()
         meta: Joi.object()
         params: Joi.object().required().keys
-          login_button: Joi.string().required()
+          login_button: Joi.string().required().regex(/^(red|green|blue)$/)
 
   it 'gets params', ->
     flare

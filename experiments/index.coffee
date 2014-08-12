@@ -2,9 +2,9 @@ _ = require 'lodash'
 Promise = require 'bluebird'
 Events = require '../lib/events'
 
-experiments = [
-  require './login_button'
-]
+experiments = require './experiment_list'
+
+console.log 'EXPS', experiments
 
 module.exports =
   getParams: (userId, dontEmit) ->
