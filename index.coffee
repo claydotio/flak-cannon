@@ -7,11 +7,9 @@ morgan = require 'morgan'
 routes = require './routes'
 config = require './config'
 
-mongoDatabase = 'flak_cannon_test'
-mongoHost = 'localhost'
-mongoPort = 27017
+mongo = config.mongo
 
-mongoose.connect "mongodb://#{mongoHost}:#{mongoPort}/#{mongoDatabase}"
+mongoose.connect "mongodb://#{mongo.host}:#{mongo.port}/#{mongo.database}"
 
 app = express()
 

@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.coffee",
   "scripts": {
-    "test": "NODE_PATH=. NODE_ENV=test node_modules/gulp/bin/gulp.js test",
+    "test": "MONGO_DB=flak_cannon_test NODE_PATH=. NODE_ENV=test node_modules/gulp/bin/gulp.js test",
     "start": "node_modules/coffee-script/bin/coffee bin/flak_cannon.coffee",
-    "dev": "NODE_ENV=development node_modules/gulp/bin/gulp.js"
+    "dev": "MONGO_DB=flak_cannon_test NODE_ENV=development node_modules/gulp/bin/gulp.js"
   },
   "dependencies": {
     "bluebird": "2.2.2",
