@@ -1,4 +1,4 @@
-# Flak Cannon - [![Build Status](https://drone.io/github.com/Zolmeister/flak-cannon/status.png)](https://drone.io/github.com/Zolmeister/flak-cannon/latest)
+# Flak Cannon [![Build Status](https://drone.io/github.com/Zolmeister/flak-cannon/status.png)](https://drone.io/github.com/Zolmeister/flak-cannon/latest)
 
 AB testing framework - server
 
