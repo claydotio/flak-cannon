@@ -23,6 +23,7 @@
   "devDependencies": {
     "clay-chai": "0.0.1",
     "flare-gun": "0.3.2",
+    "gulp": "3.8.7",
     "gulp-coffeelint": "0.3.3",
     "gulp-mocha": "0.5.2",
     "gulp-nodemon": "1.0.4",
