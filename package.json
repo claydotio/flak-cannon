@@ -1,6 +1,6 @@
 {
-  "name": "flak-cannon-2",
-  "version": "0.0.1",
+  "name": "flak-cannon",
+  "version": "0.1.0",
   "description": "",
   "main": "index.coffee",
   "scripts": {
