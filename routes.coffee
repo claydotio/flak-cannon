@@ -34,7 +34,7 @@ _.map routes, (handler, route) ->
       # TODO: use proper logger
       console.log err
 
-      if config.env == config.envs.DEV
+      if config.ENV == config.ENVS.DEV
         res.status(500).end err
       res.status(500).end null
 

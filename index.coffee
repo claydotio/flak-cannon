@@ -6,9 +6,11 @@ cors = require 'cors'
 routes = require './routes'
 config = require './config'
 
-mongo = config.mongo
+mongo = config.MONGO
 
 mongoose.connect "mongodb://#{mongo.host}:#{mongo.port}/#{mongo.database}"
+mongoose.connection.on 'error', console.error
+mongoose.connection.once 'open', -> console.log 'Connected to mongoDB'
 
 app = express()
 
