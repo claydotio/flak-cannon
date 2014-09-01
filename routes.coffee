@@ -8,8 +8,10 @@ router = express.Router()
 
 UserCtrl = require './controllers/user'
 ConversionCtrl = require './controllers/conversion'
+HealthCtrl = require './controllers/health'
 
 routes =
+  'get /healthcheck': HealthCtrl.check
 
   # Users
   'get /users/params': UserCtrl.getParams
