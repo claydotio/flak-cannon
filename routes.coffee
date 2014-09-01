@@ -8,7 +8,6 @@ router = express.Router()
 
 UserCtrl = require './controllers/user'
 ConversionCtrl = require './controllers/conversion'
-HealthCtrl = require './controllers/health'
 
 routes =
 
@@ -21,9 +20,6 @@ routes =
   'post /users/:userId/convert/:name': ConversionCtrl.create
   'get /conversions': ConversionCtrl.index
   'get /conversions/:event': ConversionCtrl.results
-
-  # Healthcheck
-  'get /healthcheck': HealthCtrl.state
 
 _.map routes, (handler, route) ->
   verb = route.split(' ')[0]
@@ -39,7 +35,7 @@ _.map routes, (handler, route) ->
       console.log err
 
       if config.ENV == config.ENVS.DEV
-        res.status(500).end err.stack
+        res.status(500).end err
       res.status(500).end null
 
 module.exports = router
