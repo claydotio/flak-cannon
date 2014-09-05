@@ -11,10 +11,10 @@
   "dependencies": {
     "bluebird": "2.2.2",
     "body-parser": "1.6.2",
-    "chance": "0.5.9",
     "coffee-script": "1.7.1",
     "cors": "2.4.1",
     "express": "4.8.2",
+    "flak-cannon-picker": "0.0.1",
     "lodash": "2.4.1",
     "mongoose": "3.8.14",
     "pm2": "0.10.3",

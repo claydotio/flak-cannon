@@ -4,7 +4,13 @@ Events = require '../lib/events'
 
 experiments = require './experiment_list'
 
-console.log 'EXPS', experiments
+# Internal usage at clay.io
+try
+  experiments = require 'clay-flak-cannon-experiments'
+catch e
+  null
+
+console.log '# Experiments: ', experiments.length
 
 module.exports =
   getParams: (userId, dontEmit) ->

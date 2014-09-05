@@ -19,6 +19,7 @@ Set the `config.coffee` environment params correctly (requires MongoDB)
 $ npm start
 ```
 
+
 ## Usage
 
 ### Experiments
@@ -35,7 +36,7 @@ The `assign()` method must be deterministic, parameters must be unique across al
 #### Example
 
 ```coffee
-pick = require './lib/pick'
+picker = require 'flak-cannon-picker'
 
 class MyExperiment
 
@@ -47,7 +48,7 @@ class MyExperiment
   ###
   assign: (userId) ->
     return {
-      homepage_button: pick.uniformChoice(userId, ['a', 'b', 'c'])
+      homepage_button: picker.uniformChoice(userId, ['a', 'b', 'c'])
     }
 
 

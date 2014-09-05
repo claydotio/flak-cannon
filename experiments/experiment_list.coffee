@@ -1,3 +1,1 @@
-module.exports = [
-  require './login_button'
-]
+module.exports = []
