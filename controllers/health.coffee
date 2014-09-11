@@ -11,8 +11,8 @@ class HealthCtrl
       User.findOne().exec()
     ]).spread (conversion, user) ->
       result =
-        ConversionModel: not (conversion.value() instanceof Error)
-        UserModel: not (user.value() instanceof Error)
+        ConversionModel: conversion.isFulfilled()
+        UserModel: user.isFulfilled()
 
       result.healthy = _.every _.values result
       return result

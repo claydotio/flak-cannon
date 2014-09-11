@@ -1,14 +1,16 @@
 _ = require 'lodash'
 Promise = require 'bluebird'
-Events = require '../lib/events'
 
+Events = require '../lib/events'
 experiments = require './experiment_list'
+config = require '../config'
 
 # Internal usage at clay.io
-try
-  experiments = require 'clay-flak-cannon-experiments'
-catch e
-  null
+unless config.ENV is config.ENVS.TEST
+  try
+    experiments = require 'clay-flak-cannon-experiments'
+  catch e
+    null
 
 console.log '# Experiments: ', experiments.length
 
