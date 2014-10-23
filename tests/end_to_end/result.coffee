@@ -21,15 +21,39 @@ describe 'Result Routes', ->
     queryParams = "event=signup&param=login_button&from=#{from}&to=#{to}"
     flare
       .get "/results?#{queryParams}"
-      .expect 200, Joi.object().required().keys
-        views: Joi.array().required().includes Joi.object().required().keys
-          param: Joi.string().required()
-          count: Joi.number().required()
-        counts: Joi.array().required().includes(
-          Joi.array().required().includes(
-            Joi.object().required().keys
-              date: Joi.string().required()
-              value: Joi.string().required()
-              count: Joi.number().required()
+      .expect 200, Joi.object().keys
+        views: Joi.array().includes Joi.object().keys
+          param: Joi.string()
+          count: Joi.number()
+        counts: Joi.array().includes(
+          Joi.array().includes(
+            Joi.object().keys
+              date: Joi.string()
+              value: Joi.string()
+              count: Joi.number()
             )
           )
+
+  it 'supports uniq conversions', ->
+    from = new Date()
+    from.setDate(from.getDate() - 7)
+    to = new Date()
+    to.setDate(to.getDate() + 1)
+
+    queryParams = "event=only_one&param=login_button&from=#{from}&to=#{to}"
+    flare
+      .post '/conversions', {event: 'only_one', uniq: '123', data: id: 123}
+      .expect 200
+      .post '/conversions', {event: 'only_one', uniq: '123', data: id: 123}
+      .expect 200
+      .get "/results?#{queryParams}"
+      .expect 200, Joi.object().keys
+        views: Joi.array().includes
+          param: Joi.string()
+          count: 1
+        counts: Joi.array().includes(
+          Joi.array().includes
+            date: Joi.string(),
+            value: Joi.string(),
+            count: 1
+        )

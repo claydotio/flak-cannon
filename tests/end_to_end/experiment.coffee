@@ -16,4 +16,4 @@ describe 'Experiment Routes', ->
     flare
       .get '/experiments'
       .expect 200, Joi.array().includes
-        id: Joi.string().required()
+        id: Joi.string()

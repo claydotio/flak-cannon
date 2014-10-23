@@ -13,12 +13,12 @@ describe 'Conversion Routes', ->
         event: 'signup'
         data:
           id: 123
-        timestamp: Joi.string().required()
-        params: Joi.object().required().keys
-          login_button: Joi.string().required()
+        timestamp: Joi.string()
+        params: Joi.object().keys
+          login_button: Joi.string()
 
   it 'gets conversions', ->
     flare
       .get '/conversions'
       .expect 200, Joi.array().includes
-        id: Joi.string().required()
+        id: Joi.string()

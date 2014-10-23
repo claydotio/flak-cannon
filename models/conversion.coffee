@@ -7,6 +7,7 @@ ConversionSchema = new Schema(
   event: String,
   timestamp: { type: Date, default: Date.now },
   data: Object,
+  uniq: String,
   params: Object
 )
 

@@ -96,6 +96,7 @@ Request
 {
   {
     event: 'signup',
+    uniq: 'someuniqkey', // optional, ensures uniqueness
     data:{
       id: 123
     }
