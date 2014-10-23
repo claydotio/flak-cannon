@@ -24,8 +24,6 @@ $ npm start
 
 ### Experiments
 
-`/experiments`
-
 #### Creating and Editing an Experiment
 
 Create an experiment in `/experiments` and add it to `/experiments/index.coffee`  
@@ -43,12 +41,12 @@ class MyExperiment
   params: ['homepage_button']
   ###*
    * Function to assign experiment params
-   * @param {String} userId
+   * @param {Object} data - guaranteed to have {id} prop
    * @returns {Object<String|Number>} parameter assignments
   ###
-  assign: (userId) ->
+  assign: (data) ->
     return {
-      homepage_button: picker.uniformChoice(userId, ['a', 'b', 'c'])
+      homepage_button: picker.uniformChoice(data.id, ['a', 'b', 'c'])
     }
 
 
@@ -57,35 +55,25 @@ module.exports = new MyExperiment()
 
 ### API
 
-#### `POST /users`
+#### `POST /experiments`
 
-request body can contain metadata for users, and `id` properties will be synced
+Request:
+
+```js
+{
+  id: 123
+}
+```
 
 Response:
 
 ```js
 {
-  id: '123e4567-e89b-12d3-a456-426655440000', // flak cannon id
-  params: {
-    login_button: 'red'
-  }
+  login_button: 'red'
 }
 ```
 
-#### `GET /users/:id`
-
-Response:
-
-```js
-{
-  id: '123e4567-e89b-12d3-a456-426655440000', // flak cannon id
-  params: {
-    login_button: 'red'
-  }
-}
-```
-
-#### `GET /users/params`
+#### `GET /experiments`
 
 Response:
 
@@ -100,14 +88,29 @@ Response:
 ]
 ```
 
-#### `POST /users/:id/convert/:name`
+#### `POST /conversions`
+
+Request
+
+```js
+{
+  {
+    event: 'signup',
+    data:{
+      id: 123
+    }
+  }
+}
+```
 
 Response
 
 ```js
 {
   event: 'signup',
-  userId: '123e4567-e89b-12d3-a456-426655440000',
+  data: {
+    id: 123
+  },
   timestamp: 'January 1, 2038',
   params: {
     login_button: 'red'
@@ -127,7 +130,7 @@ Response
 ]
 ```
 
-#### `GET /conversions/:name?param=<param>&from=<Date>&to=<Date>`
+#### `GET /results/?event=<event>param=<param>&from=<Date>&to=<Date>`
 
 Response
 

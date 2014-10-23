@@ -1,6 +1,6 @@
 {
   "name": "flak-cannon",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "",
   "main": "index.coffee",
   "scripts": {
@@ -14,15 +14,16 @@
     "coffee-script": "1.7.1",
     "cors": "2.4.1",
     "express": "4.8.2",
-    "flak-cannon-picker": "0.0.1",
+    "flak-cannon-picker": "0.0.2",
     "lodash": "2.4.1",
+    "loglevel": "1.1.0",
     "mongoose": "3.8.14",
     "pm2": "0.10.3",
     "uuid": "1.4.1"
   },
   "devDependencies": {
     "clay-chai": "0.0.1",
-    "flare-gun": "0.3.2",
+    "flare-gun": "0.4.0",
     "gulp": "3.8.7",
     "gulp-coffeelint": "0.3.3",
     "gulp-mocha": "0.5.2",

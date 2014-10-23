@@ -2,7 +2,6 @@ Promise = require 'bluebird'
 path = require 'path'
 
 Conversion = require 'models/conversion'
-User = require 'models/user'
 
 
 ###
@@ -24,6 +23,5 @@ require.cache[fullExperimentsPath].exports = experiments
 before (done) ->
   Promise.all [
     Conversion.remove().exec()
-    User.remove().exec()
   ]
   .nodeify done

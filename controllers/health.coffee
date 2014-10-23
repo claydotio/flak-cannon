@@ -2,17 +2,16 @@ Promise = require 'bluebird'
 _ = require 'lodash'
 
 Conversion = require '../models/conversion'
-User = require '../models/user'
+
+TWO_SECONDS_MS = 1000 * 2
 
 class HealthCtrl
   check: ->
     Promise.settle([
-      Conversion.findOne().exec()
-      User.findOne().exec()
-    ]).spread (conversion, user) ->
+      Promise.cast(Conversion.findOne().exec()).timeout TWO_SECONDS_MS
+    ]).spread (conversion) ->
       result =
         ConversionModel: conversion.isFulfilled()
-        UserModel: user.isFulfilled()
 
       result.healthy = _.every _.values result
       return result

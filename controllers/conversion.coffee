@@ -11,77 +11,19 @@ class ConversionCtrl
       _.map conversions, (conversion) ->
         id: conversion
 
-  results: (req) ->
-    app = req.params.app
-    event = req.params.event
-
-    param = req.query.param
-    to = req.query.to or new Date()
-    from = req.query.from
-
-    if not from
-      from = new Date()
-      from.setDate from - 7
-
-    query =
-      event: event
-      timestamp:
-        $gte: new Date(from)
-        $lte: new Date(to)
-
-    query["params.#{param}"] = {$exists: true}
-
-    viewQuery = _.defaults {event: 'view'}, _.cloneDeep query
-
-    conversions = Conversion.aggregate [
-      {$match: query}
-      {$group:
-        _id:
-          param: "$params.#{param}"
-          month:
-            $month: '$timestamp'
-          day:
-            $dayOfMonth: '$timestamp'
-          year:
-            $year: '$timestamp'
-        count:
-          $sum: 1
-      }
-    ]
-    .exec().then (conversions) ->
-      _.map conversions, (conversion) ->
-        _id = conversion._id
-        date: new Date(_id.year, _id.month, _id.day)
-        value: _id.param
-        count: conversion.count
-
-    views = Conversion.aggregate [
-      {$match: viewQuery}
-      {$group:
-        _id:
-          param: "$params.#{param}"
-        count:
-          $sum: 1
-      }
-    ]
-    .exec()
-
-    Promise.all [views, conversions]
-    .spread (views, conversions) ->
-      views: _.map views, (view) -> {param: view._id.param, count: view.count}
-      counts: _.sortBy (_.values _.groupBy conversions, 'date'), 'date'
-
   create: (req) ->
-    userId = req.params.userId
-    event = req.params.name
+    event = req.body.event
+    data = req.body.data
 
-    Experiments.getParams userId, true
+    unless event
+      return Promise.reject new Error 'event required'
+
+    unless data.id
+      return Promise.reject new Error 'id is required in data'
+
+    Experiments.getParams data, true
     .then (params) ->
-      Conversion.create
-        event: event
-        userId: userId
-        params: params
-
+      Conversion.create {event, data, params}
 
 
 module.exports = new ConversionCtrl()

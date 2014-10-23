@@ -6,7 +6,7 @@ Schema = mongoose.Schema
 ConversionSchema = new Schema(
   event: String,
   timestamp: { type: Date, default: Date.now },
-  userId: String,
+  data: Object,
   params: Object
 )
 
@@ -21,7 +21,7 @@ Conversion = mongoose.model 'Conversion', ConversionSchema
 Events.on 'experiments|index|getParams', (event) ->
   Conversion.create
     event: 'view'
-    userId: event.userId
+    data: event.data
     params: event.params
 
 module.exports = Conversion

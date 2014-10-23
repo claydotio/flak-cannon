@@ -1,27 +1,27 @@
 _ = require 'lodash'
 Promise = require 'bluebird'
 express = require 'express'
+log = require 'loglevel'
 
 config = require './config'
 
 router = express.Router()
 
-UserCtrl = require './controllers/user'
 ConversionCtrl = require './controllers/conversion'
+ExperimentCtrl = require './controllers/experiment'
+ResultCtrl = require './controllers/result'
 HealthCtrl = require './controllers/health'
 
 routes =
   'get /healthcheck': HealthCtrl.check
 
-  # Users
-  'get /users/params': UserCtrl.getParams
-  'get /users/:id': UserCtrl.index
-  'post /users': UserCtrl.create
+  'post /experiments': ExperimentCtrl.assign
+  'get /experiments': ExperimentCtrl.index
 
-  # Conversions
-  'post /users/:userId/convert/:name': ConversionCtrl.create
+  'post /conversions': ConversionCtrl.create
   'get /conversions': ConversionCtrl.index
-  'get /conversions/:event': ConversionCtrl.results
+
+  'get /results': ResultCtrl.index
 
 _.map routes, (handler, route) ->
   verb = route.split(' ')[0]
@@ -32,9 +32,7 @@ _.map routes, (handler, route) ->
     .then (result) ->
       res.json result
     .catch (err) ->
-
-      # TODO: use proper logger
-      console.log err
+      log.trace err
 
       if config.ENV == config.ENVS.DEV
         res.status(500).end err

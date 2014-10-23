@@ -11,5 +11,4 @@ describe 'health Check', ->
       .get '/healthcheck'
       .expect 200,
         ConversionModel: true
-        UserModel: true
         healthy: true
