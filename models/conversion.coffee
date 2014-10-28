@@ -11,11 +11,13 @@ ConversionSchema = new Schema(
   params: Object
 )
 
+ # coffeelint: disable=missing_fat_arrows
 ConversionSchema.method 'toJSON', ->
   conversion = this.toObject()
   delete conversion.__v
   delete conversion._id
   return conversion
+ # coffeelint: enable=missing_fat_arrows
 
 Conversion = mongoose.model 'Conversion', ConversionSchema
 
