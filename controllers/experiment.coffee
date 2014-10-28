@@ -5,7 +5,16 @@ Experiments = require '../experiments'
 
 class ExperimentCtrl
   assign: (req) ->
-    Experiments.getParams req.body
+    userId = req.body.userId
+    userId ?= req.body.id # LEGACY
+    fromUserId = req.body.fromUserId
+
+    if fromUserId
+      Experiments.createUserIdMapping userId, fromUserId
+      .then ->
+        Experiments.getParams userId
+    else
+      Experiments.getParams userId
 
   index: ->
     Experiments.getUsedParams().then (params) ->

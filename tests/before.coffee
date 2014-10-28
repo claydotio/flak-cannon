@@ -2,6 +2,7 @@ Promise = require 'bluebird'
 path = require 'path'
 
 Conversion = require 'models/conversion'
+RedisService = require 'services/redis'
 
 
 ###
@@ -20,8 +21,8 @@ orig = require fullExperimentsPath
 require.cache[fullExperimentsPath].exports = experiments
 
 
-before (done) ->
+before ->
   Promise.all [
     Conversion.remove().exec()
+    RedisService.flushdbAsync()
   ]
-  .nodeify done

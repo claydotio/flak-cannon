@@ -11,4 +11,5 @@ describe 'health Check', ->
       .get '/healthcheck'
       .expect 200,
         ConversionModel: true
+        Redis: true
         healthy: true

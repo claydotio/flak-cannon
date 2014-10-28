@@ -14,16 +14,17 @@ class ConversionCtrl
 
   create: (req) ->
     event = req.body.event
-    data = req.body.data
+    userId = req.body.userId
+    userId ?= req.body.data.id # LEGACY
     uniq = req.body.uniq
 
     unless event
       return Promise.reject new Error 'event required'
 
-    unless data.id
-      return Promise.reject new Error 'id is required in data'
+    unless userId
+      return Promise.reject new Error 'userId is required'
 
-    Experiments.getParams data, true
+    Experiments.getParams userId, true
     .then (params) ->
       if uniq
         Conversion.findOne {uniq}
@@ -31,11 +32,11 @@ class ConversionCtrl
           if conversion
             return null
           else
-            log.info 'CONVERSION:', {event, data, params, uniq}
-            Conversion.create {event, data, params, uniq}
+            log.info 'CONVERSION:', {event, userId, params, uniq}
+            Conversion.create {event, userId, params, uniq}
       else
-        log.info 'CONVERSION:', {event, data, params, uniq}
-        Conversion.create {event, data, params}
+        log.info 'CONVERSION:', {event, userId, params, uniq}
+        Conversion.create {event, userId, params}
 
 
 module.exports = new ConversionCtrl()

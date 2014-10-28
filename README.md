@@ -39,14 +39,9 @@ picker = require 'flak-cannon-picker'
 class MyExperiment
 
   params: ['homepage_button']
-  ###*
-   * Function to assign experiment params
-   * @param {Object} data - guaranteed to have {id} prop
-   * @returns {Object<String|Number>} parameter assignments
-  ###
-  assign: (data) ->
+  assign: (userId) ->
     return {
-      homepage_button: picker.uniformChoice(data.id, ['a', 'b', 'c'])
+      homepage_button: picker.uniformChoice(userId, ['a', 'b', 'c'])
     }
 
 
@@ -61,7 +56,8 @@ Request:
 
 ```js
 {
-  id: 123
+  userId: 123
+  fromUserId: 1234 // optional, forces user into the same experiment group (forever)
 }
 ```
 
@@ -94,13 +90,9 @@ Request
 
 ```js
 {
-  {
-    event: 'signup',
-    uniq: 'someuniqkey', // optional, ensures uniqueness
-    data:{
-      id: 123
-    }
-  }
+  event: 'signup',
+  uniq: 'someuniqkey', // optional, ensures uniqueness
+  userId: 123
 }
 ```
 
@@ -109,9 +101,7 @@ Response
 ```js
 {
   event: 'signup',
-  data: {
-    id: 123
-  },
+  userId: 123,
   timestamp: 'January 1, 2038',
   params: {
     login_button: 'red'

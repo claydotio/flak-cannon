@@ -2,6 +2,7 @@ Promise = require 'bluebird'
 _ = require 'lodash'
 
 Conversion = require '../models/conversion'
+RedisService = require '../services/redis'
 
 TWO_SECONDS_MS = 1000 * 2
 
@@ -12,6 +13,7 @@ class HealthCtrl
     ]).spread (conversion) ->
       result =
         ConversionModel: conversion.isFulfilled()
+        Redis: RedisService.connected
 
       result.healthy = _.every _.values result
       return result

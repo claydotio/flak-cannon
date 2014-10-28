@@ -42,15 +42,15 @@ describe 'Result Routes', ->
 
     queryParams = "event=only_one&param=login_button&from=#{from}&to=#{to}"
     flare
-      .post '/conversions', {event: 'only_one', uniq: '123', data: id: 123}
+      .post '/conversions', {event: 'only_one', uniq: '123', userId: 123}
       .expect 200
-      .post '/conversions', {event: 'only_one', uniq: '123', data: id: 123}
+      .post '/conversions', {event: 'only_one', uniq: '123', userId: 123}
       .expect 200
       .get "/results?#{queryParams}"
       .expect 200, Joi.object().keys
         views: Joi.array().includes
           param: Joi.string()
-          count: 1
+          count: Joi.number()
         counts: Joi.array().includes(
           Joi.array().includes
             date: Joi.string(),
