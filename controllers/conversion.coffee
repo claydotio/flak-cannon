@@ -15,7 +15,7 @@ class ConversionCtrl
   create: (req) ->
     event = req.body.event
     userId = req.body.userId
-    userId ?= req.body.data.id # LEGACY
+    userId ?= req.body.data?.id # LEGACY
     uniq = req.body.uniq
 
     unless event

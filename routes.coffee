@@ -34,8 +34,6 @@ _.map routes, (handler, route) ->
     .catch (err) ->
       log.trace err
 
-      if config.ENV == config.ENVS.DEV
-        res.status(500).end err
       res.status(500).end null
 
 module.exports = router
