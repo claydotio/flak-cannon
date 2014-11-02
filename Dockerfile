@@ -5,6 +5,7 @@ FROM dockerfile/nodejs:latest
 RUN apt-get install -y git
 
 # Copy source
+ADD ./node_modules /opt/flak-cannon/node_modules
 ADD . /opt/flak-cannon
 
 # Set directory
