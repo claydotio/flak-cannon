@@ -123,6 +123,11 @@ Response
 
 #### `GET /results/?event=<event>param=<param>&from=<Date>&to=<Date>`
 
+optionally add `viewCounter=dau|d7` to use a different view count aggregate
+
+  - `dau` counts the number of daily active users (unique by server date-time)
+  - `d7` counts the number of signup events for 7 days ago (shifted from/to)
+
 Response
 
 ```js

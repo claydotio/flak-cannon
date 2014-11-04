@@ -22,16 +22,14 @@ getUserIdMapping = (userId) ->
     return mappedUserId or userId
 
 module.exports =
-  getParams: (userId, dontEmit) ->
+  getParams: (userId) ->
     getUserIdMapping userId
     .then (userId) ->
       Promise.resolve _.reduce experiments, (params, experiment) ->
         _.defaults params, experiment.assign(userId)
       , {}
-      .then (params) ->
-        unless dontEmit
-          Events.emit 'experiments|index|getParams', {params, userId}
-        return params
+  registerView: (params, userId, timestamp) ->
+    Events.emit 'experiments|index|getParams', {params, userId, timestamp}
   getUsedParams: ->
     Promise.resolve _.flatten _.pluck experiments, 'params'
 

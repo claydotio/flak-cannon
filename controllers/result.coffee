@@ -1,5 +1,6 @@
 _ = require 'lodash'
 Promise = require 'bluebird'
+moment = require 'moment'
 
 Experiments = require '../experiments/index'
 Conversion = require '../models/conversion'
@@ -9,11 +10,8 @@ class ResultCtrl
     event = req.query.event
     param = req.query.param
     to = req.query.to or new Date()
-    from = req.query.from
-
-    if not from
-      from = new Date()
-      from.setDate from - 7
+    from = req.query.from or moment().subtract 7, 'days'
+    viewCounter = req.query.viewCounter
 
     query =
       event: event
@@ -47,16 +45,51 @@ class ResultCtrl
         value: _id.param
         count: conversion.count
 
-    views = Conversion.aggregate [
-      {$match: viewQuery}
-      {$group:
-        _id:
-          param: "$params.#{param}"
-        count:
-          $sum: 1
-      }
-    ]
-    .exec()
+
+    d7Query =
+      event: event
+      timestamp:
+        $gte: new Date moment(new Date from).subtract 7, 'days'
+        $lte: new Date moment(new Date to).subtract 7, 'days'
+
+    d7Query["params.#{param}"] = {$exists: true}
+
+    views = switch viewCounter
+      when 'dau' then Conversion.aggregate([
+          {$match: viewQuery}
+          {$group:
+            _id:
+              param: "$params.#{param}"
+              day: { $dayOfMonth: '$timestamp' }
+              month: { $month: '$timestamp' }
+              year: { $year: '$timestamp' }
+              userId: '$userId'
+          }
+          {$group:
+            _id:
+              param: '$_id.param'
+            count:
+              $sum: 1
+          }
+        ]).exec()
+      when 'd7' then Conversion.aggregate([
+          {$match: _.defaults {event: 'signup'}, _.cloneDeep d7Query}
+          {$group:
+            _id:
+              param: "$params.#{param}"
+            count:
+              $sum: 1
+          }
+        ]).exec()
+      else Conversion.aggregate([
+          {$match: viewQuery}
+          {$group:
+            _id:
+              param: "$params.#{param}"
+            count:
+              $sum: 1
+          }
+        ]).exec()
 
     Promise.all [views, conversions]
     .spread (views, conversions) ->

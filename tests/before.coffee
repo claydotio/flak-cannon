@@ -1,9 +1,11 @@
 Promise = require 'bluebird'
 path = require 'path'
+log = require 'loglevel'
 
 Conversion = require 'models/conversion'
 RedisService = require 'services/redis'
 
+log.disableAll()
 
 ###
   Override Experiments

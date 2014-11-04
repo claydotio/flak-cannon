@@ -31,3 +31,14 @@ describe 'Conversion Routes', ->
       .get '/conversions'
       .expect 200, Joi.array().includes
         id: Joi.string()
+
+  it 'converts with timestamp for testing', ->
+    time = Date.now()
+    flare
+      .post '/conversions', {event: 'signup', userId: 123, timestamp: time}
+      .expect 200,
+        event: 'signup'
+        userId: '123'
+        timestamp: Joi.string().valid(new Date(time).toISOString())
+        params: Joi.object().keys
+          login_button: Joi.string()

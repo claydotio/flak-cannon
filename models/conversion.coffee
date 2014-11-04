@@ -26,5 +26,7 @@ Events.on 'experiments|index|getParams', (event) ->
     event: 'view'
     userId: event.userId
     params: event.params
+    timestamp: event.timestamp or Date.now()
+
 
 module.exports = Conversion

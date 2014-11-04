@@ -4,8 +4,6 @@ mongoose = require 'mongoose'
 cors = require 'cors'
 log = require 'loglevel'
 
-log.enableAll()
-
 routes = require './routes'
 config = require './config'
 
