@@ -17,6 +17,7 @@ routes =
 
   'post /experiments': ExperimentCtrl.assign
   'get /experiments': ExperimentCtrl.index
+  'post /experiments/override': ExperimentCtrl.override
 
   'post /conversions': ConversionCtrl.create
   'get /conversions': ConversionCtrl.index
