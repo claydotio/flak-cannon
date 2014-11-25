@@ -1,6 +1,5 @@
 {
   "name": "flak-cannon",
-  "version": "2.2.1",
   "description": "",
   "main": "index.coffee",
   "scripts": {
