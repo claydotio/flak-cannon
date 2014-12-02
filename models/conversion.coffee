@@ -4,12 +4,14 @@ mongoose = require 'mongoose'
 Schema = mongoose.Schema
 
 ConversionSchema = new Schema(
-  event: String,
+  event: {type: String},
   timestamp: { type: Date, default: Date.now },
   userId: String,
-  uniq: String,
-  params: Object
+  uniq: {type: String, unique: true, sparse: true},
+  params: {type: Object}
 )
+
+ConversionSchema.index({event: 1, timestamp: 1, params: 1})
 
  # coffeelint: disable=missing_fat_arrows
 ConversionSchema.method 'toJSON', ->

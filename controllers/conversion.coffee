@@ -1,6 +1,7 @@
 _ = require 'lodash'
 Promise = require 'bluebird'
 log = require 'loglevel'
+moment = require 'moment'
 
 Experiments = require '../experiments/index'
 Conversion = require '../models/conversion'
@@ -8,7 +9,14 @@ config = require '../config'
 
 class ConversionCtrl
   index: ->
-    Conversion.distinct('event').exec()
+    # FIXME: this should be fast without timestamp checks.
+    #        upgrading to Mongodb v2.6 may fix this
+    Conversion.distinct 'event', {
+      event: {$ne: 'view'}
+      timestamp:
+        $gte: new Date(moment().subtract 2, 'days')
+    }
+    .exec()
     .then (conversions) ->
       _.map conversions, (conversion) ->
         id: conversion
