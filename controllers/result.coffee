@@ -10,7 +10,7 @@ eventRangeMatch = (event, from, to) ->
   event: event
   timestamp:
     $gte: new Date(from)
-    $lte: new Date(to)
+    $lt: new Date(to)
 
 conversionMatch = (event, from, to, param) ->
   match = eventRangeMatch(event, from, to)
