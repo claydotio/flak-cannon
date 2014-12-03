@@ -5,6 +5,53 @@ moment = require 'moment'
 Experiments = require '../experiments/index'
 Conversion = require '../models/conversion'
 
+
+eventRangeMatch = (event, from, to) ->
+  event: event
+  timestamp:
+    $gte: new Date(from)
+    $lte: new Date(to)
+
+conversionMatch = (event, from, to, param) ->
+  match = eventRangeMatch(event, from, to)
+  match["params.#{param}"] = {$exists: true}
+
+  return match
+
+conversionGroup = (param) ->
+  _id:
+    param: "$params.#{param}"
+    month:
+      $month: '$timestamp'
+    day:
+      $dayOfMonth: '$timestamp'
+    year:
+      $year: '$timestamp'
+  count:
+    $sum: 1
+
+dauGroup = (param) ->
+  _id:
+    param: "$params.#{param}"
+    day: { $dayOfMonth: '$timestamp' }
+    month: { $month: '$timestamp' }
+    year: { $year: '$timestamp' }
+    userId: '$userId'
+
+d7Match = (from, to, param) ->
+  from = moment(new Date from).subtract 7, 'days'
+  to = moment(new Date to).subtract 7, 'days'
+  match = eventRangeMatch('signup', from, to)
+  match["params.#{param}"] = {$exists: true}
+
+  return match
+
+countByParam = (param) ->
+  _id:
+    param: "$params.#{param}"
+  count:
+    $sum: 1
+
 class ResultCtrl
   index: (req) ->
     event = req.query.event
@@ -13,30 +60,9 @@ class ResultCtrl
     from = req.query.from or moment().subtract 7, 'days'
     viewCounter = req.query.viewCounter
 
-    query =
-      event: event
-      timestamp:
-        $gte: new Date(from)
-        $lte: new Date(to)
-
-    query["params.#{param}"] = {$exists: true}
-
-    viewQuery = _.defaults {event: 'view'}, _.cloneDeep query
-
     conversions = Conversion.aggregate [
-      {$match: query}
-      {$group:
-        _id:
-          param: "$params.#{param}"
-          month:
-            $month: '$timestamp'
-          day:
-            $dayOfMonth: '$timestamp'
-          year:
-            $year: '$timestamp'
-        count:
-          $sum: 1
-      }
+      {$match: conversionMatch(event, from, to, param)}
+      {$group: conversionGroup(param) }
     ]
     .exec().then (conversions) ->
       _.map conversions, (conversion) ->
@@ -45,26 +71,10 @@ class ResultCtrl
         value: _id.param
         count: conversion.count
 
-
-    d7Query =
-      event: event
-      timestamp:
-        $gte: new Date moment(new Date from).subtract 7, 'days'
-        $lte: new Date moment(new Date to).subtract 7, 'days'
-
-    d7Query["params.#{param}"] = {$exists: true}
-
     views = switch viewCounter
       when 'dau' then Conversion.aggregate([
-          {$match: viewQuery}
-          {$group:
-            _id:
-              param: "$params.#{param}"
-              day: { $dayOfMonth: '$timestamp' }
-              month: { $month: '$timestamp' }
-              year: { $year: '$timestamp' }
-              userId: '$userId'
-          }
+          {$match: eventRangeMatch('view', from, to)}
+          {$group: dauGroup(param)}
           {$group:
             _id:
               param: '$_id.param'
@@ -73,22 +83,12 @@ class ResultCtrl
           }
         ]).exec()
       when 'd7' then Conversion.aggregate([
-          {$match: _.defaults {event: 'signup'}, _.cloneDeep d7Query}
-          {$group:
-            _id:
-              param: "$params.#{param}"
-            count:
-              $sum: 1
-          }
+          {$match: d7Match(from, to, param)}
+          {$group: countByParam(param)}
         ]).exec()
       else Conversion.aggregate([
-          {$match: viewQuery}
-          {$group:
-            _id:
-              param: "$params.#{param}"
-            count:
-              $sum: 1
-          }
+          {$match: eventRangeMatch('view', from, to)}
+          {$group: countByParam(param)}
         ]).exec()
 
     Promise.all [views, conversions]

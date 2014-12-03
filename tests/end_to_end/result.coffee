@@ -7,10 +7,10 @@ Conversion = require '../../models/conversion'
 flare = new Flare().express(app)
 
 describe 'Result Routes', ->
-  it '[legacy] gets results', ->
+  it 'gets results', ->
     for i in [1..30]
       flare = flare
-        .post '/conversions', {event: 'event_name', data: id: i}
+        .post '/conversions', {event: 'event_name', userId: i}
         .expect 200
 
 
