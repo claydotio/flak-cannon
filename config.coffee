@@ -4,9 +4,9 @@ module.exports =
     DEV: 'development'
     PROD: 'production'
     TEST: 'test'
-  PORT: process.env.PORT or 3001
+  PORT: process.env.FLAK_CANNON_PORT or process.env.PORT or 50010
   MONGO:
-    database: process.env.MONGO_DB or 'flak_cannon'
+    database: process.env.FLAK_CANNON_MONGO_DB or 'flak_cannon'
     host: process.env.MONGO_HOST or 'localhost'
     port: process.env.MONGO_PORT or 27017
   REDIS:
