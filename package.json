@@ -3,9 +3,9 @@
   "description": "",
   "main": "index.coffee",
   "scripts": {
-    "test": "MONGO_DB=flak_cannon_test NODE_PATH=. NODE_ENV=test node_modules/gulp/bin/gulp.js test",
+    "test": "FLAK_CANNON_MONGO_DB=flak_cannon_test NODE_PATH=. NODE_ENV=test node_modules/gulp/bin/gulp.js test",
     "start": "NODE_ENV=production ./node_modules/pm2/bin/pm2 start bin/flak_cannon.coffee -i max --name flak_cannon --no-daemon --no-daemon -o /var/log/clay/flak_cannon.log -e /var/log/clay/flak_cannon.error.log",
-    "dev": "MONGO_DB=flak_cannon NODE_ENV=development node_modules/gulp/bin/gulp.js"
+    "dev": "FLAK_CANNON_MONGO_DB=flak_cannon NODE_ENV=development node_modules/gulp/bin/gulp.js"
   },
   "dependencies": {
     "bluebird": "2.2.2",
