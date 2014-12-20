@@ -67,7 +67,8 @@ class ResultCtrl
     .exec().then (conversions) ->
       _.map conversions, (conversion) ->
         _id = conversion._id
-        date: new Date(_id.year, _id.month, _id.day)
+        # JS Date's month is indexed from 0 to 11, mongo does 1 to 12
+        date: new Date(_id.year, _id.month - 1, _id.day)
         value: _id.param
         count: conversion.count
 
