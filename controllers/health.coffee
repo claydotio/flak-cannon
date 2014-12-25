@@ -4,7 +4,7 @@ _ = require 'lodash'
 Conversion = require '../models/conversion'
 RedisService = require '../services/redis'
 
-HEALTHCHECK_TIMEOUT = 100
+HEALTHCHECK_TIMEOUT = 200
 
 class HealthCtrl
   check: ->
