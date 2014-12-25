@@ -10,6 +10,6 @@ describe 'health Check', ->
     flare
       .get '/healthcheck'
       .expect 200,
-        ConversionModel: true
+        Mongoose: true
         Redis: true
         healthy: true
