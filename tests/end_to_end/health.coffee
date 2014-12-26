@@ -13,3 +13,8 @@ describe 'health Check', ->
         Mongoose: true
         Redis: true
         healthy: true
+
+  it 'pongs', ->
+    flare
+      .get '/ping'
+      .expect 200, 'pong'

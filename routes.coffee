@@ -14,6 +14,7 @@ HealthCtrl = require './controllers/health'
 
 routes =
   'get /healthcheck': HealthCtrl.check
+  'get /ping': HealthCtrl.ping
 
   'post /experiments': ExperimentCtrl.assign
   'get /experiments': ExperimentCtrl.index

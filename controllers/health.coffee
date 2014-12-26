@@ -19,4 +19,6 @@ class HealthCtrl
       result.healthy = _.every _.values result
       return result
 
+  ping: -> 'pong'
+
 module.exports = new HealthCtrl()
