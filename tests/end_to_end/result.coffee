@@ -35,6 +35,52 @@ describe 'Result Routes', ->
             )
           )
 
+  describe 'wildcard param', ->
+    before ->
+      Conversion.remove().exec()
+
+    it 'supports * as wildcard param', ->
+      for i in [1..30]
+        flare = flare
+          .post '/conversions', {event: 'signup', userId: i}
+          .expect 200
+
+      from = new Date()
+      from.setDate(from.getDate() - 7)
+      to = new Date()
+      to.setDate(to.getDate() + 1)
+
+      queryParams = "event=signup&param=*&from=#{from}&to=#{to}"
+      flare
+        .get "/results?#{queryParams}"
+        .expect 200, Joi.object().keys
+          views: Joi.array().includes Joi.object().keys
+            param: Joi.string()
+            count: Joi.number()
+          counts: Joi.array().length(1).includes(
+            Joi.array().length(1).includes(
+              Joi.object().keys
+                date: Joi.string()
+                value: Joi.string()
+                count: Joi.number().valid(30)
+              )
+            )
+        .post '/conversions', {event: 'signup', userId: 123}
+        .expect 200
+        .get "/results?#{queryParams}"
+        .expect 200, Joi.object().keys
+          views: Joi.array().includes Joi.object().keys
+            param: Joi.string()
+            count: Joi.number()
+          counts: Joi.array().length(1).includes(
+            Joi.array().length(1).includes(
+              Joi.object().keys
+                date: Joi.string()
+                value: Joi.string()
+                count: Joi.number().valid(31)
+              )
+            )
+
   it 'supports uniq conversions', ->
     from = new Date()
     from.setDate(from.getDate() - 7)
