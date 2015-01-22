@@ -4,8 +4,7 @@ log = require 'loglevel'
 
 Conversion = require 'models/conversion'
 RedisService = require 'services/redis'
-
-log.disableAll()
+config = require 'config'
 
 ###
   Override Experiments
@@ -24,6 +23,9 @@ require.cache[fullExperimentsPath].exports = experiments
 
 
 before ->
+  unless config.DEBUG
+    log.disableAll()
+
   Promise.all [
     Conversion.remove().exec()
     RedisService.flushdbAsync()

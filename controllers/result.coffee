@@ -102,6 +102,10 @@ class ResultCtrl
           {$match: d7Match(from, to, param)}
           {$group: countByParam(param)}
         ]).exec()
+      when 'assigned' then Conversion.aggregate([
+          {$match: eventRangeMatch('assigned', from, to)}
+          {$group: countByParam(param)}
+        ]).exec()
       else Conversion.aggregate([
           {$match: eventRangeMatch('view', from, to)}
           {$group: countByParam(param)}

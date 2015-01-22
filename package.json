@@ -8,7 +8,7 @@
     "dev": "FLAK_CANNON_MONGO_DB=flak_cannon NODE_ENV=development node_modules/gulp/bin/gulp.js"
   },
   "dependencies": {
-    "bluebird": "2.2.2",
+    "bluebird": "2.8.2",
     "body-parser": "1.6.2",
     "coffee-script": "1.7.1",
     "cors": "2.4.1",
@@ -18,7 +18,7 @@
     "lodash": "2.4.1",
     "loglevel": "1.1.0",
     "moment": "2.8.3",
-    "mongoose": "3.8.14",
+    "mongoose": "3.8.21",
     "pm2": "0.10.3",
     "redis": "0.12.1",
     "uuid": "1.4.1"

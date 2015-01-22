@@ -7,6 +7,8 @@ log = require 'loglevel'
 routes = require './routes'
 config = require './config'
 
+log.enableAll()
+
 mongo = config.MONGO
 
 mongoose.connect "mongodb://#{mongo.host}:#{mongo.port}/#{mongo.database}"

@@ -1,4 +1,5 @@
 module.exports =
+  DEBUG: if process.env.DEBUG then process.env.DEBUG is '1' else true
   ENV: process.env.NODE_ENV or 'production'
   ENVS:
     DEV: 'development'
