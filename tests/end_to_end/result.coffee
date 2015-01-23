@@ -142,7 +142,6 @@ describe 'Result Routes', ->
         .post '/conversions', {event: 'd7', userId: 2}
         .expect 200
         .get "/results?#{queryParams}"
-        #.flare (x) -> console.log x.res.body.views
         .expect 200, Joi.object().keys
           views: Joi.array().min(2).includes
             param: Joi.string()
@@ -183,11 +182,48 @@ describe 'Result Routes', ->
         .post '/conversions', {event: 'engaged_gameplay', userId: 123}
         .expect 200
         .get "/results?#{queryParams}"
-        #.flare (x) -> console.log x.res.body.views
         .expect 200, Joi.object().keys
           views: Joi.array().min(2).includes
             param: Joi.string()
             count: Joi.number().valid(2)
+          counts: Joi.array().includes(
+            Joi.array().includes
+              date: Joi.string()
+              value: Joi.string()
+              count: Joi.number()
+          )
+
+  describe 'supports custom assignments view counter', ->
+    before ->
+      Conversion.remove().exec()
+
+    it 'counts', ->
+      from = new Date()
+      from.setDate(from.getDate() - 7)
+      to = new Date()
+      to.setDate(to.getDate() + 1)
+
+      queryParams = "event=engaged_gameplay&param=login_button&from=#{from}" +
+                    "&to=#{to}&viewCounter=assigned"
+
+      yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      flare
+        .post '/experiments', {userId: 123}
+        .expect 200
+        .post '/experiments', {userId: 129}
+        .expect 200
+        .post '/experiments', {userId: 132}
+        .expect 200
+        .post '/experiments', {userId: 133, fromUserId: 123}
+        .expect 200
+        .post '/conversions', {event: 'engaged_gameplay', userId: 123}
+        .expect 200
+        .get "/results?#{queryParams}"
+        .expect 200, Joi.object().keys
+          views: Joi.array().min(1).includes
+            param: Joi.string()
+            count: Joi.number().valid(3)
           counts: Joi.array().includes(
             Joi.array().includes
               date: Joi.string()

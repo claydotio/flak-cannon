@@ -22,12 +22,17 @@ class ExperimentCtrl
       Promise.resolve(null))
     .then ->
       Experiments.getParams userId
-      .then (params) ->
+      .then ([params, isOrganic]) ->
         if overrides[userId]
           params = overrides[userId]
-        log.info "ASSIGN: #{userId} #{JSON.stringify params}"
-        Experiments.registerView params, userId, timestamp
-        return params
+
+        (if isOrganic
+          Experiments.registerAssignment params, userId, timestamp
+        else Promise.resolve(null))
+        .then ->
+          log.info "ASSIGN: #{userId} #{JSON.stringify params} #{isOrganic}"
+          Experiments.registerView params, userId, timestamp
+          return params
 
   index: ->
     Experiments.getUsedParams().then (params) ->

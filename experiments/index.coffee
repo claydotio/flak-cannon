@@ -6,6 +6,7 @@ Events = require '../lib/events'
 experiments = require './experiment_list'
 config = require '../config'
 RedisService = require '../services/redis'
+Conversion = require '../models/conversion'
 
 # Internal usage at clay.io
 unless config.ENV is config.ENVS.TEST
@@ -24,12 +25,21 @@ getUserIdMapping = (userId) ->
 module.exports =
   getParams: (userId) ->
     getUserIdMapping userId
-    .then (userId) ->
+    .then (mappedUserId) ->
       Promise.resolve _.reduce experiments, (params, experiment) ->
-        _.defaults params, experiment.assign(userId)
+        _.defaults params, experiment.assign(mappedUserId)
       , {}
+      .then (params) ->
+        isOrganic = userId is mappedUserId
+        [params, isOrganic]
   registerView: (params, userId, timestamp) ->
     Events.emit 'experiments|index|getParams', {params, userId, timestamp}
+  registerAssignment: (params, userId, timestamp) ->
+    Promise.cast Conversion.create
+      event: 'assigned'
+      userId: userId
+      params: params
+      timestamp: timestamp or Date.now()
   getUsedParams: ->
     Promise.resolve _.flatten _.pluck experiments, 'params'
 

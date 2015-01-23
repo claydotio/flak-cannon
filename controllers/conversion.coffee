@@ -37,7 +37,7 @@ class ConversionCtrl
       return Promise.reject new Error 'userId is required'
 
     Experiments.getParams userId
-    .then (params) ->
+    .then ([params, isOrganic]) ->
       conversion = {event, userId, params, uniq, timestamp}
       if uniq
         Conversion.findOne {uniq}
