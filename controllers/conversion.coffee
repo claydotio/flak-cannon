@@ -23,18 +23,23 @@ class ConversionCtrl
 
   create: (req) ->
     event = req.body.event
-    userId = req.body.userId
-    userId ?= req.body.data?.id # LEGACY
+    userId = req.body.userId and String req.body.userId
+    unless userId # LEGACY
+      userId = req.body.data?.id
     uniq = req.body.uniq
     timestamp = if config.ENV is config.ENVS.PROD \
       then Date.now()
       else req.body.timestamp or Date.now()
+    isBot = userId is config.CRAWLER_USER_ID
 
     unless event
       return Promise.reject new Error 'event required'
 
     unless userId
       return Promise.reject new Error 'userId is required'
+
+    if isBot
+      return Promise.reject new Error 'Illegal bot conversion'
 
     Experiments.getParams userId
     .then ([params, isOrganic]) ->
