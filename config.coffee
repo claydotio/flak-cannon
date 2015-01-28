@@ -14,3 +14,4 @@ module.exports =
     PORT: 6379
     HOST: process.env.REDIS_HOST or 'localhost'
     PREFIX: 'fc'
+  CRAWLER_USER_ID: '10000000'

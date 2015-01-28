@@ -2,7 +2,9 @@ Flare = require 'flare-gun'
 Joi = require 'joi'
 
 app = require '../../'
+config = require 'config'
 Conversion = require '../../models/conversion'
+RedisService = require '../../services/redis'
 
 flare = new Flare().express(app)
 
@@ -224,6 +226,44 @@ describe 'Result Routes', ->
           views: Joi.array().min(1).includes
             param: Joi.string()
             count: Joi.number().valid(3)
+          counts: Joi.array().includes(
+            Joi.array().includes
+              date: Joi.string()
+              value: Joi.string()
+              count: Joi.number()
+          )
+
+  describe 'does not count bots as views', ->
+    before ->
+      Conversion.remove().exec()
+      .then ->
+        RedisService.flushdbAsync()
+
+    it 'doesnt count', ->
+      from = new Date()
+      from.setDate(from.getDate() - 7)
+      to = new Date()
+      to.setDate(to.getDate() + 1)
+
+      queryParams = "event=engaged_gameplay&param=login_button&from=#{from}" +
+                    "&to=#{to}&viewCounter=assigned"
+
+      yesterday = new Date()
+      yesterday.setDate(yesterday.getDate() - 1)
+      flare
+        .post '/experiments', {userId: 123}
+        .expect 200
+        .post '/experiments', {userId: 129}
+        .expect 200
+        .post '/experiments', {userId: config.CRAWLER_USER_ID}
+        .expect 200
+        .post '/conversions', {event: 'engaged_gameplay', userId: 123}
+        .expect 200
+        .get "/results?#{queryParams}"
+        .expect 200, Joi.object().keys
+          views: Joi.array().length(1).includes
+            param: Joi.string()
+            count: Joi.number().valid(2)
           counts: Joi.array().includes(
             Joi.array().includes
               date: Joi.string()

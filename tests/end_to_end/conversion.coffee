@@ -2,6 +2,7 @@ Flare = require 'flare-gun'
 Joi = require 'joi'
 
 app = require '../../'
+config = require 'config'
 
 flare = new Flare().express(app)
 
@@ -25,6 +26,11 @@ describe 'Conversion Routes', ->
         timestamp: Joi.string()
         params: Joi.object().keys
           login_button: Joi.string()
+
+  it 'errors on bot conversions', ->
+    flare
+      .post '/conversions', {event: 'signup', userId: config.CRAWLER_USER_ID}
+      .expect 500
 
   it 'gets conversions', ->
     flare
