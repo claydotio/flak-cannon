@@ -5,7 +5,7 @@ mongoose = require 'mongoose'
 Conversion = require '../models/conversion'
 RedisService = require '../services/redis'
 
-HEALTHCHECK_TIMEOUT = 200
+HEALTHCHECK_TIMEOUT = 100
 
 class HealthCtrl
   check: ->
