@@ -3,9 +3,15 @@ Events = require '../lib/events'
 mongoose = require 'mongoose'
 Schema = mongoose.Schema
 
+DATA_EXPIRE_TIME_SECONDS = 2592000 # 30 days
+
 ConversionSchema = new Schema(
   event: {type: String},
-  timestamp: { type: Date, default: Date.now },
+  timestamp: {
+    type: Date
+    default: Date.now
+    index: { expireAfterSeconds: DATA_EXPIRE_TIME_SECONDS }
+  },
   userId: String,
   uniq: {type: String, unique: true, sparse: true},
   params: {type: Object}
