@@ -21,7 +21,7 @@ describe 'Experiment Routes', ->
   it 'gets all experiments', ->
     flare
       .get '/experiments'
-      .expect 200, Joi.array().includes
+      .expect 200, Joi.array().items
         id: Joi.string()
 
   it 'creates mapping based on `from` user if exists', ->

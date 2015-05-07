@@ -15,3 +15,4 @@ module.exports =
     HOST: process.env.REDIS_HOST or 'localhost'
     PREFIX: 'fc'
   CRAWLER_USER_ID: '10000000'
+  LOG_DIR: process.env.LOG_DIR or '/tmp'

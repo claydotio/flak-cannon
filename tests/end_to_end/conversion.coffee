@@ -35,7 +35,7 @@ describe 'Conversion Routes', ->
   it 'gets conversions', ->
     flare
       .get '/conversions'
-      .expect 200, Joi.array().includes
+      .expect 200, Joi.array().items
         id: Joi.string()
 
   it 'converts with timestamp for testing', ->
