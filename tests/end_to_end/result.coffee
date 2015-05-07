@@ -21,15 +21,13 @@ describe 'Result Routes', ->
     to = new Date()
     to.setDate(to.getDate() + 1)
 
-    queryParams = "event=signup&param=login_button&from=#{from}&to=#{to}"
+    queryParams = "event=event_name&param=login_button&from=#{from}&to=#{to}"
     flare
       .get "/results?#{queryParams}"
       .expect 200, Joi.object().keys
-        views: Joi.array().includes Joi.object().keys
-          param: Joi.string()
-          count: Joi.number()
-        counts: Joi.array().includes(
-          Joi.array().includes(
+        views: Joi.array()
+        counts: Joi.array().items(
+          Joi.array().items(
             Joi.object().keys
               date: Joi.string()
               value: Joi.string()
@@ -56,14 +54,13 @@ describe 'Result Routes', ->
       flare
         .get "/results?#{queryParams}"
         .expect 200, Joi.object().keys
-          views: Joi.array().includes Joi.object().keys
+          views: Joi.array().items Joi.object().keys
             param: Joi.string()
             count: Joi.number()
-          counts: Joi.array().length(1).includes(
-            Joi.array().length(1).includes(
+          counts: Joi.array().length(1).items(
+            Joi.array().length(1).items(
               Joi.object().keys
                 date: Joi.string()
-                value: Joi.string()
                 count: Joi.number().valid(30)
               )
             )
@@ -71,14 +68,13 @@ describe 'Result Routes', ->
         .expect 200
         .get "/results?#{queryParams}"
         .expect 200, Joi.object().keys
-          views: Joi.array().includes Joi.object().keys
+          views: Joi.array().items Joi.object().keys
             param: Joi.string()
             count: Joi.number()
-          counts: Joi.array().length(1).includes(
-            Joi.array().length(1).includes(
+          counts: Joi.array().length(1).items(
+            Joi.array().length(1).items(
               Joi.object().keys
                 date: Joi.string()
-                value: Joi.string()
                 count: Joi.number().valid(31)
               )
             )
@@ -97,11 +93,9 @@ describe 'Result Routes', ->
       .expect 200
       .get "/results?#{queryParams}"
       .expect 200, Joi.object().keys
-        views: Joi.array().includes
-          param: Joi.string()
-          count: Joi.number()
-        counts: Joi.array().includes(
-          Joi.array().includes
+        views: Joi.array()
+        counts: Joi.array().items(
+          Joi.array().items
             date: Joi.string()
             value: Joi.string()
             count: 1
@@ -145,11 +139,11 @@ describe 'Result Routes', ->
         .expect 200
         .get "/results?#{queryParams}"
         .expect 200, Joi.object().keys
-          views: Joi.array().min(2).includes
+          views: Joi.array().min(2).items
             param: Joi.string()
             count: Joi.number().valid(2, 4)
-          counts: Joi.array().includes(
-            Joi.array().includes
+          counts: Joi.array().items(
+            Joi.array().items
               date: Joi.string()
               value: Joi.string()
               count: Joi.number()
@@ -185,11 +179,11 @@ describe 'Result Routes', ->
         .expect 200
         .get "/results?#{queryParams}"
         .expect 200, Joi.object().keys
-          views: Joi.array().min(2).includes
+          views: Joi.array().min(2).items
             param: Joi.string()
             count: Joi.number().valid(2)
-          counts: Joi.array().includes(
-            Joi.array().includes
+          counts: Joi.array().items(
+            Joi.array().items
               date: Joi.string()
               value: Joi.string()
               count: Joi.number()
@@ -223,11 +217,11 @@ describe 'Result Routes', ->
         .expect 200
         .get "/results?#{queryParams}"
         .expect 200, Joi.object().keys
-          views: Joi.array().min(1).includes
+          views: Joi.array().min(1).items
             param: Joi.string()
             count: Joi.number().valid(3)
-          counts: Joi.array().includes(
-            Joi.array().includes
+          counts: Joi.array().items(
+            Joi.array().items
               date: Joi.string()
               value: Joi.string()
               count: Joi.number()
@@ -261,11 +255,11 @@ describe 'Result Routes', ->
         .expect 200
         .get "/results?#{queryParams}"
         .expect 200, Joi.object().keys
-          views: Joi.array().length(1).includes
+          views: Joi.array().length(1).items
             param: Joi.string()
             count: Joi.number().valid(2)
-          counts: Joi.array().includes(
-            Joi.array().includes
+          counts: Joi.array().items(
+            Joi.array().items
               date: Joi.string()
               value: Joi.string()
               count: Joi.number()

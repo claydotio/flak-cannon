@@ -21,6 +21,7 @@
     "mongoose": "3.8.21",
     "pm2": "0.10.3",
     "redis": "0.12.1",
+    "rewire": "^2.3.3",
     "uuid": "1.4.1"
   },
   "devDependencies": {
@@ -30,6 +31,6 @@
     "gulp-coffeelint": "0.3.3",
     "gulp-mocha": "0.5.2",
     "gulp-nodemon": "1.0.4",
-    "joi": "4.6.2"
+    "joi": "^6.4.1"
   }
 }
