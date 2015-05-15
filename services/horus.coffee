@@ -5,7 +5,8 @@ _ = require 'lodash'
 config = require '../config'
 
 SEPARATOR = '.'
-CONVERSIONS_FILE = "#{config.LOG_DIR}/flak_cannon_conversions_horus.tsv"
+# Dataset name must only contain [a-z0-9]+
+CONVERSIONS_FILE = "#{config.LOG_DIR}/flak7cannon7conversions_horus.tsv"
 
 # NOTE: These cannnot be changed. Create a new log file instead
 CONVERSION_COLUMNS = [
